@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../../.flowbite-react/class-list.json";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+@font-face {
+  font-family: Vazir;
+  src: url("/fonts/Vazir-Regular.eot");
+  src: url("/fonts/Vazir-Regular.eot?#iefix") format("embedded-opentype"),
+    url("/fonts/Vazir-Regular.woff2") format("woff2"),
+    url("/fonts/Vazir-Regular.woff") format("woff"),
+    url("/fonts/Vazir-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url("/fonts/Vazir-Bold.eot");
+  src: url("/fonts/Vazir-Bold.eot?#iefix") format("embedded-opentype"),
+    url("/fonts/Vazir-Bold.woff2") format("woff2"),
+    url("/fonts/Vazir-Bold.woff") format("woff"),
+    url("/fonts/Vazir-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-display: swap;
+}
+html {
+  font-family: "Vazir", sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+@layer base {
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+      cursor: pointer;
+    }
+  }

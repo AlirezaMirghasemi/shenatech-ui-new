@@ -1,0 +1,17 @@
+import { Article } from "./Article";
+import { User } from "./User";
+import { Video } from "./Video";
+
+export interface Comment {
+    id: number;
+    content: string;
+    status: 'pending' | 'approved' | 'rejected';
+    user: User;
+    article: Article | null;
+    video: Video | null;
+    event: Event | null;
+    parent: Comment | null;
+    replies: Comment[];
+    created_at: string;
+    updated_at: string;
+}
