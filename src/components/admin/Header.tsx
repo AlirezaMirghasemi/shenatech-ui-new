@@ -7,8 +7,6 @@ import {
     DropdownItem,
     Navbar,
     NavbarBrand,
-    NavbarCollapse,
-    NavbarLink,
     NavbarToggle,
   } from "flowbite-react";
 import Image from "next/image";
