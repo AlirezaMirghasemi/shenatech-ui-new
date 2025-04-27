@@ -2,6 +2,8 @@
 import "../styles/globals.css";
 import { Toaster } from "sonner";
 import { Suspense } from "react";
+import StoreProvider from "./providers/StoreProvider";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -15,8 +17,12 @@ export default function RootLayout({
         <link rel="icon" type="image/x-icon" href="/shenatech_logo_icon.png" />
       </head>
       <body>
-        <Toaster />
-        <Suspense>{children}</Suspense>
+        <StoreProvider>
+          <ThemeProvider>
+            <Toaster />
+            <Suspense>{children}</Suspense>
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );
