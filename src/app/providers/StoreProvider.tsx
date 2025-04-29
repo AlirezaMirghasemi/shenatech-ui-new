@@ -2,7 +2,7 @@
 import { Provider } from "react-redux";
 import { useEffect, useState } from "react";
 import { makeStore, AppStore } from "@/store/store";
-import axiosInstance from "@/lib/axiosInstance"; // تغییر: حالا تابع است
+import axiosInstance from "@/lib/axiosInstance";
 import { Spinner } from "flowbite-react";
 
 export default function StoreProvider({
@@ -15,7 +15,7 @@ export default function StoreProvider({
   useEffect(() => {
     const createdStore = makeStore();
 
-    axiosInstance();
+    axiosInstance(createdStore.dispatch);
     //createdStore.dispatch
 
     setStore(createdStore);

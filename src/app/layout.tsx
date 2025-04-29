@@ -15,10 +15,12 @@ export default function RootLayout({
       <head>
         <title>..::Shenatech::..</title>
         <link rel="icon" type="image/x-icon" href="/shenatech_logo_icon.png" />
+
       </head>
       <body>
         <StoreProvider>
           <ThemeProvider>
+
             <Toaster />
             <Suspense>{children}</Suspense>
           </ThemeProvider>

@@ -50,7 +50,6 @@ export default function axiosInstance(dispatch: AppDispatch) {
           console.error("Logout failed:", err);
         }
 
-        // فقط ریدایرکت بدون دستکاری کوکی
         window.location.assign(
           `/admin/login?redirect=${encodeURIComponent(window.location.pathname)}`
         );

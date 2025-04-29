@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ThemeMode, ThemeModeScript } from "flowbite-react";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
-    <NextThemesProvider attribute="class" enableSystem defaultTheme="system">
+    <>
+      <ThemeModeScript mode={localStorage.getItem("theme") as ThemeMode} />
       {children}
-    </NextThemesProvider>
+    </>
   );
 }

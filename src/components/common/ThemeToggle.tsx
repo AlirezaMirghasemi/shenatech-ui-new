@@ -1,32 +1,46 @@
-// src/app/components/ThemeToggle.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { FaMoon, FaSun } from "react-icons/fa6";
 
-export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+export default function ThemeToggle() {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
+  // Load initial theme from localStorage or system preference
   useEffect(() => {
-    setMounted(true);
+    const storedTheme = localStorage.getItem("theme") as
+      | "light"
+      | "dark"
+      | null;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
+    setTheme(initialTheme);
   }, []);
 
-  if (!mounted) return null;
+  // Apply or remove the .dark class on <html> and persist
+  useEffect(() => {
+    const htmlElement = document.documentElement;
+    if (theme === "dark") {
+      htmlElement.classList.add("dark");
+    } else {
+      htmlElement.classList.remove("dark");
+    }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   return (
     <button
-      aria-label="Toggle Theme"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
+      aria-label="تغییر تم"
       className="
-        p-2 rounded-lg
-        text-gray-500 dark:text-gray-400
-        hover:bg-gray-100 dark:hover:bg-gray-700
-        focus:outline-none focus:ring-4
-        focus:ring-gray-200 dark:focus:ring-gray-700
+        fixed top-4 left-4 flex items-center justify-center
+        p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200
+        transition-colors duration-300 focus:outline-none hover:bg-gray-300 dark:hover:bg-gray-700
       "
     >
-      {theme === "dark" ? "🌞" : "🌜"}
+      {theme === "light" ? <FaMoon size={20} /> : <FaSun size={20} />}
     </button>
   );
 }
