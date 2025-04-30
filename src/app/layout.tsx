@@ -20,7 +20,6 @@ export default function RootLayout({
       <body>
         <StoreProvider>
           <ThemeProvider>
-
             <Toaster />
             <Suspense>{children}</Suspense>
           </ThemeProvider>

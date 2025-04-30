@@ -1,4 +1,5 @@
 @config "../../tailwind.config.js";
+
 @import "tailwindcss";
 
 @font-face {
@@ -162,7 +163,7 @@
 
 @layer base {
   /* Dark Theme Overrides */
-  [data-theme="dark"] {
+  .dark {
     --colors-bg-default: var(--color-background-dark-900);
     --colors-bg-surface: var(--color-background-dark-800);
     --colors-bg-alt: var(--color-background-dark-800);
@@ -246,7 +247,7 @@
   }
 
   h1 {
-    @apply text-4xl font-bold mb-2;
+    @apply text-4xl font-bold mb-2 ;
   }
   h2 {
     @apply text-3xl font-bold mb-2;
@@ -275,30 +276,19 @@
 @layer components {
   button,
   [role="button"] {
-    @apply font-semibold rounded-md shadow-sm
-           transition-colors duration-200
-           disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply font-semibold rounded-md shadow-sm transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
-    @apply bg-primary text-text-on-primary
-           hover:bg-primary-hover active:bg-primary-active
-           focus:outline-none focus:ring-2 focus:ring-ring-default
-           focus:ring-offset-2;
+    @apply bg-primary text-text-on-primary hover:bg-primary-hover active:bg-primary-active focus:outline-none focus:ring-2 focus:ring-ring-default focus:ring-offset-2;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-text-on-secondary
-           hover:bg-secondary-hover active:bg-secondary-active
-           focus:outline-none focus:ring-2 focus:ring-ring-default
-           focus:ring-offset-2;
+    @apply bg-secondary text-text-on-secondary hover:bg-secondary-hover active:bg-secondary-active focus:outline-none focus:ring-2 focus:ring-ring-default focus:ring-offset-2;
   }
 
   .btn-accent {
-    @apply bg-accent text-text-on-accent
-           hover:bg-accent-hover active:bg-accent-active
-           focus:outline-none focus:ring-2 focus:ring-ring-default
-           focus:ring-offset-2;
+    @apply bg-accent text-text-on-accent hover:bg-accent-hover active:bg-accent-active focus:outline-none focus:ring-2 focus:ring-ring-default focus:ring-offset-2;
   }
 
   .card {
@@ -307,23 +297,23 @@
 
   [role="alert"] {
     @apply border-l-4 p-4 mb-4 rounded-md;
+  }
 
-    &[data-type="info"] {
-      @apply border-status-info-border bg-status-info-bg text-status-info-text;
-    }
+  [role="alert"][data-type="info"] {
+    @apply border-status-info-border bg-status-info-bg text-status-info-text;
+  }
 
-    &[data-type="success"] {
-      @apply border-status-success-border bg-status-success-bg text-status-success-text;
-    }
+  [role="alert"][data-type="success"] {
+    @apply border-status-success-border bg-status-success-bg text-status-success-text;
+  }
 
-    &[data-type="warning"] {
-      @apply border-status-warning-border bg-status-warning-bg text-status-warning-text;
-    }
+  [role="alert"][data-type="warning"] {
+    @apply border-status-warning-border bg-status-warning-bg text-status-warning-text;
+  }
 
-    &[data-type="danger"],
-    &[data-type="error"] {
-      @apply border-status-danger-border bg-status-danger-bg text-status-danger-text;
-    }
+  [role="alert"][data-type="danger"],
+  [role="alert"][data-type="error"] {
+    @apply border-status-danger-border bg-status-danger-bg text-status-danger-text;
   }
 }
 
