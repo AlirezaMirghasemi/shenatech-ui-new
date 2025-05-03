@@ -51,7 +51,7 @@ export default function AdminLoginPage() {
               placeholder="ایمیل"
               label="ایمیل"
               disabled={isLoading}
-              className="  rounded-lg  block w-full p-0.2 mb-2"
+              className="  rounded-lg  block w-full p-0.2 mb-2 text-text-link "
             />
             <DynamicInputField
               id="password"

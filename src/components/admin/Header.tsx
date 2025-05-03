@@ -6,70 +6,81 @@ import {
   DropdownHeader,
   DropdownItem,
   Navbar,
-  NavbarBrand,
-  NavbarToggle,
-} from "flowbite-react";
-import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth";
-import { FaUser } from "react-icons/fa6";
-import { useEffect } from "react";
-import { FaSignOutAlt } from "react-icons/fa";
 
-export function Header() {
+} from "flowbite-react";
+import { useAuth } from "@/hooks/useAuth";
+import { FaDoorOpen, FaGear, FaUser, FaUserPen } from "react-icons/fa6";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import AdminDashboardButton from "./AdminDashboardButton";
+import ThemeToggle from "../common/ThemeToggle";
+
+export function Header({ handleOpen }: { handleOpen: () => void }) {
   const { user, actions } = useAuth();
   const logout = async () => {
     await actions.logout();
+    toast.success("خروج با موفقیت انجام شد ، به امید دیدار");
     window.location.href = "/admin/login";
   };
   useEffect(() => {
     actions.loadUser();
   }, []);
+
   return (
-    <Navbar fluid rounded>
-      <NavbarBrand href="">
-        <Image
-          src="/shenatech_logo.png"
-          className="mr-3 h-6 sm:h-9"
-          alt="شناتک"
-          width={100}
-          height={150}
-        />
-      </NavbarBrand>
-      <div className="flex md:order-2">
-        <Dropdown
-          arrowIcon={false}
-          inline
-          label={
-            user?.profile_image ? (
-              <Avatar
-                alt="User settings"
-                img={user?.profile_image.path}
-                rounded
-              />
-            ) : (
-              <FaUser />
-            )
-          }
-        >
-          <DropdownHeader>
-            <span className="block text-sm">
-              {user?.first_name} {user?.last_name}
-            </span>
-            <span className="block truncate text-sm font-medium">
-              {user?.email}
-            </span>
-          </DropdownHeader>
-          <DropdownItem>داشبورد</DropdownItem>
-          <DropdownItem>تنظیمات</DropdownItem>
-          <DropdownItem>درآمد</DropdownItem>
-          <DropdownDivider />
-          <DropdownItem onClick={logout}>
-            <FaSignOutAlt />
-            خروج
-          </DropdownItem>
-        </Dropdown>
-        <NavbarToggle />
-      </div>
-    </Navbar>
+    <>
+      <Navbar
+        fluid
+        rounded
+        className=" bg-bg-default  fixed w-full z-16 top-0 start-0 lg:sticky "
+      >
+        <div className="flex justify-between">
+
+        <AdminDashboardButton handleOpen={handleOpen} />
+        </div>
+
+        <div className="flex md:order-2">
+
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              user?.profile_image ? (
+                <Avatar
+                  alt="user profile picture"
+                  img={user?.profile_image.path}
+                  rounded
+                />
+              ) : (
+                <FaUser className="rounded-full p-2 mr-2    transition-colors duration-300
+         hover:text-secondary-hover hover:bg-primary w-10 h-10 text-center" />
+              )
+            }
+          >
+            <DropdownHeader>
+              <span className="block text-sm text-center pb-1">
+                {user?.first_name} {user?.last_name}
+              </span>
+              <span className="block truncate text-sm font-medium ">
+                {user?.email}
+              </span>
+            </DropdownHeader>
+            <DropdownItem>
+              <FaUserPen className="ml-2" />
+              حساب کاربری
+            </DropdownItem>
+            <DropdownItem>
+              <FaGear className="ml-2" />
+              تنظیمات
+            </DropdownItem>
+            <DropdownDivider />
+            <DropdownItem onClick={logout}>
+              <FaDoorOpen className="ml-2" />
+              خروج
+            </DropdownItem>
+          </Dropdown>
+          <ThemeToggle/>
+        </div>
+      </Navbar>
+    </>
   );
 }

@@ -31,13 +31,18 @@ export default function ThemeToggle() {
     <button
       onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
       aria-label="تغییر تم"
-      className="
-  fixed top-4 left-4 flex items-center justify-center
-  p-2 rounded-full bg-primary-default dark:bg-primary-dark text-text-on-primary dark:text-text-on-primary
-  transition-colors duration-300 focus:outline-none hover:bg-primary-hover dark:hover:bg-primary-dark-hover
-"
     >
-      {theme === "light" ? <FaMoon size={20} /> : <FaSun size={20} />}
+      {theme === "light" ? (
+        <FaMoon
+          className=" rounded-full p-2 mr-2 transition-colors transition-discrete duration-700
+         hover:text-secondary-hover hover:bg-primary w-8 h-8 "
+        />
+      ) : (
+        <FaSun
+          className=" rounded-full p-2 mr-2 transition-colors transition-discrete duration-700
+         hover:text-secondary-hover hover:bg-primary w-8 h-8 "
+        />
+      )}
     </button>
   );
 }
