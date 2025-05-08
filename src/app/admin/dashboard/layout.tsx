@@ -14,17 +14,17 @@ export default function AdminPageLayout({
 
   return (
     <>
-      <div className="w-full min-w-0 ">
+      <div className="  max-h-screen">
         <Header handleOpen={handleOpen} />
-        <div className=" lg:flex ">
-          <SidebarPanel handleOpen={handleOpen} isOpen={isOpen} />
-            <div className="flex p-5">
-              <div className="flex min-w-0 flex-1 flex-col   lg:mt-0 mt-10">
-                <main>{children}</main>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SidebarPanel handleOpen={handleOpen} isOpen={isOpen} />
+      <main
+        className={`max-h-screen flex-1 transition-all duration-300 pt-25  ${
+          !isOpen ? "lg:px-35" : "lg:px-80"
+        }`}
+      >
+        {children}
+      </main>
+      </div>
     </>
   );
 }

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa6";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark" | "">("");
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") as
       | "light"

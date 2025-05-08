@@ -1,22 +1,10 @@
 "use client";
 import React from "react";
-import { Form, Formik, FormikHelpers, FormikValues } from "formik";
-import * as Yup from "yup";
+import { Form, Formik } from "formik";
 import { Button, Spinner } from "flowbite-react";
-import { ApiError } from "@/types/Api";
 import ValidatingError from "@/components/common/ValidatingError";
+import IDynamicForm from "@/interfaces/IDynamicForm";
 
-interface DynamicFormProps {
-  children: React.ReactNode;
-  initialValues: FormikValues;
-  validationSchema: Yup.ObjectSchema<FormikValues>;
-  onSubmit: (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<FormikValues>
-  ) => void | Promise<unknown>;
-  apiError?: ApiError | null;
-  buttonTitle: string;
-}
 
 export default function DynamicForm({
   children,
@@ -25,7 +13,7 @@ export default function DynamicForm({
   onSubmit,
   buttonTitle,
   apiError,
-}: DynamicFormProps): React.JSX.Element {
+}: IDynamicForm) {
   return (
     <>
       <Formik

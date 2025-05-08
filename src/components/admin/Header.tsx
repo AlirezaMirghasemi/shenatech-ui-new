@@ -31,15 +31,13 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
       <Navbar
         fluid
         rounded
-        className=" bg-bg-default  fixed w-full z-16 top-0 start-0 lg:sticky "
+        className=" py-[21px] border-b-2 border-accent/50 dark:border-accent/50 bg-bg-default dark:bg-bg-default  w-full z-16 top-0 start-0 fixed "
       >
         <div className="flex justify-between">
 
         <AdminDashboardButton handleOpen={handleOpen} />
         </div>
-
         <div className="flex md:order-2">
-
           <Dropdown
             arrowIcon={false}
             inline

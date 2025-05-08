@@ -1,5 +1,6 @@
 import ValidatingError from "@/components/common/ValidatingError";
 import { InputType } from "@/constants/data/InputType";
+import IDynamicInputField from "@/interfaces/IDynamicInputField";
 import { FileInput, Label, Select, Textarea, TextInput } from "flowbite-react";
 import { ErrorMessage, useField, useFormikContext } from "formik";
 
@@ -12,16 +13,7 @@ export default function DynamicInputField({
   data,
   label,
   className,
-}: {
-  id: string;
-  name: string;
-  type?: InputType;
-  placeholder: string;
-  label: string;
-  disabled: boolean;
-  data?: string[];
-  className?: string;
-}) {
+}: IDynamicInputField) {
   const [field, meta] = useField(name);
   const { setFieldValue } = useFormikContext();
   return (

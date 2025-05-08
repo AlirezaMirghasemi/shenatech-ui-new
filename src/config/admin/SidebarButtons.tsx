@@ -1,4 +1,4 @@
-import { ISidebarButtonGroup } from "@/interfaces/ISidebarButtons";
+import { ISidebarButtonGroup } from "@/interfaces/IDynamicSidebarButtonGroup";
 import {
   FaUserTie,
   FaArrowTrendUp,
@@ -27,7 +27,7 @@ export const SidebarButtons: ISidebarButtonGroup = {
       icon: FaWaterLadder,
       name: "reports",
       title: "شناتک در یک نگاه",
-      href: "/admin",
+      href: "/admin/dashboard",
     },
     {
       icon: FaEnvelopesBulk,
@@ -39,19 +39,19 @@ export const SidebarButtons: ISidebarButtonGroup = {
           icon: FaCalendarDay,
           name: "events",
           title: "رویداد ها",
-          href: "/admin/events",
+          href: "/admin/dashboard/events",
         },
         {
           icon: FaNewspaper,
           name: "articles",
           title: "مقالات",
-          href: "/admin/articles",
+          href: "/admin/dashboard/articles",
         },
         {
           icon: FaFilm,
           name: "videos",
           title: "فیلم ها",
-          href: "/admin/videos",
+          href: "/admin/dashboard/videos",
         },
         {
           icon: FaArrowTrendUp,
@@ -63,13 +63,13 @@ export const SidebarButtons: ISidebarButtonGroup = {
               icon: FaHashtag,
               name: "tags",
               title: "هشتگ ها",
-              href: "/admin/tags",
+              href: "/admin/dashboard/tags",
             },
             {
               icon: FaGear,
               name: "slugs",
               title: "اسلاگ ها",
-              href: "/admin/slugs",
+              href: "/admin/dashboard/slugs",
             },
           ],
         },
@@ -85,7 +85,7 @@ export const SidebarButtons: ISidebarButtonGroup = {
           icon: FaUser,
           name: "users",
           title: "کاربران",
-          href: "/admin/users",
+          href: "/admin/dashboard/users",
         },
         {
           icon: FaLock,
@@ -97,13 +97,13 @@ export const SidebarButtons: ISidebarButtonGroup = {
               icon: FaScrewdriverWrench,
               name: "roles",
               title: "نقش ها",
-              href: "/admin/roles",
+              href: "/admin/dashboard/roles",
             },
             {
               icon: FaKey,
               name: "permissions",
               title: "مجوز ها",
-              href: "/admin/permissions",
+              href: "/admin/dashboard/permissions",
             },
           ],
         },
@@ -113,7 +113,7 @@ export const SidebarButtons: ISidebarButtonGroup = {
       icon: FaComments,
       name: "comments",
       title: "نظرات",
-      href: "/admin/comments",
+      href: "/admin/dashboard/comments",
     },
   ],
 };

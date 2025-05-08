@@ -1,4 +1,4 @@
-import { ISidebarButtonGroup } from "@/interfaces/ISidebarButtons";
+import { IDynamicSidebarButtonGroup } from "@/interfaces/IDynamicSidebarButtonGroup";
 import { SidebarCollapse, SidebarItem, SidebarItemGroup } from "flowbite-react";
 import { usePathname } from "next/navigation";
 import { HiOutlineMinusSm, HiOutlinePlusSm } from "react-icons/hi";
@@ -7,7 +7,7 @@ import { twMerge } from "tailwind-merge";
 export default function DynamicSidebarButtons({
   sidebarButtons,
 }: {
-  sidebarButtons: ISidebarButtonGroup;
+  sidebarButtons: IDynamicSidebarButtonGroup;
 }) {
   const pathName = usePathname();
   return (

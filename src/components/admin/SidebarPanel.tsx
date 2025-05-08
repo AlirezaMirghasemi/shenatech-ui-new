@@ -15,9 +15,9 @@ export function SidebarPanel({
   isOpen: boolean;
 }) {
   return (
-    <div className="fixed lg:sticky z-50  max-w-72 lg:size-full ">
+    <div className= {`sticky z-50  max-w-72 h-full  lg:fixed ${!isOpen ? "hidden" : "block"}`}  >
       <Drawer
-        className="overflow-y-auto  max-w-72 p-0 m-0 bg-bg-active border-l-2 border-border-default/15 dark:bg-bg-active"
+        className="overflow-y-auto  h-full max-w-72 p-0 m-0 bg-bg-active dark:bg-bg-active"
         open={isOpen}
         onClose={handleOpen}
         position="right"

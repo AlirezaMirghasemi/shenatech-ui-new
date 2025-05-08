@@ -161,8 +161,8 @@
   --colors-status-info-text: var(--color-primary-900);
 }
 
+/* 2. جایگزین متغیرها در حالت .dark */
 @layer base {
-  /* Dark Theme Overrides */
   .dark {
     --colors-bg-default: var(--color-background-dark-900);
     --colors-bg-surface: var(--color-background-dark-800);
@@ -188,8 +188,6 @@
     --colors-border-interactive: var(--color-background-dark-600);
     --colors-border-focus: var(--color-primary-300);
     --colors-border-disabled: var(--color-neutral-700);
-    --colors-border-accent: var(--color-accent-950);
-
     --colors-ring-default: var(--color-primary-300);
 
     --colors-primary: var(--color-primary-600);
@@ -220,58 +218,58 @@
     --colors-status-info-border: var(--color-primary-700);
     --colors-status-info-text: var(--color-primary-50);
   }
+}
 
-  /* Base Styles */
-  :root {
-    color-scheme: light;
-    --font-family-sans: "Vazir", sans-serif;
-  }
+/* Base Styles */
+:root {
+  color-scheme: light;
+  --font-family-sans: "Vazir", sans-serif;
+}
 
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-  }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
 
-  html {
-    font-family: var(--font-family-sans);
-    @apply bg-bg-default text-text-default;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
+html {
+  font-family: var(--font-family-sans);
+  @apply bg-bg-default text-text-default;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-  body {
-    @apply min-h-screen antialiased transition-colors duration-300;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+body {
+  @apply min-h-screen antialiased transition-colors duration-300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  a {
-    @apply text-text-link hover:text-text-link-hover transition-colors duration-200 ;
-  }
+a {
+  @apply text-text-link hover:text-text-link-hover transition-colors duration-200;
+}
 
-  h1 {
-    @apply text-4xl font-bold mb-2;
-  }
-  h2 {
-    @apply text-3xl font-bold mb-2;
-  }
-  h3 {
-    @apply text-2xl font-bold mb-2;
-  }
-  h4 {
-    @apply text-xl font-bold mb-2;
-  }
-  h5 {
-    @apply text-lg font-bold mb-2;
-  }
-  h6 {
-    @apply text-base font-bold mb-2;
-  }
+h1 {
+  @apply text-4xl font-bold mb-2;
+}
+h2 {
+  @apply text-3xl font-bold mb-2;
+}
+h3 {
+  @apply text-2xl font-bold mb-2;
+}
+h4 {
+  @apply text-xl font-bold mb-2;
+}
+h5 {
+  @apply text-lg font-bold mb-2;
+}
+h6 {
+  @apply text-base font-bold mb-2;
+}
 
-  p,
-  span,
-  li,
-  label {
-    @apply text-text-default;
-  }
+p,
+span,
+li,
+label {
+  @apply text-text-default;
 }
 
 /* @layer components {

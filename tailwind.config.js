@@ -6,12 +6,14 @@ import typography from "@tailwindcss/typography";
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/flowbite-react/**/*.js",
+    "node_modules/flowbite-react/**/*.js",
+    "node_modules/flowbite/**/*.js",
   ],
   darkMode: "class",
   theme: {
     extend: {
       colors: {
+        /* Semantic background/text/border */
         "bg-default": "var(--colors-bg-default)",
         "bg-surface": "var(--colors-bg-surface)",
         "bg-alt": "var(--colors-bg-alt)",
@@ -30,7 +32,6 @@ module.exports = {
         "text-on-secondary": "var(--colors-text-on-secondary)",
         "text-on-accent": "var(--colors-text-on-accent)",
         "text-on-dark": "var(--colors-text-on-dark)",
-        "text-primary": "var(--colors-text-primary)",
 
         "border-default": "var(--colors-border-default)",
         "border-surface": "var(--colors-border-surface)",
@@ -40,34 +41,7 @@ module.exports = {
 
         "ring-default": "var(--colors-ring-default)",
 
-        "primary-default": "var(--colors-primary-default)",
-        "primary-hover": "var(--colors-primary-hover)",
-        "primary-active": "var(--colors-primary-active)",
-
-        "secondary-default": "var(--colors-secondary-default)",
-        "secondary-hover": "var(--colors-secondary-hover)",
-        "secondary-active": "var(--colors-secondary-active)",
-
-        "accent-default": "var(--colors-accent-default)",
-        "accent-hover": "var(--colors-accent-hover)",
-        "accent-active": "var(--colors-accent-active)",
-
-        "status-success-bg": "var(--colors-status-success-bg)",
-        "status-success-border": "var(--colors-status-success-border)",
-        "status-success-text": "var(--colors-status-success-text)",
-
-        "status-warning-bg": "var(--colors-status-warning-bg)",
-        "status-warning-border": "var(--colors-status-warning-border)",
-        "status-warning-text": "var(--colors-status-warning-text)",
-
-        "status-danger-bg": "var(--colors-status-danger-bg)",
-        "status-danger-border": "var(--colors-status-danger-border)",
-        "status-danger-text": "var(--colors-status-danger-text)",
-
-        "status-info-bg": "var(--colors-status-info-bg)",
-        "status-info-border": "var(--colors-status-info-border)",
-        "status-info-text": "var(--colors-status-info-text)",
-
+        /* Primary/Secondary/Accent Color Scales */
         primary: {
           DEFAULT: "var(--colors-primary)",
           foreground: "var(--colors-text-on-primary)",
@@ -98,21 +72,6 @@ module.exports = {
           900: "var(--color-secondary-900)",
           950: "var(--color-secondary-950)",
         },
-        neutral: {
-          DEFAULT: "var(--colors-neutral)",
-          foreground: "var(--colors-text-on-neutral)",
-          50: "var(--color-neutral-50)",
-          100: "var(--color-neutral-100)",
-          200: "var(--color-neutral-200)",
-          300: "var(--color-neutral-300)",
-          400: "var(--color-neutral-400)",
-          500: "var(--color-neutral-500)",
-          600: "var(--color-neutral-600)",
-          700: "var(--color-neutral-700)",
-          800: "var(--color-neutral-800)",
-          900: "var(--color-neutral-900)",
-          950: "var(--color-neutral-950)",
-        },
         accent: {
           DEFAULT: "var(--colors-accent)",
           foreground: "var(--colors-text-on-accent)",
@@ -128,6 +87,8 @@ module.exports = {
           900: "var(--color-accent-900)",
           950: "var(--color-accent-950)",
         },
+
+        /* Optional: Light/Dark background scales if نیاز دارید */
         "bg-light": {
           50: "var(--color-background-light-50)",
           100: "var(--color-background-light-100)",
