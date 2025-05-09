@@ -1,27 +1,27 @@
 import { DataStatus } from "@/constants/data/DataStatus";
-import { RoleState } from "@/constants/state/Role";
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchRolesAsync } from "../thunks/roleThunk";
-import { Role } from "@/types/Role";
 import { PaginatedResponse } from "@/types/Api";
-const initialState: RoleState = {
+import { Permission } from "@/types/Permission";
+import { PermissionState } from "@/constants/state/Permission";
+import { fetchRolePermissionsAsync } from "../thunks/permissionThunk";
+const initialState: PermissionState = {
   data: [],
-  meta: {} as PaginatedResponse<Role>,
+  meta: {} as PaginatedResponse<Permission>,
   loading: DataStatus.IDLE,
   error: null,
 };
-const roleSlice = createSlice({
-  name: "roles",
+const permissionSlice = createSlice({
+  name: "permissions",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchRolesAsync.pending, (state) => {
+      .addCase(fetchRolePermissionsAsync.pending, (state) => {
         state.loading = DataStatus.PENDING;
         // Don't clear error immediately, might be useful from previous action
       })
       .addCase(
-        fetchRolesAsync.fulfilled,
+        fetchRolePermissionsAsync.fulfilled,
         (state, action) => {
           state.loading = DataStatus.SUCCEEDED;
           if (
@@ -30,25 +30,25 @@ const roleSlice = createSlice({
             "data" in action.payload &&
             "meta" in action.payload
           ) {
-            state.data = action.payload.data as Role[];
-            state.meta = action.payload.meta as PaginatedResponse<Role>;
+            state.data = action.payload.data as Permission[];
+            state.meta = action.payload.meta as PaginatedResponse<Permission>;
             state.error = null; // Clear error on successful fetch
           } else {
             state.data = [];
-            state.meta = {} as PaginatedResponse<Role>;
+            state.meta = {} as PaginatedResponse<Permission>;
             state.error = { message: "Invalid response format" };
           }
         }
       )
-      .addCase(fetchRolesAsync.rejected, (state, action) => {
+      .addCase(fetchRolePermissionsAsync.rejected, (state, action) => {
         state.loading = DataStatus.FAILED;
         state.data = [];
         if (typeof action.payload === "string") {
-          state.error = action.payload || { message: "Failed to fetch roles" };
+          state.error = action.payload || { message: "Failed to fetch Permissions" };
         } else {
           state.error = null;
         }
       })
   },
 });
-export default roleSlice.reducer;
+export default permissionSlice.reducer;

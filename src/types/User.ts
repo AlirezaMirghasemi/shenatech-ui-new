@@ -14,4 +14,6 @@ export interface User {
   profile_image: Image | null;
   roles: string[]|null;
   permissions: Permission[]|null;
+  created_at: string;
+  updated_at: string;
 }

@@ -1,13 +1,13 @@
 import { TextAlignment } from "@/constants/ui/TextAlignment";
 import { ReactNode } from "react";
-import { IDynamicPagination } from "./IDynamicPagination";
+import { PaginatedResponse } from "@/types/Api";
 
 export interface IDynamicTable<T extends object> {
   header?: IDynamicTableHeader;
   data: T[];
   columns: IDynamicTableColumn<T>[];
   actions?: IDynamicTableAction<T>[];
-  pagination?: IDynamicPagination;
+  pagination?: PaginatedResponse<T>;
   loading?: boolean;
   error?: string | null;
   onSort?: (column: keyof T, direction: "asc" | "desc") => void;
@@ -37,7 +37,7 @@ export interface IDynamicTableAction<T extends object> {
   handler?: (row: T) => void;
   className?: string;
   disabled?: boolean | ((row: T) => boolean);
-
+  actionRenderer?: (row: T) => ReactNode;
 }
 
 export interface IDynamicTableHeader {

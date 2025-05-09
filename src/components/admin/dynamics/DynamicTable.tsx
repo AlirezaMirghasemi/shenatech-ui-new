@@ -11,22 +11,25 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
+  Tooltip,
 } from "flowbite-react";
 
 export default function DynamicTable<T extends object>({
   dynamicTable,
+  setPage,
 }: {
   dynamicTable: IDynamicTable<T>;
+  setPage?: (page: string) => void;
 }) {
   if (dynamicTable.loading) return <LoadingSkeleton />;
   if (dynamicTable.error) return <ValidatingError error={dynamicTable.error} />;
 
   return (
     <>
-      <div className=" max-w-[85rem] py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+      <div className=" max-w-[85rem]  sm:px-6   mx-auto">
         <div className="flex flex-col">
           <div className="-m-1.5 overflow-x-auto">
-            <div className="p-1.5 min-w-full inline-block align-middle">
+            <div className=" min-w-full inline-block align-middle">
               <div className=" border  rounded-xl shadow-2xs overflow-hidden ">
                 {dynamicTable.header && (
                   <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b ">
@@ -58,9 +61,8 @@ export default function DynamicTable<T extends object>({
                     )}
                   </div>
                 )}
-                {(dynamicTable.data.length < 1) && (
+                {dynamicTable.data.length < 1 && (
                   <>
-                    {console.log(dynamicTable.data.length)}
                     <EmptyState />
                   </>
                 )}
@@ -97,12 +99,18 @@ export default function DynamicTable<T extends object>({
                           {dynamicTable.actions && (
                             <TableCell>
                               {dynamicTable.actions.map((action) => (
-                                <Button
+                                <Tooltip
+                                  content={action.caption}
+                                  animation="duration-500"
                                   key={action.name}
-                                  onClick={() => action.handler?.(row)}
                                 >
-                                  {action.icon}
-                                </Button>
+                                  <Button
+                                    key={action.name}
+                                    onClick={() => action.handler?.(row)}
+                                  >
+                                    {action.icon}
+                                  </Button>
+                                </Tooltip>
                               ))}
                             </TableCell>
                           )}
@@ -112,16 +120,24 @@ export default function DynamicTable<T extends object>({
                   </Table>
                 )}
                 {dynamicTable.pagination &&
+                  setPage &&
                   dynamicTable.data.length > 0 &&
-                  dynamicTable.pagination.totalPages > 1 && (
-                    <div className="flex overflow-x-auto sm:justify-center">
+                  dynamicTable.pagination.last_page > 1 && (
+                    <div className="flex overflow-x-auto sm:justify-center" dir="ltr">
                       <Pagination
-                        currentPage={dynamicTable.pagination.currentPage}
-                        totalPages={dynamicTable.pagination.totalPages}
-                        onPageChange={dynamicTable.pagination.onPageChange}
+                        currentPage={dynamicTable.pagination.current_page}
+                        totalPages={dynamicTable.pagination.last_page}
+                        onPageChange={(page) => {
+                          setPage(
+                            dynamicTable.pagination?.links.filter(
+                              (link) => link.label == page.toString()
+                            )[0].label as string
+                          );
+                        }}
                         showIcons
-                        previousLabel="قبلی"
                         nextLabel="بعدی"
+                        previousLabel="قبلی"
+                        layout="pagination"
                       />
                     </div>
                   )}
