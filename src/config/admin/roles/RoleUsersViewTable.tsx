@@ -34,7 +34,7 @@ export default function RoleUsersViewTable({
   }, [roleId, roleUsersPage]);
   const InitialRoleUsersViewTable: IDynamicTable<User> = {
     header: {
-      title: "کاربران",
+      title: "کاربران نقش",
     },
     data: roleId && users ? users : [],
     columns: [

@@ -33,7 +33,7 @@ export default function RolesViewTable({
       await setRoleId(null);
       await setRolePermissionsPage("1");
       await setRoleUsersPage("1");
-      await fetchRoles(rolesPage, "1");
+      await fetchRoles(rolesPage, "5");
     };
     fetchRolesData();
   }, [rolesPage,setRoleId]);
