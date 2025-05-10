@@ -39,14 +39,17 @@ export default function RoleUsersViewTable({
     data: roleId && users ? users : [],
     columns: [
       {
+        className:"text-center",
         header: "نام کاربری",
         accessor: "username",
       },
       {
+        className:"text-center",
         header: "پست الکترونیکی",
         accessor: "email",
       },
       {
+        className:"text-center",
         header: "تاریخ ایجاد",
         accessor: "created_at",
         cellRenderer: (row) => {
@@ -57,6 +60,7 @@ export default function RoleUsersViewTable({
         },
       },
       {
+        className:"text-center",
         header: "تاریخ ویرایش",
         accessor: "updated_at",
         cellRenderer: (row) => {

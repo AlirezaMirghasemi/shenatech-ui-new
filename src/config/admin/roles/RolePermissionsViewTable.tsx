@@ -42,14 +42,17 @@ export default function RolePermissionsViewTable({
     data: roleId && permissions ? permissions : [],
     columns: [
       {
+        className: "text-center",
         header: "نام مجوز",
         accessor: "name",
       },
       {
+        className: "text-center",
         header: "نام گارد",
         accessor: "guard_name",
       },
       {
+        className:"text-center",
         header: "تاریخ ایجاد",
         accessor: "created_at",
         cellRenderer: (row) => {
@@ -60,6 +63,7 @@ export default function RolePermissionsViewTable({
         },
       },
       {
+        className:"text-center",
         header: "تاریخ ویرایش",
         accessor: "updated_at",
         cellRenderer: (row) => {

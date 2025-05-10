@@ -1,10 +1,10 @@
-"use client";
+"use client"
 import "../styles/globals.css";
 import { Toaster } from "sonner";
 import { Suspense } from "react";
 import StoreProvider from "./providers/StoreProvider";
-import { ThemeProvider } from "./providers/ThemeProvider";
-import { ThemeModeScript } from "flowbite-react";
+import { ThemeModeScript, ThemeProvider } from "flowbite-react";
+import { ManageTheme } from "@/theme/ManageTheme";
 
 export default function RootLayout({
   children,
@@ -15,13 +15,15 @@ export default function RootLayout({
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
         <ThemeModeScript />
-
         <title>..::Shenatech::..</title>
         <link rel="icon" type="image/x-icon" href="/shenatech_logo_icon.png" />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <StoreProvider>
-          <ThemeProvider>
+          <ThemeProvider
+            theme={ManageTheme}
+            applyTheme={{ table: "replace", button: "replace", drawer: "replace" }}
+          >
             <Toaster />
             <Suspense>{children}</Suspense>
           </ThemeProvider>

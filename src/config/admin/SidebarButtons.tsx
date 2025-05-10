@@ -1,4 +1,4 @@
-import { ISidebarButtonGroup } from "@/interfaces/IDynamicSidebarButtonGroup";
+import { IDynamicSidebarButtonGroup } from "@/interfaces/IDynamicSidebarButtonGroup";
 import {
   FaUserTie,
   FaArrowTrendUp,
@@ -17,7 +17,7 @@ import {
   FaScrewdriverWrench,
 } from "react-icons/fa6";
 
-export const SidebarButtons: ISidebarButtonGroup = {
+export const SidebarButtons: IDynamicSidebarButtonGroup = {
   icon: FaToolbox,
   name: "AdminPanel",
   title: "میز کاربری",

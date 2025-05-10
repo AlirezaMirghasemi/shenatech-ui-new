@@ -67,13 +67,13 @@ export default function DynamicTable<T extends object>({
                   </>
                 )}
                 {dynamicTable.data.length > 0 && (
-                  <Table hoverable>
+                  <Table hoverable striped>
                     <TableHead>
                       <TableRow>
                         {dynamicTable.columns.map((column) => (
                           <TableHeadCell
                             key={column.accessor.toString()}
-                            className={column.className ? column.className : ""}
+                            className={column.HeadCellClassName ? column.HeadCellClassName : ""}
                             aria-label={
                               column.ariaLabel || column.header.toString()
                             }
@@ -90,7 +90,7 @@ export default function DynamicTable<T extends object>({
                       {dynamicTable.data.map((row) => (
                         <TableRow key={String(row[dynamicTable.rowKey])}>
                           {dynamicTable.columns.map((column) => (
-                            <TableCell key={column.accessor.toString()}>
+                            <TableCell key={column.accessor.toString()} className={column.className ? column.className : ""}>
                               {column.cellRenderer
                                 ? column.cellRenderer(row)
                                 : String(row[column.accessor])}

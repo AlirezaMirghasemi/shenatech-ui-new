@@ -4,7 +4,7 @@ import { Drawer, DrawerItems, Sidebar, SidebarItems } from "flowbite-react";
 import Image from "next/image";
 import { FaX } from "react-icons/fa6";
 
-import DynamicSidebarButtons from "./dynamics/DynamicSidebarButtons";
+import DynamicSidebarButtons from "../dynamics/DynamicSidebarButtons";
 import { SidebarButtons } from "@/config/admin/SidebarButtons";
 
 export function SidebarPanel({
@@ -15,9 +15,8 @@ export function SidebarPanel({
   isOpen: boolean;
 }) {
   return (
-    <div className= {`sticky z-50  max-w-72 h-full  lg:fixed ${!isOpen ? "hidden" : "block"}`}  >
       <Drawer
-        className="overflow-y-auto  h-full max-w-72 p-0 m-0 bg-bg-active dark:bg-bg-active"
+        className="overflow-y-auto  h-full  p-0 m-0"
         open={isOpen}
         onClose={handleOpen}
         position="right"
@@ -35,17 +34,13 @@ export function SidebarPanel({
             height={125}
           />
         </div>
-        <DrawerItems className="bg-bg-active">
-          <Sidebar
-            aria-label="admin-sidebar"
-            className="bg-bg-active child-padding-0 p-3 mr-3 "
-          >
-            <SidebarItems className="bg-bg-active">
+        <DrawerItems>
+          <Sidebar>
+            <SidebarItems >
               <DynamicSidebarButtons sidebarButtons={SidebarButtons} />
             </SidebarItems>
           </Sidebar>
         </DrawerItems>
       </Drawer>
-    </div>
   );
 }

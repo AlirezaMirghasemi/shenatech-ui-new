@@ -1,6 +1,6 @@
 "use client";
-import { Header } from "@/components/admin/Header";
-import { SidebarPanel } from "@/components/admin/SidebarPanel";
+import { Header } from "@/components/admin/layout/Header";
+import { SidebarPanel } from "@/components/admin/layout/SidebarPanel";
 import { useState } from "react";
 export default function AdminPageLayout({
   children,
@@ -19,7 +19,7 @@ export default function AdminPageLayout({
         <SidebarPanel handleOpen={handleOpen} isOpen={isOpen} />
       <main
         className={`max-h-screen flex-1 transition-all duration-300 pt-25  ${
-          !isOpen ? "lg:px-35" : "lg:px-80"
+          !isOpen ? "lg:px-35" : "lg:px-95"
         }`}
       >
         {children}

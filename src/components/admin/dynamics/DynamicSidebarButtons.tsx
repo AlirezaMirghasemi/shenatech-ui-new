@@ -1,4 +1,4 @@
-import { IDynamicSidebarButtonGroup } from "@/interfaces/IDynamicSidebarButtonGroup";
+import {IDynamicSidebarButtonGroup} from "@/interfaces/IDynamicSidebarButtonGroup";
 import { SidebarCollapse, SidebarItem, SidebarItemGroup } from "flowbite-react";
 import { usePathname } from "next/navigation";
 import { HiOutlineMinusSm, HiOutlinePlusSm } from "react-icons/hi";

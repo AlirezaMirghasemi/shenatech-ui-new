@@ -5,7 +5,6 @@ import { Button, Spinner } from "flowbite-react";
 import ValidatingError from "@/components/common/ValidatingError";
 import IDynamicForm from "@/interfaces/IDynamicForm";
 
-
 export default function DynamicForm({
   children,
   initialValues,
@@ -25,14 +24,14 @@ export default function DynamicForm({
       >
         {({ isSubmitting }) => (
           <>
-
             <Form className="space-y-4 md:space-y-6">
               {children}
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                color="green"
+                color="success"
                 outline
+                size="lg"
               >
                 {isSubmitting ? (
                   <Spinner size="sm" className="me-3" light />

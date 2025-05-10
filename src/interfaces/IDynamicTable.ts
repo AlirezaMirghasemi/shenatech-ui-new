@@ -20,6 +20,7 @@ export interface IDynamicTable<T extends object> {
 
 export interface IDynamicTableColumn<T extends object> {
   header: string;
+  HeadCellClassName?: string;
   accessor: keyof T;
   width?: string;
   align?: TextAlignment;

@@ -10,12 +10,15 @@ import {
 } from "flowbite-react";
 import { useAuth } from "@/hooks/useAuth";
 import { FaDoorOpen, FaGear, FaUser, FaUserPen } from "react-icons/fa6";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import AdminDashboardButton from "./AdminDashboardButton";
-import ThemeToggle from "../common/ThemeToggle";
+import ThemeToggle from "../../common/ThemeToggle";
+import LogoutModal from "./LogoutModal";
 
 export function Header({ handleOpen }: { handleOpen: () => void }) {
+    const [logoutModalMode, setLogoutModalMode] = useState(false);
+
   const { user, actions } = useAuth();
   const logout = async () => {
     await actions.logout();
@@ -71,7 +74,7 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
               تنظیمات
             </DropdownItem>
             <DropdownDivider />
-            <DropdownItem onClick={logout}>
+            <DropdownItem onClick={() => setLogoutModalMode(true)}>
               <FaDoorOpen className="ml-2" />
               خروج
             </DropdownItem>
@@ -79,6 +82,11 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
           <ThemeToggle/>
         </div>
       </Navbar>
+      <LogoutModal
+        logoutModalMode={logoutModalMode}
+        setLogoutModalMode={setLogoutModalMode}
+        logout={logout}
+      />
     </>
   );
 }

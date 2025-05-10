@@ -47,10 +47,12 @@ export default function RolesViewTable({
       {
         header: "نام نقش",
         accessor: "name",
+        className:"text-center"
       },
       {
         header: "تاریخ ایجاد",
         accessor: "created_at",
+        className:"text-center",
         cellRenderer: (row) => {
           const date = new PersianDate(new Date(row.created_at)).format(
             "HH:mm:ss - YYYY/MM/DD"
@@ -61,6 +63,7 @@ export default function RolesViewTable({
       {
         header: "تاریخ ویرایش",
         accessor: "updated_at",
+        className:"text-center",
         cellRenderer: (row) => {
           const date = new PersianDate(new Date(row.updated_at)).format(
             "HH:mm:ss - YYYY/MM/DD"

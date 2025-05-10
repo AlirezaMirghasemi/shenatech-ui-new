@@ -8,6 +8,7 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
     "node_modules/flowbite-react/**/*.js",
     "node_modules/flowbite/**/*.js",
+    "./src/theme/**/*.ts",
   ],
   darkMode: "class",
   theme: {
@@ -40,6 +41,34 @@ module.exports = {
         "border-disabled": "var(--colors-border-disabled)",
 
         "ring-default": "var(--colors-ring-default)",
+
+        primary: "var(--colors-primary-500)",
+        "primary-hover": "var(--colors-primary-600)",
+        "primary-active": "var(--colors-primary-700)",
+
+        secondary: "var(--colors-secondary-500)",
+        "secondary-hover": "var(--colors-secondary-600)",
+        "secondary-active": "var(--colors-secondary-700)",
+
+        accent: "var(--colors-accent-500)",
+        "accent-hover": "var(--colors-accent-600)",
+        "accent-active": "var(--colors-accent-700)",
+
+        "status-success-bg": "var(--colors-success-100)",
+        "status-success-border": "var(--colors-success-500)",
+        "status-success-text": "var(--colors-success-900)",
+
+        "status-warning-bg": "var(--colors-warning-300)",
+        "status-warning-border": "var(--colors-warning-500)",
+        "status-warning-text": "var(--colors-warning-900)",
+
+        "status-danger-bg": "var(--colors-danger-100)",
+        "status-danger-border": "var(--colors-danger-500)",
+        "status-danger-text": "var(--colors-danger-900)",
+
+        "status-info-bg": "var(--colors-info-100)",
+        "status-info-border": "var(--colors-info-500)",
+        "status-info-text": "var(--colors-info-900)",
 
         /* Primary/Secondary/Accent Color Scales */
         primary: {
@@ -87,7 +116,21 @@ module.exports = {
           900: "var(--color-accent-900)",
           950: "var(--color-accent-950)",
         },
-
+        neutral: {
+          DEFAULT: "var(--colors-neutral)",
+          foreground: "var(--colors-text-on-neutral)",
+          50: "var(--color-neutral-50)",
+          100: "var(--color-neutral-100)",
+          200: "var(--color-neutral-200)",
+          300: "var(--color-neutral-300)",
+          400: "var(--color-neutral-400)",
+          500: "var(--color-neutral-500)",
+          600: "var(--color-neutral-600)",
+          700: "var(--color-neutral-700)",
+          800: "var(--color-neutral-800)",
+          900: "var(--color-neutral-900)",
+          950: "var(--color-neutral-950)",
+        },
         /* Optional: Light/Dark background scales if نیاز دارید */
         "bg-light": {
           50: "var(--color-background-light-50)",
@@ -115,6 +158,94 @@ module.exports = {
           900: "var(--color-background-dark-900)",
           950: "var(--color-background-dark-950)",
         },
+        warning: {
+          DEFAULT: "var(--colors-warning)",
+          50: "var(--color-warning-50)",
+          100: "var(--color-warning-100)",
+          200: "var(--color-warning-200)",
+          300: "var(--color-warning-300)",
+          400: "var(--color-warning-400)",
+          500: "var(--color-warning-500)",
+          600: "var(--color-warning-600)",
+          700: "var(--color-warning-700)",
+          800: "var(--color-warning-800)",
+          900: "var(--color-warning-900)",
+          950: "var(--color-warning-950)",
+        },
+        danger: {
+          DEFAULT: "var(--colors-danger)",
+          50: "var(--color-danger-50)",
+          100: "var(--color-danger-100)",
+          200: "var(--color-danger-200)",
+          300: "var(--color-danger-300)",
+          400: "var(--color-danger-400)",
+          500: "var(--color-danger-500)",
+          600: "var(--color-danger-600)",
+          700: "var(--color-danger-700)",
+          800: "var(--color-danger-800)",
+          900: "var(--color-danger-900)",
+          950: "var(--color-danger-950)",
+        },
+        success: {
+          DEFAULT: "var(--colors-success)",
+          50: "var(--color-success-50)",
+          100: "var(--color-success-100)",
+          200: "var(--color-success-200)",
+          300: "var(--color-success-300)",
+          400: "var(--color-success-400)",
+          500: "var(--color-success-500)",
+          600: "var(--color-success-600)",
+          700: "var(--color-success-700)",
+          800: "var(--color-success-800)",
+          900: "var(--color-success-900)",
+          950: "var(--color-success-950)",
+        },
+        info: {
+          DEFAULT: "var(--colors-info)",
+          50: "var(--color-info-50)",
+          100: "var(--color-info-100)",
+          200: "var(--color-info-200)",
+          300: "var(--color-info-300)",
+          400: "var(--color-info-400)",
+          500: "var(--color-info-500)",
+          600: "var(--color-info-600)",
+          700: "var(--color-info-700)",
+          800: "var(--color-info-800)",
+          900: "var(--color-info-900)",
+          950: "var(--color-info-950)",
+        },
+        interactive: {
+          DEFAULT: "var(--color-interactive-500)",
+          500: "var(--color-interactive-500)",
+          600: "var(--color-interactive-600)",
+        },
+        shadow: {
+          sm: "var(--shadow-sm)",
+          md: "var(--shadow-md)",
+          lg: "var(--shadow-lg)",
+          xl: "var(--shadow-xl)",
+        },
+      },
+      transitionDuration: {
+        DEFAULT: "var(--transition-duration)",
+      },
+      transitionTimingFunction: {
+        DEFAULT: "var(--transition-timing)",
+      },
+
+      /* اضافه کردن opacity سیستم */
+      opacity: {
+        hover: "var(--opacity-hover)",
+        disabled: "var(--opacity-disabled)",
+      },
+
+
+
+      /* به روزرسانی فونتها برای پاسخگویی بهتر */
+      fontSize: {
+        base: ["clamp(0.875rem, 0.825rem + 0.25vw, 1rem)", "1.4"],
+        lg: ["clamp(1rem, 0.925rem + 0.375vw, 1.125rem)", "1.4"],
+        xl: ["clamp(1.125rem, 1.025rem + 0.5vw, 1.25rem)", "1.4"],
       },
     },
   },
