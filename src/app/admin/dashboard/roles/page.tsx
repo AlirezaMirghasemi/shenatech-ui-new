@@ -1,7 +1,7 @@
 "use client";
-import RolePermissionsViewTable from "@/config/admin/roles/RolePermissionsViewTable";
-import RolesViewTable from "@/config/admin/roles/RolesViewTable";
-import RoleUsersViewTable from "@/config/admin/roles/RoleUsersViewTable";
+import RolePermissionsViewTable from "@/components/admin/role/RolePermissionsViewTable";
+import RolesViewTable from "@/components/admin/role/RolesViewTable";
+import RoleUsersViewTable from "@/components/admin/role/RoleUsersViewTable";
 import { TabItem, Tabs } from "flowbite-react";
 import { useState } from "react";
 import { FaUserLock, FaUsersGear } from "react-icons/fa6";

@@ -1,5 +1,4 @@
 @config "../../tailwind.config.js";
-
 @import "tailwindcss";
 
 @font-face {
@@ -28,16 +27,16 @@
   /* --- Raw Color Definitions --- */
   /* Light Theme Colors */
   --color-background-light-50: #ffffff;
-  --color-background-light-100: #ffffff;
-  --color-background-light-200: #ffffff;
-  --color-background-light-300: #ffffff;
-  --color-background-light-400: #ffffff;
-  --color-background-light-500: #ffffff;
-  --color-background-light-600: #cccccc;
-  --color-background-light-700: #999999;
-  --color-background-light-800: #666666;
-  --color-background-light-900: #333333;
-  --color-background-light-950: #1a1a1a;
+  --color-background-light-100: #fcfcfc;
+  --color-background-light-200: #f8f8f8;
+  --color-background-light-300: #f2f2f2;
+  --color-background-light-400: #ececec;
+  --color-background-light-500: #e6e6e6;
+  --color-background-light-600: #dcdcdc;
+  --color-background-light-700: #d0d0d0;
+  --color-background-light-800: #c4c4c4;
+  --color-background-light-900: #b8b8b8;
+  --color-background-light-950: #a8a8a8;
 
   /* Dark Theme Colors */
   --color-background-dark-50: #d8e9f8;
@@ -66,17 +65,17 @@
   --color-primary-950: #071013;
 
   /* Secondary Colors */
-  --color-secondary-50: #fafafa;
-  --color-secondary-100: #f5f5f5;
-  --color-secondary-200: #ebebeb;
-  --color-secondary-300: #e0e0e0;
-  --color-secondary-400: #d6d6d6;
-  --color-secondary-500: #cccccc;
-  --color-secondary-600: #a3a3a3;
-  --color-secondary-700: #7a7a7a;
-  --color-secondary-800: #525252;
-  --color-secondary-900: #292929;
-  --color-secondary-950: #141414;
+  --color-secondary-50: #e9f5f2;
+  --color-secondary-100: #d3ece5;
+  --color-secondary-200: #aadbd1;
+  --color-secondary-300: #7ac9b9;
+  --color-secondary-400: #4db7a2;
+  --color-secondary-500: #2b9f88;
+  --color-secondary-600: #227d6b;
+  --color-secondary-700: #1a5e51;
+  --color-secondary-800: #103d36;
+  --color-secondary-900: #071f1b;
+  --color-secondary-950: #030d0a;
 
   /* Neutral Colors */
   --color-neutral-50: #fafafa;
@@ -104,7 +103,7 @@
   --color-accent-900: #3c0c06;
   --color-accent-950: #1c0603;
 
-  /*Danger colors */
+  /* Danger Colors */
   --color-danger-50: #fdeded;
   --color-danger-100: #fad7d6;
   --color-danger-200: #f5afae;
@@ -117,7 +116,7 @@
   --color-danger-900: #320706;
   --color-danger-950: #1b0403;
 
-  /* success colors */
+  /* Success Colors */
   --color-success-50: #dbfff4;
   --color-success-100: #adffe5;
   --color-success-200: #00faab;
@@ -130,7 +129,7 @@
   --color-success-900: #005238;
   --color-success-950: #003826;
 
-  /* warning colors */
+  /* Warning Colors */
   --color-warning-50: #fcfded;
   --color-warning-100: #f9fad6;
   --color-warning-200: #f4f6b1;
@@ -143,6 +142,7 @@
   --color-warning-900: #313206;
   --color-warning-950: #1b1b03;
 
+  /* Info Colors */
   --color-info-50: #eff6fb;
   --color-info-100: #e3eef7;
   --color-info-200: #c7deef;
@@ -155,6 +155,7 @@
   --color-info-900: #1b4260;
   --color-info-950: #11293c;
 
+  /* Interactive Colors */
   --color-interactive-500: var(--color-primary-500);
   --color-interactive-600: var(--color-primary-600);
 
@@ -173,10 +174,10 @@
   --colors-text-placeholder: var(--color-neutral-700);
   --colors-text-link: var(--color-primary-600);
   --colors-text-link-hover: var(--color-primary-700);
-  --colors-text-on-primary: var(--color-primary-50);
+  --colors-text-on-primary: hsl(0, 0%, 100%);
   --colors-text-on-secondary: var(--color-secondary-50);
   --colors-text-on-accent: var(--color-accent-50);
-  --colors-text-on-dark: var(--color-background-dark-50);
+  --colors-text-on-dark: hsl(0, 0%, 95%);
 
   --colors-border-default: var(--color-neutral-400);
   --colors-border-surface: var(--color-neutral-300);
@@ -198,41 +199,46 @@
   --colors-accent-hover: var(--color-accent-600);
   --colors-accent-active: var(--color-accent-700);
 
+  --colors-neutral: var(--color-neutral-500);
+  --colors-neutral-hover: var(--color-neutral-600);
+  --colors-neutral-active: var(--color-neutral-700);
+
+  --colors-success: var(--color-success-500);
   --colors-status-success-bg: var(--color-success-100);
   --colors-status-success-border: var(--color-success-500);
   --colors-status-success-text: var(--color-success-900);
 
+  --colors-warning: var(--color-warning-500);
   --colors-status-warning-bg: var(--color-warning-300);
   --colors-status-warning-border: var(--color-warning-700);
   --colors-status-warning-text: var(--color-warning-900);
 
+  --colors-danger: var(--color-danger-500);
   --colors-status-danger-bg: var(--color-danger-100);
   --colors-status-danger-border: var(--color-danger-500);
   --colors-status-danger-text: var(--color-danger-900);
 
+  --colors-info: var(--color-info-500);
   --colors-status-info-bg: var(--color-info-100);
   --colors-status-info-border: var(--color-info-500);
   --colors-status-info-text: var(--color-info-900);
+
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --shadow-sm-dark: 0 1px 3px rgba(255, 255, 255, 0.1);
+  --shadow-md-dark: 0 4px 6px -1px rgba(255, 255, 255, 0.1);
+
   --opacity-hover: 0.9;
   --opacity-disabled: 0.5;
 
-  /* حرکات و انیمیشن */
   --transition-duration: 150ms;
   --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* به روزرسانی رنگ خنثی */
-  --color-neutral-400: #94a3b8; /* مقدار جدید برای خوانایی بهتر */
-
-  /* بهبود کنتراست متن */
-  --colors-text-on-primary: hsl(0, 0%, 100%);
-  --colors-text-on-dark: hsl(0, 0%, 95%);
+  --font-family-sans: "Vazir", sans-serif;
 }
 
-/* 2. جایگزین متغیرها در حالت .dark */
 @layer base {
   .dark {
     --colors-bg-default: var(--color-background-dark-900);
@@ -273,49 +279,64 @@
     --colors-accent-hover: var(--color-accent-500);
     --colors-accent-active: var(--color-accent-400);
 
+    --colors-neutral: var(--color-neutral-600);
+    --colors-neutral-hover: var(--color-neutral-500);
+    --colors-neutral-active: var(--color-neutral-400);
+
+    --colors-success: var(--color-success-600);
     --colors-status-success-bg: var(--color-success-900);
     --colors-status-success-border: var(--color-success-700);
     --colors-status-success-text: var(--color-success-50);
 
+    --colors-warning: var(--color-warning-600);
     --colors-status-warning-bg: var(--color-warning-700);
     --colors-status-warning-border: var(--color-warning-500);
     --colors-status-warning-text: var(--color-warning-100);
 
+    --colors-danger: var(--color-danger-600);
     --colors-status-danger-bg: var(--color-danger-900);
     --colors-status-danger-border: var(--color-danger-700);
     --colors-status-danger-text: var(--color-danger-50);
 
+    --colors-info: var(--color-info-600);
     --colors-status-info-bg: var(--color-info-700);
     --colors-status-info-border: var(--color-info-500);
     --colors-status-info-text: var(--color-info-100);
+
+    --shadow-sm: var(--shadow-sm-dark);
+    --shadow-md: var(--shadow-md-dark);
   }
 }
 
 /* Base Styles */
 :root {
   color-scheme: light;
-
-  --font-family-sans: "Vazir", sans-serif;
+  font-family: var(--font-family-sans);
 }
 
-:root[data-theme="dark"] {
+.dark {
   color-scheme: dark;
 }
 
 html {
-  font-family: var(--font-family-sans);
   @apply bg-bg-default text-text-default;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color var(--transition-duration)
+      var(--transition-timing),
+    color var(--transition-duration) var(--transition-timing);
 }
 
 body {
-  @apply antialiased transition-colors duration-300;
+  @apply antialiased;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-duration)
+      var(--transition-timing),
+    color var(--transition-duration) var(--transition-timing);
 }
 
 a {
-  @apply text-text-link hover:text-text-link-hover transition-colors duration-200;
+  @apply text-text-link hover:text-text-link-hover;
+  transition: color var(--transition-duration) var(--transition-timing);
 }
 
 h1 {
@@ -337,28 +358,21 @@ h6 {
   @apply text-base font-bold mb-2;
 }
 
-button:active {
-  transform: scale(0.98);
-  transition: transform var(--transition-duration) var(--transition-timing);
-}
 @layer components {
   button,
   [role="button"] {
     @apply transition-all duration-[--transition-duration] ease-[--transition-timing];
 
-    /* حالت فعال */
     &:active {
       transform: scale(0.98);
     }
 
-    /* بهبود حالت فوکوس */
     &:focus-visible {
       outline: 2px solid var(--colors-ring-default);
-      outline-offset: var(--outline-offset);
+      outline-offset: 2px;
     }
   }
 }
-
 
 @layer utilities {
   .text-shadow {

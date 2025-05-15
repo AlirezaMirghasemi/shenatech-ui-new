@@ -1,14 +1,15 @@
 "use client";
 import DynamicTable from "@/components/admin/dynamics/DynamicTable";
-
 import { Permission } from "../../../types/Permission";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import PersianDate from "persian-date";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePermission } from "@/hooks/usePermission";
 import { DataStatus } from "@/constants/data/DataStatus";
+import { FaTrash } from "react-icons/fa6";
+import DeleteRolePermissionsModal from "@/components/admin/role/DeleteRolePermissionsModal";
 
 export default function RolePermissionsViewTable({
   roleId,
@@ -20,26 +21,68 @@ export default function RolePermissionsViewTable({
   rolePermissionsPage: string;
 }) {
   const {
-    permissions,
+    assigned,
     meta,
     error,
     loading,
     actions: { fetchRolePermissions },
   } = usePermission();
+
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [deleteRolePermissionsModal, setDeleteRolePermissionsModal] =
+    useState(false);
   useEffect(() => {
     const fetchRolePermissionsData = async () => {
       if (roleId) {
-        await fetchRolePermissions(roleId, "10", rolePermissionsPage);
+        return await fetchRolePermissions(roleId, "10", rolePermissionsPage);
       }
     };
     fetchRolePermissionsData();
   }, [roleId, rolePermissionsPage]);
 
+  function toggleRow(id: string | number) {
+    const numericId = typeof id === "string" ? Number(id) : id;
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(numericId)) next.delete(numericId);
+      else next.add(numericId);
+      return next;
+    });
+  }
+  function toggleAll(checked: boolean) {
+    if (checked) {
+      const allIds = new Set<number>(assigned.map((row) => row.id));
+      setSelectedIds(allIds);
+    } else {
+      setSelectedIds(new Set());
+    }
+  }
+
+  async function onCloseDeleteRolePermissionsModal() {
+    setDeleteRolePermissionsModal(false);
+    setSelectedIds(new Set());
+  }
+  function onOpenDeleteRolePermissionsModal() {
+    setDeleteRolePermissionsModal(true);
+  }
+
   const InitialRolePermissionsViewTable: IDynamicTable<Permission> = {
     header: {
       title: "مجوز های نقش",
+      actions: [
+        {
+          name: "delete",
+          caption: "حذف مجوز",
+          icon: <FaTrash />,
+          handler: () => {
+            onOpenDeleteRolePermissionsModal();
+          },
+          disabled: selectedIds.size === 0,
+          color: "danger",
+        },
+      ],
     },
-    data: roleId && permissions ? permissions : [],
+    data: roleId && assigned ? assigned : [],
     columns: [
       {
         className: "text-center",
@@ -52,7 +95,7 @@ export default function RolePermissionsViewTable({
         accessor: "guard_name",
       },
       {
-        className:"text-center",
+        className: "text-center",
         header: "تاریخ ایجاد",
         accessor: "created_at",
         cellRenderer: (row) => {
@@ -63,7 +106,7 @@ export default function RolePermissionsViewTable({
         },
       },
       {
-        className:"text-center",
+        className: "text-center",
         header: "تاریخ ویرایش",
         accessor: "updated_at",
         cellRenderer: (row) => {
@@ -78,13 +121,27 @@ export default function RolePermissionsViewTable({
     error: error?.toString(),
     loading: loading === DataStatus.PENDING,
     pagination: meta,
+    checkbox: true,
   };
   return (
     <>
       <DynamicTable
         dynamicTable={InitialRolePermissionsViewTable}
         setPage={setRolePermissionsPage}
+        selectedIds={selectedIds}
+        onToggleRow={toggleRow}
+        onToggleAll={toggleAll}
       />
+      {roleId && (
+        <DeleteRolePermissionsModal
+          selectedIds={selectedIds}
+          setSelectedIds={setSelectedIds}
+          setDeleteRolePermissionsModal={setDeleteRolePermissionsModal}
+          deleteRolePermissionsModal={deleteRolePermissionsModal}
+          roleId={roleId}
+          onCloseDeleteRolePermissionsModal={onCloseDeleteRolePermissionsModal}
+        />
+      )}
     </>
   );
 }

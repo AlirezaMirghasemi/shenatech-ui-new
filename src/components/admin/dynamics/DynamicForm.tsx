@@ -5,22 +5,25 @@ import { Button, Spinner } from "flowbite-react";
 import ValidatingError from "@/components/common/ValidatingError";
 import IDynamicForm from "@/interfaces/IDynamicForm";
 
-export default function DynamicForm({
+export default function DynamicForm<T extends object>({
   children,
   initialValues,
   validationSchema,
   onSubmit,
   buttonTitle,
   apiError,
-}: IDynamicForm) {
+  disabledButton = false,
+  validateOnChange = false,
+  validateOnBlur = true,
+}: IDynamicForm<T>) {
   return (
     <>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
-        validateOnChange={true}
-        validateOnBlur={true}
+        validateOnChange={validateOnChange}
+        validateOnBlur={validateOnBlur}
       >
         {({ isSubmitting }) => (
           <>
@@ -28,13 +31,14 @@ export default function DynamicForm({
               {children}
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || disabledButton}
                 color="success"
                 outline
                 size="lg"
+                className="items-center text-center"
               >
-                {isSubmitting ? (
-                  <Spinner size="sm" className="me-3" light />
+                {isSubmitting || disabledButton ? (
+                  <Spinner size="sm"  light />
                 ) : (
                   buttonTitle
                 )}

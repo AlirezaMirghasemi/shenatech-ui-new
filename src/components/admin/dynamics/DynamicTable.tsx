@@ -4,6 +4,8 @@ import ValidatingError from "@/components/common/ValidatingError";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import {
   Button,
+  ButtonGroup,
+  Checkbox,
   Pagination,
   Table,
   TableBody,
@@ -17,9 +19,15 @@ import {
 export default function DynamicTable<T extends object>({
   dynamicTable,
   setPage,
+  selectedIds,
+  onToggleRow,
+  onToggleAll,
 }: {
   dynamicTable: IDynamicTable<T>;
   setPage?: (page: string) => void;
+  selectedIds?: Set<T[keyof T]>;
+  onToggleRow?: (id: T[keyof T]) => void;
+  onToggleAll?: (checked: boolean) => void;
 }) {
   if (dynamicTable.loading) return <LoadingSkeleton />;
   if (dynamicTable.error) return <ValidatingError error={dynamicTable.error} />;
@@ -51,6 +59,8 @@ export default function DynamicTable<T extends object>({
                               }
                               key={action.name}
                               onClick={action.handler}
+                              disabled={action.disabled}
+                              color={action.color ? action.color : "default"}
                             >
                               {action.icon ? action.icon : null}
                               {action.caption}
@@ -61,19 +71,23 @@ export default function DynamicTable<T extends object>({
                     )}
                   </div>
                 )}
-                {dynamicTable.data.length < 1 && (
+                {dynamicTable?.data.length < 1 && (
                   <>
                     <EmptyState />
                   </>
                 )}
-                {dynamicTable.data.length > 0 && (
-                  <Table hoverable striped>
+                {dynamicTable?.data.length > 0 && (
+                  <Table hoverable>
                     <TableHead>
                       <TableRow>
                         {dynamicTable.columns.map((column) => (
                           <TableHeadCell
                             key={column.accessor.toString()}
-                            className={column.HeadCellClassName ? column.HeadCellClassName : ""}
+                            className={
+                              column.HeadCellClassName
+                                ? column.HeadCellClassName
+                                : ""
+                            }
                             aria-label={
                               column.ariaLabel || column.header.toString()
                             }
@@ -84,34 +98,94 @@ export default function DynamicTable<T extends object>({
                         {dynamicTable.actions && (
                           <TableHeadCell>عملیات</TableHeadCell>
                         )}
+                        {dynamicTable.checkbox && (
+                          <TableHeadCell
+                            className={dynamicTable.columns[0].className ?? ""}
+                          >
+                            <Checkbox
+                              checked={
+                                selectedIds
+                                  ? selectedIds.size ===
+                                    dynamicTable.data.length
+                                  : false
+                              }
+                              indeterminate={
+                                !!selectedIds &&
+                                selectedIds.size > 0 &&
+                                selectedIds.size < dynamicTable.data.length
+                              }
+                              onChange={(e) =>
+                                onToggleAll?.(e.currentTarget.checked)
+                              }
+                            />
+                          </TableHeadCell>
+                        )}
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {dynamicTable.data.map((row) => (
-                        <TableRow key={String(row[dynamicTable.rowKey])}>
+                        <TableRow
+                          key={String(row[dynamicTable.rowKey])}
+                          className={`
+    ${dynamicTable.className?.(row) ?? ""}
+    ${selectedIds?.has(row[dynamicTable.rowKey]) ? "!bg-accent/25" : ""}
+  `}
+                        >
                           {dynamicTable.columns.map((column) => (
-                            <TableCell key={column.accessor.toString()} className={column.className ? column.className : ""}>
+                            <TableCell
+                              key={column.accessor.toString()}
+                              className={
+                                column.className ? column.className : ""
+                              }
+                            >
                               {column.cellRenderer
                                 ? column.cellRenderer(row)
                                 : String(row[column.accessor])}
                             </TableCell>
                           ))}
                           {dynamicTable.actions && (
-                            <TableCell>
-                              {dynamicTable.actions.map((action) => (
-                                <Tooltip
-                                  content={action.caption}
-                                  animation="duration-500"
-                                  key={action.name}
-                                >
-                                  <Button
+                            <TableCell
+                              className={dynamicTable.actionCellClassName ?? ""}
+                            >
+                              <ButtonGroup>
+                                {dynamicTable.actions.map((action) => (
+                                  <Tooltip
+                                    content={action.caption}
+                                    animation="duration-500"
                                     key={action.name}
-                                    onClick={() => action.handler?.(row)}
                                   >
-                                    {action.icon}
-                                  </Button>
-                                </Tooltip>
-                              ))}
+                                    <Button
+                                      key={action.name}
+                                      onClick={() => action.handler?.(row)}
+                                      color={
+                                        action.color ? action.color : "default"
+                                      }
+                                      className={
+                                        action.className ? action.className : ""
+                                      }
+                                    >
+                                      {action.icon}
+                                    </Button>
+                                  </Tooltip>
+                                ))}
+                              </ButtonGroup>
+                            </TableCell>
+                          )}
+                          {dynamicTable.checkbox && (
+                            <TableCell
+                              className={
+                                dynamicTable.columns[0].className ?? ""
+                              }
+                            >
+                              <Checkbox
+                                checked={
+                                  selectedIds?.has(row[dynamicTable.rowKey]) ??
+                                  false
+                                }
+                                onChange={() =>
+                                  onToggleRow?.(row[dynamicTable.rowKey])
+                                }
+                              />
                             </TableCell>
                           )}
                         </TableRow>
@@ -123,7 +197,10 @@ export default function DynamicTable<T extends object>({
                   setPage &&
                   dynamicTable.data.length > 0 &&
                   dynamicTable.pagination.last_page > 1 && (
-                    <div className="flex overflow-x-auto sm:justify-center" dir="ltr">
+                    <div
+                      className="flex overflow-x-auto sm:justify-center"
+                      dir="ltr"
+                    >
                       <Pagination
                         currentPage={dynamicTable.pagination.current_page}
                         totalPages={dynamicTable.pagination.last_page}

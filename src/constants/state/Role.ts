@@ -7,4 +7,5 @@ export interface RoleState {
   meta?: PaginatedResponse<Role>;
   loading: DataStatus;
   error: ApiError | null;
+  uniqueLoading:DataStatus;
 }

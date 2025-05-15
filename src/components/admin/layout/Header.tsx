@@ -6,7 +6,6 @@ import {
   DropdownHeader,
   DropdownItem,
   Navbar,
-
 } from "flowbite-react";
 import { useAuth } from "@/hooks/useAuth";
 import { FaDoorOpen, FaGear, FaUser, FaUserPen } from "react-icons/fa6";
@@ -17,7 +16,7 @@ import ThemeToggle from "../../common/ThemeToggle";
 import LogoutModal from "./LogoutModal";
 
 export function Header({ handleOpen }: { handleOpen: () => void }) {
-    const [logoutModalMode, setLogoutModalMode] = useState(false);
+  const [logoutModalMode, setLogoutModalMode] = useState(false);
 
   const { user, actions } = useAuth();
   const logout = async () => {
@@ -37,8 +36,7 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
         className=" py-[21px] border-b-2 border-accent/50 dark:border-accent/50 bg-bg-default dark:bg-bg-default  w-full z-16 top-0 start-0 fixed "
       >
         <div className="flex justify-between">
-
-        <AdminDashboardButton handleOpen={handleOpen} />
+          <AdminDashboardButton handleOpen={handleOpen} />
         </div>
         <div className="flex md:order-2">
           <Dropdown
@@ -52,8 +50,10 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
                   rounded
                 />
               ) : (
-                <FaUser className="rounded-full p-2 mr-2    transition-colors duration-300
-         hover:text-secondary-hover hover:bg-primary w-10 h-10 text-center" />
+                <FaUser
+                  className="rounded-full p-2 mr-2    transition-colors duration-300
+         hover:text-secondary-hover hover:bg-primary w-10 h-10 text-center"
+                />
               )
             }
           >
@@ -79,7 +79,7 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
               خروج
             </DropdownItem>
           </Dropdown>
-          <ThemeToggle/>
+          <ThemeToggle className=" static m-1 p-0" />
         </div>
       </Navbar>
       <LogoutModal

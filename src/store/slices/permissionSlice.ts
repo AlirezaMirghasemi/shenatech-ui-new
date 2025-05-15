@@ -3,9 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import { PaginatedResponse } from "@/types/Api";
 import { Permission } from "@/types/Permission";
 import { PermissionState } from "@/constants/state/Permission";
-import { fetchRolePermissionsAsync } from "../thunks/permissionThunk";
+import {
+  fetchRoleNotPermissionsAsync,
+  fetchRolePermissionsAsync,
+} from "../thunks/permissionThunk";
 const initialState: PermissionState = {
-  data: [],
+  assigned: [],
+  unassigned: [],
   meta: {} as PaginatedResponse<Permission>,
   loading: DataStatus.IDLE,
   error: null,
@@ -20,35 +24,58 @@ const permissionSlice = createSlice({
         state.loading = DataStatus.PENDING;
         // Don't clear error immediately, might be useful from previous action
       })
-      .addCase(
-        fetchRolePermissionsAsync.fulfilled,
-        (state, action) => {
-          state.loading = DataStatus.SUCCEEDED;
-          if (
-            typeof action.payload === "object" &&
-            action.payload !== null &&
-            "data" in action.payload &&
-            "meta" in action.payload
-          ) {
-            state.data = action.payload.data as Permission[];
-            state.meta = action.payload.meta as PaginatedResponse<Permission>;
-            state.error = null; // Clear error on successful fetch
-          } else {
-            state.data = [];
-            state.meta = {} as PaginatedResponse<Permission>;
-            state.error = { message: "Invalid response format" };
-          }
+      .addCase(fetchRolePermissionsAsync.fulfilled, (state, { payload }) => {
+        state.loading = DataStatus.SUCCEEDED;
+        if (
+          payload &&
+          typeof payload === "object" &&
+          "data" in payload &&
+          "meta" in payload
+        ) {
+          state.assigned = payload.data;
+          state.meta = payload.meta;
+          state.error = null;
+        } else {
+          state.assigned = [];
+          state.error = { message: "Invalid response format" };
         }
-      )
+      })
       .addCase(fetchRolePermissionsAsync.rejected, (state, action) => {
         state.loading = DataStatus.FAILED;
-        state.data = [];
+        state.assigned = [];
         if (typeof action.payload === "string") {
-          state.error = action.payload || { message: "Failed to fetch Permissions" };
+          state.error = action.payload || {
+            message: "Failed to fetch Permissions",
+          };
         } else {
           state.error = null;
         }
       })
+
+      .addCase(fetchRoleNotPermissionsAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+      })
+      .addCase(fetchRoleNotPermissionsAsync.fulfilled, (state, { payload }) => {
+        state.loading = DataStatus.SUCCEEDED;
+        if (payload && typeof payload === "object" && "data" in payload) {
+          state.unassigned = payload.data;
+          state.error = null;
+        } else {
+          state.unassigned = [];
+          state.error = { message: "Invalid response format" };
+        }
+      })
+      .addCase(fetchRoleNotPermissionsAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        state.unassigned = [];
+        if (typeof action.payload === "string") {
+          state.error = action.payload || {
+            message: "Failed to fetch Not Permissions",
+          };
+        } else {
+          state.error = null;
+        }
+      });
   },
 });
 export default permissionSlice.reducer;

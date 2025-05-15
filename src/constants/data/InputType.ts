@@ -10,4 +10,5 @@ export enum InputType {
   TEXTAREA = "textarea",
   FILE = "file",
   IMAGE = "image",
+  HIDDEN = "hidden"
 }

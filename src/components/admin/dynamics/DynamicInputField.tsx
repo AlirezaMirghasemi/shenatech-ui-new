@@ -1,8 +1,17 @@
+"use client";
 import ValidatingError from "@/components/common/ValidatingError";
 import { InputType } from "@/constants/data/InputType";
 import IDynamicInputField from "@/interfaces/IDynamicInputField";
-import { FileInput, Label, Select, Textarea, TextInput } from "flowbite-react";
+import {
+  FileInput,
+  Label,
+  Select,
+  Spinner,
+  Textarea,
+  TextInput,
+} from "flowbite-react";
 import { ErrorMessage, useField, useFormikContext } from "formik";
+import { FaEnvelope } from "react-icons/fa6";
 
 export default function DynamicInputField({
   id,
@@ -13,24 +22,38 @@ export default function DynamicInputField({
   data,
   label,
   className,
+  multiple,
+  defaultValue,
+  loading,
 }: IDynamicInputField) {
-  const [field, meta] = useField(name);
+  const [field, meta] = useField(id);
   const { setFieldValue } = useFormikContext();
   return (
     <>
-      <Label
-        htmlFor={id}
-        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        color={`${
-          meta.error && meta.touched
-            ? "red"
-            : !meta.error && !meta.touched
-            ? "green"
-            : "gray"
-        }`}
-      >
-        {label}
-      </Label>
+      {type !== InputType.HIDDEN && (
+        <Label
+          htmlFor={id}
+          className="block mb-2 text-sm font-medium"
+          color={`${
+            meta.error && meta.touched
+              ? "danger"
+              : !meta.error && meta.touched
+              ? "success"
+              : "default"
+          }`}
+        >
+          {label}
+        </Label>
+      )}
+      {type == InputType.HIDDEN && (
+        <input
+          {...field}
+          name={name}
+          id={id}
+          type={type}
+          value={defaultValue ?? undefined}
+        />
+      )}
       {(type == InputType.TEXT ||
         type == InputType.NUMBER ||
         type == InputType.EMAIL ||
@@ -42,8 +65,16 @@ export default function DynamicInputField({
           type={type}
           placeholder={placeholder}
           disabled={disabled}
-          color={meta.error && meta.touched ? "red" : "green"}
+          color={`${
+            meta.error && meta.touched
+              ? "danger"
+              : !meta.error && meta.touched
+              ? "success"
+              : "default"
+          }`}
           className={className ? className : ""}
+          rightIcon={type == InputType.EMAIL ? FaEnvelope : undefined}
+          value={defaultValue ?? undefined}
         />
       )}
       {type == InputType.TEXTAREA && (
@@ -55,7 +86,13 @@ export default function DynamicInputField({
           placeholder={placeholder}
           rows={4}
           className={className ? className : ""}
-          color={meta.error && meta.touched ? "red" : "green"}
+          color={`${
+            meta.error && meta.touched
+              ? "danger"
+              : !meta.error && meta.touched
+              ? "success"
+              : "default"
+          }`}
         />
       )}
 
@@ -77,17 +114,24 @@ export default function DynamicInputField({
           disabled={disabled}
           className={className}
           name={name}
-          color={meta.error && meta.touched ? "red" : "green"}
+          color={`${
+            meta.error && meta.touched
+              ? "danger"
+              : !meta.error && meta.touched
+              ? "success"
+              : "default"
+          }`}
+          multiple={multiple}
         >
           {data?.map((option) => (
-            <option key={option} value={option}>
-              {option}
+            <option key={option.id} value={option.id}>
+              {option.name}
             </option>
           ))}
         </Select>
       )}
-
-      <ErrorMessage name={name}>
+      {loading && <Spinner />}
+      <ErrorMessage name={id}>
         {(message) => <ValidatingError error={message} />}
       </ErrorMessage>
     </>

@@ -13,9 +13,14 @@ export interface IDynamicTable<T extends object> {
   onSort?: (column: keyof T, direction: "asc" | "desc") => void;
   onSearch?: (query: string) => void;
   emptyState?: ReactNode;
-  className?: string;
+  className?: (row: T) => string;
   ariaLabel?: string;
   rowKey: keyof T;
+    actionCellClassName?: string;
+    checkbox?: boolean;
+     selectedIds?: Set<T[keyof T]>;
+  onToggleRow?: (id: T[keyof T]) => void;
+  onToggleAll?: (checked: boolean) => void;
 }
 
 export interface IDynamicTableColumn<T extends object> {
@@ -35,6 +40,7 @@ export interface IDynamicTableAction<T extends object> {
   name: string;
   caption:string;
   icon: ReactNode;
+  color?:string;
   handler?: (row: T) => void;
   className?: string;
   disabled?: boolean | ((row: T) => boolean);
@@ -53,5 +59,7 @@ export interface IDynamicTableHeaderAction {
   handler:()=>void;
   className?: string;
   disabled?: boolean;
+    color?: string;
+
 
 }

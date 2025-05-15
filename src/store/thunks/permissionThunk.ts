@@ -31,3 +31,17 @@ export const fetchRolePermissionsAsync = createAsyncThunk(
     }
   }
 );
+export const fetchRoleNotPermissionsAsync = createAsyncThunk(
+  "role/fetchRoleNotPermissions",
+  async ({ roleId }: { roleId: number }) => {
+    try {
+      const response = await api.get(`/roles/${roleId}/not-permissions`);
+      return {
+        data: response.data.data,
+      };
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      return axiosError.response?.data || { message: axiosError.message };
+    }
+  }
+);

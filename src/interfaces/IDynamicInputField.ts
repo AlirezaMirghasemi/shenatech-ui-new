@@ -7,6 +7,9 @@ export default interface IDynamicInputField{
   placeholder: string;
   label: string;
   disabled: boolean;
-  data?: string[];
+  data?: {id:number, name:string}[];
   className?: string;
+  multiple?: boolean;
+  defaultValue?: string | number ;
+  loading?:boolean;
 }

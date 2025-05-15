@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import "../styles/globals.css";
 import { Toaster } from "sonner";
 import { Suspense } from "react";
@@ -22,7 +22,16 @@ export default function RootLayout({
         <StoreProvider>
           <ThemeProvider
             theme={ManageTheme}
-            applyTheme={{ table: "replace", button: "replace", drawer: "replace" }}
+            applyTheme={{
+              table: "replace",
+              button: "replace",
+              drawer: "replace",
+              sidebar: "replace",
+              modal: "replace",
+              alert: "replace",
+              textInput: "replace",
+              label:"replace",
+            }}
           >
             <Toaster />
             <Suspense>{children}</Suspense>

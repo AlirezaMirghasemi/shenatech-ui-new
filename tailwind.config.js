@@ -14,7 +14,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        /* Semantic background/text/border */
+        /* Semantic Colors */
         "bg-default": "var(--colors-bg-default)",
         "bg-surface": "var(--colors-bg-surface)",
         "bg-alt": "var(--colors-bg-alt)",
@@ -42,38 +42,11 @@ module.exports = {
 
         "ring-default": "var(--colors-ring-default)",
 
-        primary: "var(--colors-primary-500)",
-        "primary-hover": "var(--colors-primary-600)",
-        "primary-active": "var(--colors-primary-700)",
-
-        secondary: "var(--colors-secondary-500)",
-        "secondary-hover": "var(--colors-secondary-600)",
-        "secondary-active": "var(--colors-secondary-700)",
-
-        accent: "var(--colors-accent-500)",
-        "accent-hover": "var(--colors-accent-600)",
-        "accent-active": "var(--colors-accent-700)",
-
-        "status-success-bg": "var(--colors-success-100)",
-        "status-success-border": "var(--colors-success-500)",
-        "status-success-text": "var(--colors-success-900)",
-
-        "status-warning-bg": "var(--colors-warning-300)",
-        "status-warning-border": "var(--colors-warning-500)",
-        "status-warning-text": "var(--colors-warning-900)",
-
-        "status-danger-bg": "var(--colors-danger-100)",
-        "status-danger-border": "var(--colors-danger-500)",
-        "status-danger-text": "var(--colors-danger-900)",
-
-        "status-info-bg": "var(--colors-info-100)",
-        "status-info-border": "var(--colors-info-500)",
-        "status-info-text": "var(--colors-info-900)",
-
-        /* Primary/Secondary/Accent Color Scales */
+        /* Color Scales */
         primary: {
           DEFAULT: "var(--colors-primary)",
-          foreground: "var(--colors-text-on-primary)",
+          hover: "var(--colors-primary-hover)",
+          active: "var(--colors-primary-active)",
           50: "var(--color-primary-50)",
           100: "var(--color-primary-100)",
           200: "var(--color-primary-200)",
@@ -88,7 +61,8 @@ module.exports = {
         },
         secondary: {
           DEFAULT: "var(--colors-secondary)",
-          foreground: "var(--colors-text-on-secondary)",
+          hover: "var(--colors-secondary-hover)",
+          active: "var(--colors-secondary-active)",
           50: "var(--color-secondary-50)",
           100: "var(--color-secondary-100)",
           200: "var(--color-secondary-200)",
@@ -103,7 +77,8 @@ module.exports = {
         },
         accent: {
           DEFAULT: "var(--colors-accent)",
-          foreground: "var(--colors-text-on-accent)",
+          hover: "var(--colors-accent-hover)",
+          active: "var(--colors-accent-active)",
           50: "var(--color-accent-50)",
           100: "var(--color-accent-100)",
           200: "var(--color-accent-200)",
@@ -118,7 +93,8 @@ module.exports = {
         },
         neutral: {
           DEFAULT: "var(--colors-neutral)",
-          foreground: "var(--colors-text-on-neutral)",
+          hover: "var(--colors-neutral-hover)",
+          active: "var(--colors-neutral-active)",
           50: "var(--color-neutral-50)",
           100: "var(--color-neutral-100)",
           200: "var(--color-neutral-200)",
@@ -130,33 +106,6 @@ module.exports = {
           800: "var(--color-neutral-800)",
           900: "var(--color-neutral-900)",
           950: "var(--color-neutral-950)",
-        },
-        /* Optional: Light/Dark background scales if نیاز دارید */
-        "bg-light": {
-          50: "var(--color-background-light-50)",
-          100: "var(--color-background-light-100)",
-          200: "var(--color-background-light-200)",
-          300: "var(--color-background-light-300)",
-          400: "var(--color-background-light-400)",
-          500: "var(--color-background-light-500)",
-          600: "var(--color-background-light-600)",
-          700: "var(--color-background-light-700)",
-          800: "var(--color-background-light-800)",
-          900: "var(--color-background-light-900)",
-          950: "var(--color-background-light-950)",
-        },
-        "bg-dark": {
-          50: "var(--color-background-dark-50)",
-          100: "var(--color-background-dark-100)",
-          200: "var(--color-background-dark-200)",
-          300: "var(--color-background-dark-300)",
-          400: "var(--color-background-dark-400)",
-          500: "var(--color-background-dark-500)",
-          600: "var(--color-background-dark-600)",
-          700: "var(--color-background-dark-700)",
-          800: "var(--color-background-dark-800)",
-          900: "var(--color-background-dark-900)",
-          950: "var(--color-background-dark-950)",
         },
         warning: {
           DEFAULT: "var(--colors-warning)",
@@ -219,11 +168,26 @@ module.exports = {
           500: "var(--color-interactive-500)",
           600: "var(--color-interactive-600)",
         },
-        shadow: {
-          sm: "var(--shadow-sm)",
-          md: "var(--shadow-md)",
-          lg: "var(--shadow-lg)",
-          xl: "var(--shadow-xl)",
+        /* Status Colors */
+        "status-success": {
+          bg: "var(--colors-status-success-bg)",
+          border: "var(--colors-status-success-border)",
+          text: "var(--colors-status-success-text)",
+        },
+        "status-warning": {
+          bg: "var(--colors-status-warning-bg)",
+          border: "var(--colors-status-warning-border)",
+          text: "var(--colors-status-warning-text)",
+        },
+        "status-danger": {
+          bg: "var(--colors-status-danger-bg)",
+          border: "var(--colors-status-danger-border)",
+          text: "var(--colors-status-danger-text)",
+        },
+        "status-info": {
+          bg: "var(--colors-status-info-bg)",
+          border: "var(--colors-status-info-border)",
+          text: "var(--colors-status-info-text)",
         },
       },
       transitionDuration: {
@@ -238,8 +202,6 @@ module.exports = {
         hover: "var(--opacity-hover)",
         disabled: "var(--opacity-disabled)",
       },
-
-
 
       /* به روزرسانی فونتها برای پاسخگویی بهتر */
       fontSize: {
