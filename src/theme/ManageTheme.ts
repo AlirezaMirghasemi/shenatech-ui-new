@@ -7,6 +7,7 @@ import { ModalThemeConfig } from "./ModalThemeConfig";
 import { AlertThemeConfig } from "./AlertThemeConfig";
 import { TextInputThemeConfig } from "./TextInputTheme";
 import { LabelThemeConfig } from "./LabelThemeConfig";
+import { SpinnerThemeConfig } from "./SpinnerThemeConfig";
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -16,5 +17,6 @@ export const ManageTheme = createTheme({
   modal: { ...ModalThemeConfig },
   alert: { ...AlertThemeConfig },
   textInput: { ...TextInputThemeConfig },
-  label:{...LabelThemeConfig}
+  label: { ...LabelThemeConfig },
+  spinner: { ...SpinnerThemeConfig },
 });

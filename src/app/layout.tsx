@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import StoreProvider from "./providers/StoreProvider";
 import { ThemeModeScript, ThemeProvider } from "flowbite-react";
 import { ManageTheme } from "@/theme/ManageTheme";
+import LoadingSkeleton from "@/components/common/LoadingSkeleton";
 
 export default function RootLayout({
   children,
@@ -30,11 +31,12 @@ export default function RootLayout({
               modal: "replace",
               alert: "replace",
               textInput: "replace",
-              label:"replace",
+              label: "replace",
+              spinner: "replace",
             }}
           >
             <Toaster />
-            <Suspense>{children}</Suspense>
+            <Suspense fallback={<LoadingSkeleton/>}>{children}</Suspense>
           </ThemeProvider>
         </StoreProvider>
       </body>

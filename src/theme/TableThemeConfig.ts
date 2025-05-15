@@ -16,13 +16,12 @@ export const TableThemeConfig = createTheme({
   head: {
     base: "group/head text-md font-semibold uppercase text-text-default bg-bg-alt text-center ",
     cell: {
-      base: "px-4 py-3 bg-bg-active sticky top-0 border-b-2 border-border-default",
+      base: "px-4 py-3 bg-bg-active sticky top-0 border-b-2 border-border-default backdrop-blur-sm z-10",
     },
   },
   row: {
-    base: "group/row  transition-colors duration-300",
-    hovered: "hover:bg-primary-100/40 dark:hover:bg-primary-900/20",
-    striped:
-      "[&:nth-child(even)]:bg-[var(--bg-disabled)]/30 dark:[&:nth-child(even)]:bg-[var(--bg-disabled)]/30",
+    base: "group/row  transition-colors duration-[--transition-duration] ease-[--transition-timing]",
+    hovered: "hover:bg-[var(--colors-bg-hover)]",
+    striped: "[&:nth-child(even)]:bg-[var(--colors-bg-disabled)]/20",
   },
 });

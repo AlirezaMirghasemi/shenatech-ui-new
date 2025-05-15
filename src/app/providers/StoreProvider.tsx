@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import { useEffect, useState } from "react";
 import { makeStore, AppStore } from "@/store/store";
 import axiosInstance from "@/lib/axiosInstance";
-import { Spinner } from "flowbite-react";
+import LoadingSkeleton from "@/components/common/LoadingSkeleton";
 
 export default function StoreProvider({
   children,
@@ -24,9 +24,7 @@ export default function StoreProvider({
   if (!store) {
     return (
       <>
-        <div className="text-center">
-          <Spinner size="xl"/>
-        </div>
+        <LoadingSkeleton/>
       </>
     );
   }

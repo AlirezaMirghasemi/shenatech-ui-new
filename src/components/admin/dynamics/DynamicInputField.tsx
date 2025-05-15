@@ -129,7 +129,7 @@ export default function DynamicInputField({
           ))}
         </Select>
       )}
-      {loading && <Spinner />}
+      {loading && <Spinner color="info" size="lg" />}
       <ErrorMessage name={id}>
         {(message) => <ValidatingError error={message} />}
       </ErrorMessage>

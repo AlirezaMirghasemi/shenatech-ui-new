@@ -1,7 +1,10 @@
+import { Alert } from "flowbite-react";
+import { FaCircleInfo } from "react-icons/fa6";
+
 export default function EmptyState() {
     return(<>
-    <div className="">
-        محتوایی برای نمایش موجود نمی باشد
-    </div>
+    <Alert color="warning" icon={FaCircleInfo} >
+                محتوایی برای نمایش موجود نمی باشد
+    </Alert>
     </>);
 }

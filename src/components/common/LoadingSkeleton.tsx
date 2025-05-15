@@ -1,11 +1,12 @@
-import { Spinner } from "flowbite-react";
+import { Alert, Spinner } from "flowbite-react";
 
 export default function LoadingSkeleton() {
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2">
-      <Spinner  size="xl" />
-      </div>
+      <Alert color="info">
+        <Spinner size="xl" color="warning" className="ml-3" />
+        لطفا صبر پیشه کنید ... .
+      </Alert>
     </>
   );
 }

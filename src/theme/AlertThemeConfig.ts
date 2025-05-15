@@ -22,7 +22,7 @@ export const AlertThemeConfig = createTheme({
     danger:
       "bg-[var(--colors-status-danger-bg)] border-[var(--colors-status-danger-border)] text-[var(--colors-status-danger-text)]",
   },
-  icon: "mr-3 inline h-5 w-5 shrink-0 [&>svg]:fill-current",
+  icon: "ml-3 inline h-5 w-5 shrink-0 [&>svg]:fill-current",
   rounded: "rounded-lg",
   wrapper: "flex items-center",
 });
