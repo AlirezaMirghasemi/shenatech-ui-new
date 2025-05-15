@@ -12,6 +12,7 @@ import { FaEye, FaPen, FaUserPen } from "react-icons/fa6";
 import PersianDate from "persian-date";
 import CreateRoleModal from "./CreateRoleModal";
 import AssignPermissionModal from "./AssignPermissionModal";
+import EditRoleModal from "./EditRoleModal";
 export default function RolesViewTable({
   setRoleId,
   setRoleUsersPage,
@@ -42,8 +43,14 @@ export default function RolesViewTable({
   }, [rolesPage, role]);
   const [assignPermissionModal, setAssignPermissionModal] = useState(false);
   const [createRoleModal, setCreateRoleModal] = useState(false);
+  const [editRoleModal, setEditRoleModal] = useState(false);
+
   function onCloseCreateRoleModal() {
     setCreateRoleModal(false);
+  }
+  function onCloseEditRoleModal() {
+    setEditRoleModal(false);
+    setSelectedRoleId(null);
   }
   function onCloseAssignPermissionModal() {
     setAssignPermissionModal(false);
@@ -108,6 +115,12 @@ export default function RolesViewTable({
         icon: <FaPen />,
         color: "warning",
         className: "!rounded-l-none",
+        handler: (row) => {
+          setRole(row);
+          setSelectedRoleId(null);
+          setSelectedRoleId(row.id);
+          setEditRoleModal(true);
+        },
       },
       {
         name: "assignPermission",
@@ -153,6 +166,14 @@ export default function RolesViewTable({
           role={role}
           setAssignPermissionModal={setAssignPermissionModal}
           setRoleId={setRoleId}
+        />
+      )}
+      {role && (
+        <EditRoleModal
+          editRoleModal={editRoleModal}
+          onCloseEditRoleModal={onCloseEditRoleModal}
+          role={role}
+          setEditRoleModal={setEditRoleModal}
         />
       )}
       <CreateRoleModal

@@ -74,7 +74,6 @@ export default function DynamicInputField({
           }`}
           className={className ? className : ""}
           rightIcon={type == InputType.EMAIL ? FaEnvelope : undefined}
-          value={defaultValue ?? undefined}
         />
       )}
       {type == InputType.TEXTAREA && (

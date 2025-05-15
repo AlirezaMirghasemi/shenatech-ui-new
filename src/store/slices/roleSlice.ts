@@ -6,6 +6,7 @@ import {
   checkRoleNameIsUniqueAsync,
   createRoleAsync,
   deleteRolePermissionsAsync,
+  editRoleAsync,
   fetchRolesAsync,
 } from "../thunks/roleThunk";
 import { Role } from "@/types/Role";
@@ -35,6 +36,23 @@ const roleSlice = createSlice({
         state.loading = DataStatus.FAILED;
         if (typeof action.payload === "string") {
           state.error = action.payload || { message: "Failed to create role" };
+        } else {
+          state.error = null;
+        }
+      })
+
+      .addCase(editRoleAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+        // Don't clear error immediately, might be useful from previous action
+      })
+      .addCase(editRoleAsync.fulfilled, (state) => {
+        state.loading = DataStatus.SUCCEEDED;
+        state.error = null;
+      })
+      .addCase(editRoleAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        if (typeof action.payload === "string") {
+          state.error = action.payload || { message: "Failed to edit role" };
         } else {
           state.error = null;
         }

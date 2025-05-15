@@ -4,20 +4,33 @@ import { api } from "@/lib/axiosInstance";
 import { ApiError } from "@/types/Api";
 
 export const createRoleAsync = createAsyncThunk(
-    "role/createRole",
-    async (role: string) => {
-      try {
-        const response = await api.post("/roles", {
-          name: role,
-        });
-        return response.data.data;
-      } catch (error: unknown) {
-        const axiosError = error as AxiosError<ApiError>;
-        return axiosError.response?.data || { message: axiosError.message };
-      }
+  "role/createRole",
+  async (role: string) => {
+    try {
+      const response = await api.post("/roles", {
+        name: role,
+      });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      return axiosError.response?.data || { message: axiosError.message };
     }
-)
-
+  }
+);
+export const editRoleAsync = createAsyncThunk(
+  "role/editRole",
+  async ({ roleId, roleName }: { roleId: number; roleName: string }) => {
+    try {
+      const response = await api.put(`/roles/${roleId}`, {
+        name: roleName,
+      });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      return axiosError.response?.data || { message: axiosError.message };
+    }
+  }
+);
 export const fetchRolesAsync = createAsyncThunk(
   "role/fetchRoles",
   async ({
@@ -55,7 +68,7 @@ export const assignRolePermissionsAsync = createAsyncThunk(
   }) => {
     try {
       const response = await api.post(`/roles/${roleId}/assign-permissions`, {
-         permissionIds:permissionIds,
+        permissionIds: permissionIds,
       });
       return response.data;
     } catch (error: unknown) {

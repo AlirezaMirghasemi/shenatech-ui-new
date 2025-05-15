@@ -15,3 +15,6 @@ export interface AssignPermission {
 export interface CreateRole {
   roleName: string;
 }
+export interface EditRole {
+  roleName: string;
+}

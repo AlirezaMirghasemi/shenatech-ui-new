@@ -5,6 +5,7 @@ import {
   checkRoleNameIsUniqueAsync,
   createRoleAsync,
   deleteRolePermissionsAsync,
+  editRoleAsync,
   fetchRolesAsync,
 } from "@/store/thunks/roleThunk";
 
@@ -17,37 +18,49 @@ export const useRole = () => {
     error,
     uniqueLoading,
   } = useAppSelector((state) => state.roles);
-const createRole = useCallback(
-  (roleName: string) => {
-    try {
-      return dispatch(createRoleAsync( roleName )).unwrap();
-    } catch (error) {
-      console.error("Error creating role:", error);
-      return null;
-    }
-  },
-  [dispatch]
-)
-
+  const createRole = useCallback(
+    (roleName: string) => {
+      try {
+        return dispatch(createRoleAsync(roleName)).unwrap();
+      } catch (error) {
+        console.error("Error creating role:", error);
+        return null;
+      }
+    },
+    [dispatch]
+  );
+  const editRole = useCallback(
+    (roleId: number, roleName: string) => {
+      try {
+        return dispatch(editRoleAsync({ roleId, roleName })).unwrap();
+      } catch (error) {
+        console.error("Error editing role:", error);
+        return null;
+      }
+    },
+    [dispatch]
+  );
   const fetchRoles = useCallback(
     (page?: string, perPage?: string) => {
-        try {
-               return dispatch(fetchRolesAsync({ page, perPage })).unwrap();
-        } catch (error) {
-          console.error("Error fetching roles:", error);
-          return [];
-        }
+      try {
+        return dispatch(fetchRolesAsync({ page, perPage })).unwrap();
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+        return [];
+      }
     },
     [dispatch]
   );
   const assignRolePermissions = useCallback(
     (roleId: number, permissionIds: number[]) => {
-        try {
-          return  dispatch(assignRolePermissionsAsync({ roleId, permissionIds })).unwrap();
-        } catch (error) {
-          console.error("Error assigning role permissions:", error);
-          return [];
-        }
+      try {
+        return dispatch(
+          assignRolePermissionsAsync({ roleId, permissionIds })
+        ).unwrap();
+      } catch (error) {
+        console.error("Error assigning role permissions:", error);
+        return [];
+      }
     },
     [dispatch]
   );
@@ -70,7 +83,9 @@ const createRole = useCallback(
   const roleNameIsUnique = useCallback(
     async (roleName: string): Promise<boolean> => {
       try {
-        const result = await dispatch(checkRoleNameIsUniqueAsync(roleName)).unwrap();
+        const result = await dispatch(
+          checkRoleNameIsUniqueAsync(roleName)
+        ).unwrap();
         return result as boolean;
       } catch (error) {
         console.error("Error checking role name uniqueness:", error);
@@ -92,6 +107,7 @@ const createRole = useCallback(
       deleteRolePermissions,
       roleNameIsUnique,
       createRole,
+      editRole,
     },
   };
 };
