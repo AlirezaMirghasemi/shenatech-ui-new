@@ -15,11 +15,14 @@ export const loginUser = createAsyncThunk<
     // پاسخ به صورت { data: UserResource } بسته‌بندی شده است
     return response.data.data;
   } catch (error: unknown) {
-    const axiosError = error as AxiosError<ApiError>;
-    return rejectWithValue(
-      axiosError.response?.data || { message: axiosError.message }
-    );
-  }
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ورود"
+      });
+    }
 });
 
 export const registerUser = createAsyncThunk<
@@ -31,11 +34,14 @@ export const registerUser = createAsyncThunk<
     const response = await api.post('/auth/register', userData);
     return response.data; // شامل { message, data }
   } catch (error: unknown) {
-    const axiosError = error as AxiosError<ApiError>;
-    return rejectWithValue(
-      axiosError.response?.data || { message: axiosError.message }
-    );
-  }
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ایجاد کاربر"
+      });
+    }
 });
 
 export const logoutUser = createAsyncThunk<
@@ -45,16 +51,17 @@ export const logoutUser = createAsyncThunk<
 >('auth/logoutUser', async (_, { rejectWithValue }) => {
   try {
     const response = await api.post('/auth/logout');
-    document.cookie = 'laravel_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    document.cookie = 'XSRF-TOKEN=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    window.location.href = '/admin/login';
-    return response.data; // شامل { message }
+
+    return response.data;
   } catch (error: unknown) {
-    const axiosError = error as AxiosError<ApiError>;
-    return rejectWithValue(
-      axiosError.response?.data || { message: axiosError.message }
-    );
-  }
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای خروج کاربر"
+      });
+    }
 });
 
 export const fetchUser = createAsyncThunk<
@@ -66,12 +73,12 @@ export const fetchUser = createAsyncThunk<
     const response = await api.get('/auth/user');
     return response.data.data;
   } catch (error: unknown) {
-    const axiosError = error as AxiosError<ApiError>;
-    if ([401, 419].includes(axiosError.response?.status ?? 0)) {
-      return rejectWithValue({ message: 'Unauthorized' });
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای دریافت کاربر "
+      });
     }
-    return rejectWithValue(
-      axiosError.response?.data || { message: axiosError.message }
-    );
-  }
 });

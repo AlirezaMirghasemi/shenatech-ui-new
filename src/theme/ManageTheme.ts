@@ -8,6 +8,8 @@ import { AlertThemeConfig } from "./AlertThemeConfig";
 import { TextInputThemeConfig } from "./TextInputTheme";
 import { LabelThemeConfig } from "./LabelThemeConfig";
 import { SpinnerThemeConfig } from "./SpinnerThemeConfig";
+import { DropdownThemeConfig } from "./DropdownThemeConfig";
+import { PaginationThemeConfig } from "./PaginationThemeConfig";
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -19,4 +21,6 @@ export const ManageTheme = createTheme({
   textInput: { ...TextInputThemeConfig },
   label: { ...LabelThemeConfig },
   spinner: { ...SpinnerThemeConfig },
+  dropdown: { ...DropdownThemeConfig },
+  pagination:{...PaginationThemeConfig}
 });

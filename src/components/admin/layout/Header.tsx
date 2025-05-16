@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import AdminDashboardButton from "./AdminDashboardButton";
 import ThemeToggle from "../../common/ThemeToggle";
-import LogoutModal from "./LogoutModal";
+import LogoutModal from "../auth/logout/LogoutModal";
 
 export function Header({ handleOpen }: { handleOpen: () => void }) {
   const [logoutModalMode, setLogoutModalMode] = useState(false);
@@ -21,6 +21,7 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
   const { user, actions } = useAuth();
   const logout = async () => {
     await actions.logout();
+    setLogoutModalMode(false);
     toast.success("خروج با موفقیت انجام شد ، به امید دیدار");
     window.location.href = "/admin/login";
   };

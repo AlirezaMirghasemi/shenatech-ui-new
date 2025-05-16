@@ -3,13 +3,14 @@
 import DynamicForm from "../dynamics/DynamicForm";
 import DynamicInputField from "../dynamics/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
-import { FormikHelpers } from "formik";
 import { EditRole, Role } from "@/types/Role";
 import { useRole } from "@/hooks/useRole";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { toast } from "sonner";
 import { editRoleInitial } from "@/validations/admin/role/editRoleInitial";
 import { editRoleSchema } from "@/validations/admin/role/editRoleSchema";
+import { AxiosError } from "axios";
+import { ApiError } from "@/types/Api";
 
 export default function EditRoleForm({
   setEditRoleModal,
@@ -27,18 +28,15 @@ export default function EditRoleForm({
   } = useRole();
   const onSubmit = async (
     values: EditRole,
-    { setSubmitting }: FormikHelpers<EditRole>
   ) => {
     try {
-      setEditRoleModal(false);
       await editRole(role.id, values.roleName);
       await fetchRoles(meta?.current_page, meta?.per_page);
+      setEditRoleModal(false);
       toast.success("نقش با موفقیت ویرایش شد.");
-    } catch (error) {
-      console.error("Error editing role:", error);
-      toast.error("خطا در ویرایش نقش.");
-    } finally {
-      setSubmitting(false);
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<ApiError>;
+      toast.error(axiosError.message);
     }
   };
   const {
@@ -67,6 +65,7 @@ export default function EditRoleForm({
         disabled={
           loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
         }
+        loading={uniqueLoading == DataStatus.PENDING}
       />
     </DynamicForm>
   );

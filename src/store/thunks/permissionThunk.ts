@@ -13,7 +13,7 @@ export const fetchRolePermissionsAsync = createAsyncThunk(
     roleId: number;
     perPage?: string;
     page?: string;
-  }) => {
+  }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/roles/${roleId}/permissions`, {
         params: {
@@ -27,13 +27,18 @@ export const fetchRolePermissionsAsync = createAsyncThunk(
       };
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
-      return axiosError.response?.data || { message: axiosError.message };
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای دریافت مجوز های نقش"
+      });
     }
   }
 );
 export const fetchRoleNotPermissionsAsync = createAsyncThunk(
   "role/fetchRoleNotPermissions",
-  async ({ roleId }: { roleId: number }) => {
+  async ({ roleId }: { roleId: number }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/roles/${roleId}/not-permissions`);
       return {
@@ -41,7 +46,12 @@ export const fetchRoleNotPermissionsAsync = createAsyncThunk(
       };
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
-      return axiosError.response?.data || { message: axiosError.message };
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای دریافت مجوز های تخصیص داده نشده به نقش"
+      });
     }
   }
 );

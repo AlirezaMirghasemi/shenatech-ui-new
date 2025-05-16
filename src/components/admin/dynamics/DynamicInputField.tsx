@@ -59,6 +59,7 @@ export default function DynamicInputField({
         type == InputType.EMAIL ||
         type == InputType.PASSWORD) && (
         <TextInput
+          addon={loading ? <Spinner size="sm" color="warning"/> : undefined}
           {...field}
           name={name}
           id={id}
@@ -129,7 +130,7 @@ export default function DynamicInputField({
           ))}
         </Select>
       )}
-      {loading && <Spinner color="info" size="lg" />}
+
       <ErrorMessage name={id}>
         {(message) => <ValidatingError error={message} />}
       </ErrorMessage>

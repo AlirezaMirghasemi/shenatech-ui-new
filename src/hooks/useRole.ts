@@ -4,6 +4,7 @@ import {
   assignRolePermissionsAsync,
   checkRoleNameIsUniqueAsync,
   createRoleAsync,
+  deleteRoleAsync,
   deleteRolePermissionsAsync,
   editRoleAsync,
   fetchRolesAsync,
@@ -40,6 +41,17 @@ export const useRole = () => {
     },
     [dispatch]
   );
+  const deleteRole = useCallback(
+    (roleId: number) => {
+      try {
+        return dispatch(deleteRoleAsync(roleId)).unwrap();
+      } catch (error) {
+        console.error("Error deleting role:", error);
+      }
+    },
+    [dispatch]
+  );
+
   const fetchRoles = useCallback(
     (page?: string, perPage?: string) => {
       try {
@@ -108,6 +120,7 @@ export const useRole = () => {
       roleNameIsUnique,
       createRole,
       editRole,
+      deleteRole
     },
   };
 };

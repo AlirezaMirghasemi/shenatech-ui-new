@@ -33,10 +33,12 @@ export default function RootLayout({
               textInput: "replace",
               label: "replace",
               spinner: "replace",
+              dropdown: "replace",
+              pagination:"replace"
             }}
           >
             <Toaster />
-            <Suspense fallback={<LoadingSkeleton/>}>{children}</Suspense>
+            <Suspense fallback={<LoadingSkeleton />}>{children}</Suspense>
           </ThemeProvider>
         </StoreProvider>
       </body>

@@ -5,7 +5,7 @@ import { ApiError } from "@/types/Api";
 
 export const createRoleAsync = createAsyncThunk(
   "role/createRole",
-  async (role: string) => {
+  async (role: string, { rejectWithValue }) => {
     try {
       const response = await api.post("/roles", {
         name: role,
@@ -13,13 +13,21 @@ export const createRoleAsync = createAsyncThunk(
       return response.data.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
-      return axiosError.response?.data || { message: axiosError.message };
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ایجاد نقش",
+      });
     }
   }
 );
 export const editRoleAsync = createAsyncThunk(
   "role/editRole",
-  async ({ roleId, roleName }: { roleId: number; roleName: string }) => {
+  async (
+    { roleId, roleName }: { roleId: number; roleName: string },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await api.put(`/roles/${roleId}`, {
         name: roleName,
@@ -27,19 +35,48 @@ export const editRoleAsync = createAsyncThunk(
       return response.data.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
-      return axiosError.response?.data || { message: axiosError.message };
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ویرایش نقش",
+      });
+    }
+  }
+);
+export const deleteRoleAsync = createAsyncThunk(
+  "role/deleteRole",
+  async (roleId: number | null, { rejectWithValue }) => {
+    try {
+      if (roleId) {
+        const response = await api.delete(`/roles/${roleId}`);
+        return response.data.data;
+      } else {
+        throw new Error("شناسه نقش یافت نشد!");
+      }
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای حذف نقش",
+      });
     }
   }
 );
 export const fetchRolesAsync = createAsyncThunk(
   "role/fetchRoles",
-  async ({
-    page = "1",
-    perPage = "10",
-  }: {
-    page?: string;
-    perPage?: string;
-  }) => {
+  async (
+    {
+      page = "1",
+      perPage = "10",
+    }: {
+      page?: string;
+      perPage?: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await api.get("/roles", {
         params: {
@@ -53,19 +90,27 @@ export const fetchRolesAsync = createAsyncThunk(
       };
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
-      return axiosError.response?.data || { message: axiosError.message };
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای دریافت نقش",
+      });
     }
   }
 );
 export const assignRolePermissionsAsync = createAsyncThunk(
   "role/assignPermissions",
-  async ({
-    roleId,
-    permissionIds,
-  }: {
-    roleId: number;
-    permissionIds: number[];
-  }) => {
+  async (
+    {
+      roleId,
+      permissionIds,
+    }: {
+      roleId: number;
+      permissionIds: number[];
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await api.post(`/roles/${roleId}/assign-permissions`, {
         permissionIds: permissionIds,
@@ -73,7 +118,12 @@ export const assignRolePermissionsAsync = createAsyncThunk(
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
-      return axiosError.response?.data || { message: axiosError.message };
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای تخصیص مجوز به نقش",
+      });
     }
   }
 );
@@ -100,19 +150,26 @@ export const deleteRolePermissionsAsync = createAsyncThunk(
       if (axiosError.response?.data) {
         return rejectWithValue(axiosError.response.data);
       }
-      return rejectWithValue({ message: axiosError.message });
+      return rejectWithValue({
+        message: axiosError.message || "خطای حذف مجوز از نقش",
+      });
     }
   }
 );
 export const checkRoleNameIsUniqueAsync = createAsyncThunk(
   "role/checkRoleNameIsUnique",
-  async (roleName: string) => {
+  async (roleName: string, { rejectWithValue }) => {
     try {
       const response = await api.get(`/roles/role-name-is-unique/${roleName}`);
       return response.data == 1 ? true : false;
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
-      return axiosError.response?.data || { message: axiosError.message };
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای چک کردن یکتایی نقش",
+      });
     }
   }
 );

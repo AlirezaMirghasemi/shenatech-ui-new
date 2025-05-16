@@ -37,7 +37,7 @@ export default function DynamicForm<T extends object>({
                 size="lg"
                 className="items-center text-center"
               >
-                {isSubmitting || disabledButton ? (
+                {isSubmitting ? (
                   <Spinner size="sm"  color="success" />
                 ) : (
                   buttonTitle

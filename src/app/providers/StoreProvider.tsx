@@ -16,7 +16,6 @@ export default function StoreProvider({
     const createdStore = makeStore();
 
     axiosInstance(createdStore.dispatch);
-    //createdStore.dispatch
 
     setStore(createdStore);
   }, []);
@@ -24,7 +23,7 @@ export default function StoreProvider({
   if (!store) {
     return (
       <>
-        <LoadingSkeleton/>
+        <LoadingSkeleton />
       </>
     );
   }

@@ -1,5 +1,4 @@
 import { DataStatus } from "@/constants/data/DataStatus";
-import { usePermission } from "@/hooks/usePermission";
 import { useRole } from "@/hooks/useRole";
 import { ApiError } from "@/types/Api";
 import { AxiosError } from "axios";
@@ -7,59 +6,41 @@ import { Button, Modal, ModalBody, ModalHeader, Spinner } from "flowbite-react";
 import { FaSkullCrossbones } from "react-icons/fa6";
 import { toast } from "sonner";
 
-export default function DeleteRolePermissionsModal({
-  selectedIds,
-  setSelectedIds,
-  setDeleteRolePermissionsModal,
-  deleteRolePermissionsModal,
+export default function DeleteRoleModal({
+  setDeleteRoleModal,
+  deleteRoleModal,
   roleId,
-  onCloseDeleteRolePermissionsModal,
+  onCloseDeleteRoleModal,
 }: {
-  selectedIds: Set<number>;
-  setSelectedIds: (ids: Set<number>) => void;
-  setDeleteRolePermissionsModal: (open: boolean) => void;
-  deleteRolePermissionsModal: boolean;
-  roleId: number;
-  onCloseDeleteRolePermissionsModal: () => void;
+  setDeleteRoleModal: (value: boolean) => void;
+  deleteRoleModal: boolean;
+  roleId: number | null;
+  onCloseDeleteRoleModal: () => void;
 }) {
   const {
+    actions: { deleteRole, fetchRoles },
     meta,
     loading,
-    actions: { deleteRolePermissions, fetchRoles },
   } = useRole();
-  const {
-    meta: PermissionMeta,
-    actions: { fetchRolePermissions },
-  } = usePermission();
-  const deleteRolePermissionsAction = async (
-    selectedIds: Set<number>,
-    roleId: number | null
-  ) => {
+  const deleteRoleAction = async (roleId: number | null) => {
     if (roleId) {
       try {
-        await deleteRolePermissions(roleId, selectedIds);
-        setSelectedIds(new Set());
-        setDeleteRolePermissionsModal(false);
-        toast.success("مجوز ها با موفقیت حذف شدند", { duration: 3000 });
+        await deleteRole(roleId);
         await fetchRoles(meta?.current_page, meta?.per_page);
-        await fetchRolePermissions(
-          roleId,
-          PermissionMeta?.per_page,
-          PermissionMeta?.current_page
-        );
+        setDeleteRoleModal(false);
+        toast.success("نقش با موفقیت حذف شد!");
       } catch (err: unknown) {
         const axiosError = err as AxiosError<ApiError>;
         toast.error(axiosError.message);
       }
     }
   };
-
   return (
     <>
       <Modal
-        show={deleteRolePermissionsModal}
+        show={deleteRoleModal}
         size="md"
-        onClose={onCloseDeleteRolePermissionsModal}
+        onClose={onCloseDeleteRoleModal}
         popup
       >
         <ModalHeader />
@@ -67,12 +48,12 @@ export default function DeleteRolePermissionsModal({
           <div className="text-center ">
             <FaSkullCrossbones className="mx-auto mb-4 h-14 w-14  text-status-danger-text" />
             <h3 className="mb-5 text-lg font-normal">
-              آیا از حذف مجوز های انتخاب شده از نقش اطمینان دارید؟
+              آیا از حذف نقش اطمینان دارید؟
             </h3>
             <div className="flex justify-center gap-4">
               <Button
                 color="danger"
-                onClick={() => deleteRolePermissionsAction(selectedIds, roleId)}
+                onClick={() => deleteRoleAction(roleId)}
                 disabled={loading === DataStatus.PENDING}
               >
                 {loading === DataStatus.PENDING ? (
@@ -86,7 +67,7 @@ export default function DeleteRolePermissionsModal({
                   "بله مطمئن هستم"
                 )}
               </Button>
-              <Button color="info" onClick={onCloseDeleteRolePermissionsModal}>
+              <Button color="info" onClick={onCloseDeleteRoleModal}>
                 {"خیر، منصرف شدم"}
               </Button>
             </div>

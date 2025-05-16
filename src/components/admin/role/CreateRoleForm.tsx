@@ -65,6 +65,7 @@ export default function CreateRoleForm({
         disabled={
           loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
         }
+        loading={uniqueLoading == DataStatus.PENDING}
       />
     </DynamicForm>
   );

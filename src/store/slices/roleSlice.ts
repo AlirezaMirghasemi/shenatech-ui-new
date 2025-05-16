@@ -5,6 +5,7 @@ import {
   assignRolePermissionsAsync,
   checkRoleNameIsUniqueAsync,
   createRoleAsync,
+  deleteRoleAsync,
   deleteRolePermissionsAsync,
   editRoleAsync,
   fetchRolesAsync,
@@ -57,7 +58,24 @@ const roleSlice = createSlice({
           state.error = null;
         }
       })
-
+      .addCase(deleteRoleAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+        // Don't clear error immediately, might be useful from previous action
+      })
+      .addCase(deleteRoleAsync.fulfilled, (state) => {
+        state.loading = DataStatus.SUCCEEDED;
+        state.error = null;
+      })
+      .addCase(deleteRoleAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        if (action.payload) {
+          state.error = {
+            message: (action.payload as { message: string }).message,
+          };
+        } else {
+          state.error = { message: "خطای پیشفرض" };
+        }
+      })
       .addCase(fetchRolesAsync.pending, (state) => {
         state.loading = DataStatus.PENDING;
         // Don't clear error immediately, might be useful from previous action

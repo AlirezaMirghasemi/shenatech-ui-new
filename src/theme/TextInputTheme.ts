@@ -3,7 +3,7 @@ import { createTheme } from "flowbite-react";
 export const TextInputThemeConfig = createTheme({
   base: "flex w-full transition-all duration-[--transition-duration] ease-[--transition-timing] mb-1",
   addon:
-    "inline-flex items-center rounded-l-md border border-r-0 border-border-default bg-bg-alt px-3 text-sm text-text-default",
+    "inline-flex order-last items-center rounded-l-md border border-r-0 border-border-default bg-bg-alt px-3 text-sm text-text-default",
   field: {
     base: "relative w-full",
     icon: {

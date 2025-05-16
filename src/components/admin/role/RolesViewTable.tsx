@@ -5,7 +5,13 @@ import { useRole } from "@/hooks/useRole";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { Role } from "@/types/Role";
 import { useEffect, useState } from "react";
-import { FaEye, FaPen, FaUserPen } from "react-icons/fa6";
+import {
+  FaEye,
+  FaPen,
+  FaTrashCan,
+  FaUserPen,
+  FaUserPlus,
+} from "react-icons/fa6";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -13,6 +19,7 @@ import PersianDate from "persian-date";
 import CreateRoleModal from "./CreateRoleModal";
 import AssignPermissionModal from "./AssignPermissionModal";
 import EditRoleModal from "./EditRoleModal";
+import DeleteRoleModal from "./DeleteRoleModal";
 export default function RolesViewTable({
   setRoleId,
   setRoleUsersPage,
@@ -44,9 +51,14 @@ export default function RolesViewTable({
   const [assignPermissionModal, setAssignPermissionModal] = useState(false);
   const [createRoleModal, setCreateRoleModal] = useState(false);
   const [editRoleModal, setEditRoleModal] = useState(false);
-
+  const [deleteRoleModal, setDeleteRoleModal] = useState(false);
   function onCloseCreateRoleModal() {
     setCreateRoleModal(false);
+  }
+  function onCloseDeleteRoleModal() {
+    setDeleteRoleModal(false);
+    setRoleId(null);
+    setRole(null);
   }
   function onCloseEditRoleModal() {
     setEditRoleModal(false);
@@ -110,21 +122,19 @@ export default function RolesViewTable({
     ],
     actions: [
       {
-        name: "Edit",
-        caption: "ویرایش",
-        icon: <FaPen />,
-        color: "warning",
-        className: "!rounded-l-none",
-        handler: (row) => {
-          setRole(row);
-          setSelectedRoleId(null);
+        name: "ShowRoleDetails",
+        caption: "مشاهده ی جزییات",
+        handler: (row: Role) => {
           setSelectedRoleId(row.id);
-          setEditRoleModal(true);
+          setRoleId(row.id);
         },
+        icon: <FaEye />,
+        color: "info",
+        className: "!rounded-l-none",
       },
       {
         name: "assignPermission",
-        caption: "اختصاص مجوز",
+        caption: "تخصیص مجوز",
         icon: <FaUserPen />,
         color: "primary",
         className: "!rounded-none",
@@ -134,15 +144,38 @@ export default function RolesViewTable({
             : onOpenAssignPermissionModal(row),
       },
       {
-        name: "ShowRoleDetails",
-        caption: "مشاهده ی جزییات",
-        handler: (row: Role) => {
-          setSelectedRoleId(row.id);
-          setRoleId(row.id);
+        //TODO -> implement assignUser modal
+        name: "assignUser",
+        caption: "تخصیص کاربر",
+        icon: <FaUserPlus />,
+        color: "secondary",
+        className: "!rounded-none",
+        // handler: (row) =>
+        //   assignPermissionModal
+        //     ? onCloseAssignPermissionModal()
+        //     : onOpenAssignPermissionModal(row),
+      },
+      {
+        name: "Edit",
+        caption: "ویرایش",
+        icon: <FaPen />,
+        color: "warning",
+        className: "!rounded-none",
+        handler: (row) => {
+          setRole(row);
+          setEditRoleModal(true);
         },
-        icon: <FaEye />,
-        color: "info",
+      },
+      {
+        name: "Delete",
+        caption: "حذف",
+        icon: <FaTrashCan />,
+        color: "danger",
         className: "!rounded-r-none",
+        handler: (row) => {
+          setRole(row);
+          setDeleteRoleModal(true);
+        },
       },
     ],
     rowKey: "id",
@@ -181,6 +214,14 @@ export default function RolesViewTable({
         createRoleModal={createRoleModal}
         onCloseCreateRoleModal={onCloseCreateRoleModal}
       />
+      {role && (
+        <DeleteRoleModal
+          deleteRoleModal={deleteRoleModal}
+          setDeleteRoleModal={setDeleteRoleModal}
+          roleId={role.id}
+          onCloseDeleteRoleModal={onCloseDeleteRoleModal}
+        />
+      )}
     </>
   );
 }
