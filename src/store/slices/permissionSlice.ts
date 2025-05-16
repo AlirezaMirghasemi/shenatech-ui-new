@@ -4,14 +4,17 @@ import { PaginatedResponse } from "@/types/Api";
 import { Permission } from "@/types/Permission";
 import { PermissionState } from "@/constants/state/Permission";
 import {
+  fetchPermissionsAsync,
   fetchRoleNotPermissionsAsync,
   fetchRolePermissionsAsync,
 } from "../thunks/permissionThunk";
 const initialState: PermissionState = {
   assigned: [],
   unassigned: [],
+  data: [],
   meta: {} as PaginatedResponse<Permission>,
   loading: DataStatus.IDLE,
+  uniqueLoading: DataStatus.IDLE,
   error: null,
 };
 const permissionSlice = createSlice({
@@ -20,6 +23,39 @@ const permissionSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchPermissionsAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+        // Don't clear error immediately, might be useful from previous action
+      })
+      .addCase(fetchPermissionsAsync.fulfilled, (state, action) => {
+        state.loading = DataStatus.SUCCEEDED;
+        if (
+          typeof action.payload === "object" &&
+          action.payload !== null &&
+          "data" in action.payload &&
+          "meta" in action.payload
+        ) {
+          state.data = action.payload.data as Permission[];
+          state.meta = action.payload.meta as PaginatedResponse<Permission>;
+          state.error = null; // Clear error on successful fetch
+        } else {
+          state.data = [];
+          state.meta = {} as PaginatedResponse<Permission>;
+          state.error = { message: "Invalid response format" };
+        }
+      })
+      .addCase(fetchPermissionsAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        state.data = [];
+        if (typeof action.payload === "string") {
+          state.error = action.payload || {
+            message: "Failed to fetch permissions",
+          };
+        } else {
+          state.error = null;
+        }
+      })
+
       .addCase(fetchRolePermissionsAsync.pending, (state) => {
         state.loading = DataStatus.PENDING;
         // Don't clear error immediately, might be useful from previous action

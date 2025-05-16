@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
+  fetchPermissionsAsync,
   fetchRoleNotPermissionsAsync,
   fetchRolePermissionsAsync,
 } from "@/store/thunks/permissionThunk";
@@ -7,10 +8,25 @@ import { useCallback } from "react";
 
 export const usePermission = () => {
   const dispatch = useAppDispatch();
-  const { assigned, unassigned, meta, loading, error } = useAppSelector(
-    (state) => state.permissions
+  const {
+    data: permissions,
+    assigned,
+    unassigned,
+    meta:meta,
+    loading,
+    error,
+  } = useAppSelector((state) => state.permissions);
+  const fetchPermissions = useCallback(
+    (page?: string, perPage?: string) => {
+      try {
+        return dispatch(fetchPermissionsAsync({ page, perPage })).unwrap();
+      } catch (error) {
+        console.error("Error fetching permissions:", error);
+        return [];
+      }
+    },
+    [dispatch]
   );
-
   const fetchRolePermissions = useCallback(
     async (roleId: number, perPage?: string, page?: string) => {
       try {
@@ -42,10 +58,12 @@ export const usePermission = () => {
   return {
     assigned,
     unassigned,
+    permissions,
     meta,
     error,
     loading,
     actions: {
+      fetchPermissions,
       fetchRolePermissions,
       fetchRoleNotPermissions,
     },
