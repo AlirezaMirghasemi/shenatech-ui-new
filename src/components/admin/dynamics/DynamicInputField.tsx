@@ -25,6 +25,7 @@ export default function DynamicInputField({
   multiple,
   defaultValue,
   loading,
+...inputFieldProps
 }: IDynamicInputField) {
   const [field, meta] = useField(id);
   const { setFieldValue } = useFormikContext();
@@ -47,6 +48,7 @@ export default function DynamicInputField({
       )}
       {type == InputType.HIDDEN && (
         <input
+        {...inputFieldProps}
           {...field}
           name={name}
           id={id}
@@ -59,7 +61,8 @@ export default function DynamicInputField({
         type == InputType.EMAIL ||
         type == InputType.PASSWORD) && (
         <TextInput
-          addon={loading ? <Spinner size="sm" color="warning"/> : undefined}
+        {...inputFieldProps}
+          addon={loading ? <Spinner size="sm" color="warning" /> : undefined}
           {...field}
           name={name}
           id={id}
@@ -79,6 +82,7 @@ export default function DynamicInputField({
       )}
       {type == InputType.TEXTAREA && (
         <Textarea
+        {...inputFieldProps}
           {...field}
           disabled={disabled}
           id={id}
@@ -98,6 +102,8 @@ export default function DynamicInputField({
 
       {type == InputType.FILE && (
         <FileInput
+        {...inputFieldProps}
+        {...field}
           id={id}
           name={name}
           onChange={(event) => {
@@ -109,7 +115,8 @@ export default function DynamicInputField({
       )}
       {type == InputType.SELECT && (
         <Select
-          {...field}
+          {...inputFieldProps}
+        {...field}
           id={id}
           disabled={disabled}
           className={className}
@@ -123,6 +130,9 @@ export default function DynamicInputField({
           }`}
           multiple={multiple}
         >
+          <option value="" disabled>
+            {placeholder}
+          </option>
           {data?.map((option) => (
             <option key={option.id} value={option.id}>
               {option.name}

@@ -4,6 +4,8 @@ import { PaginatedResponse } from "@/types/Api";
 import { Permission } from "@/types/Permission";
 import { PermissionState } from "@/constants/state/Permission";
 import {
+    checkPermissionNameIsUniqueAsync,
+    createPermissionAsync,
   fetchPermissionsAsync,
   fetchRoleNotPermissionsAsync,
   fetchRolePermissionsAsync,
@@ -23,6 +25,24 @@ const permissionSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+.addCase(createPermissionAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+        // Don't clear error immediately, might be useful from previous action
+      })
+      .addCase(createPermissionAsync.fulfilled, (state) => {
+        state.loading = DataStatus.SUCCEEDED;
+        state.error = null;
+      })
+      .addCase(createPermissionAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        if (typeof action.payload === "string") {
+          state.error = action.payload || { message: "Failed to create permission" };
+        } else {
+          state.error = null;
+        }
+      })
+
+
       .addCase(fetchPermissionsAsync.pending, (state) => {
         state.loading = DataStatus.PENDING;
         // Don't clear error immediately, might be useful from previous action
@@ -111,7 +131,25 @@ const permissionSlice = createSlice({
         } else {
           state.error = null;
         }
-      });
+      })
+      .addCase(checkPermissionNameIsUniqueAsync.pending, (state) => {
+              state.uniqueLoading = DataStatus.PENDING;
+              state.error = null;
+            })
+            .addCase(checkPermissionNameIsUniqueAsync.fulfilled, (state) => {
+              state.uniqueLoading = DataStatus.SUCCEEDED;
+              state.error = null;
+            })
+            .addCase(checkPermissionNameIsUniqueAsync.rejected, (state, action) => {
+              state.uniqueLoading = DataStatus.FAILED;
+              if (typeof action.payload === "string") {
+                state.error = action.payload || {
+                  message: "Failed to check permission name uniqueness",
+                };
+              } else {
+                state.error = null;
+              }
+            });
   },
 });
 export default permissionSlice.reducer;

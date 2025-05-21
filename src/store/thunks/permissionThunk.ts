@@ -3,6 +3,48 @@ import { ApiError } from "@/types/Api";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 
+
+
+export const createPermissionAsync = createAsyncThunk(
+  "permission/createPermission",
+  async (permission: string, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/permissions", {
+        name: permission,
+      });
+
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ایجاد مجوز",
+      });
+    }
+  }
+);
+
+
+export const checkPermissionNameIsUniqueAsync = createAsyncThunk(
+  "permission/checkPermissionNameIsUnique",
+  async (permissionName: string, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/permissions/permission-name-is-unique/${permissionName}`);
+      return response.data == 1 ? true : false;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای چک کردن یکتایی مجوز",
+      });
+    }
+  }
+);
+
 export const fetchPermissionsAsync = createAsyncThunk(
   "permission/fetchPermissions",
   async (

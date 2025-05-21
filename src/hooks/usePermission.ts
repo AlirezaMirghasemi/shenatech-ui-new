@@ -1,5 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
+  checkPermissionNameIsUniqueAsync,
+  createPermissionAsync,
   fetchPermissionsAsync,
   fetchRoleNotPermissionsAsync,
   fetchRolePermissionsAsync,
@@ -12,10 +14,22 @@ export const usePermission = () => {
     data: permissions,
     assigned,
     unassigned,
-    meta:meta,
+    meta: meta,
     loading,
     error,
+    uniqueLoading,
   } = useAppSelector((state) => state.permissions);
+  const createPermission = useCallback(
+    (permissionName: string) => {
+      try {
+        return dispatch(createPermissionAsync(permissionName)).unwrap();
+      } catch (error) {
+        console.error("Error creating permission:", error);
+        return null;
+      }
+    },
+    [dispatch]
+  );
   const fetchPermissions = useCallback(
     (page?: string, perPage?: string) => {
       try {
@@ -54,7 +68,20 @@ export const usePermission = () => {
     },
     [dispatch]
   );
-
+  const permissionNameIsUnique = useCallback(
+    async (permissionName: string): Promise<boolean> => {
+      try {
+        const result = await dispatch(
+          checkPermissionNameIsUniqueAsync(permissionName)
+        ).unwrap();
+        return result as boolean;
+      } catch (error) {
+        console.error("Error checking permission name uniqueness:", error);
+        return false;
+      }
+    },
+    [dispatch]
+  );
   return {
     assigned,
     unassigned,
@@ -62,10 +89,13 @@ export const usePermission = () => {
     meta,
     error,
     loading,
+    uniqueLoading,
     actions: {
+      createPermission,
       fetchPermissions,
       fetchRolePermissions,
       fetchRoleNotPermissions,
+      permissionNameIsUnique,
     },
   };
 };

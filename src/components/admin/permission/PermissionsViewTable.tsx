@@ -10,7 +10,8 @@ import { useEffect, useState } from "react";
 import PersianDate from "persian-date";
 import { usePermission } from "@/hooks/usePermission";
 import { Permission } from "@/types/Permission";
-import { FaEye, FaPen, FaTrashCan, FaUserPen } from "react-icons/fa6";
+import { FaEye, FaTrashCan, FaUserPen } from "react-icons/fa6";
+import CreatePermissionModal from "./CreatePermissionModal";
 
 export default function PermissionsViewTable() {
   const {
@@ -31,12 +32,12 @@ export default function PermissionsViewTable() {
     fetchPermissionsData();
   }, [permissionsPage]);
 //   const [assignPermissionModal, setAssignPermissionModal] = useState(false);
-//   const [createRoleModal, setCreateRoleModal] = useState(false);
+  const [createPermissionModal, setCreatePermissionModal] = useState(false);
 //   const [editRoleModal, setEditRoleModal] = useState(false);
 //   const [deleteRoleModal, setDeleteRoleModal] = useState(false);
-//   function onCloseCreateRoleModal() {
-//     setCreateRoleModal(false);
-//   }
+  function onCloseCreatePermissionModal() {
+    setCreatePermissionModal(false);
+  }
 //   function onCloseDeleteRoleModal() {
 //     setDeleteRoleModal(false);
 //     setRoleId(null);
@@ -67,7 +68,7 @@ export default function PermissionsViewTable() {
           name: "Create",
           caption: "ایجاد مجوز",
           handler: () => {
-            //setCreateRoleModal(true);
+            setCreatePermissionModal(true);
           },
         },
       ],
@@ -116,7 +117,7 @@ export default function PermissionsViewTable() {
       },
       {
         name: "assignPermission",
-        caption: "تخصیص مجوز",
+        caption: "تخصیص به نقش",
         icon: <FaUserPen />,
         color: "primary",
         className: "!rounded-none",
@@ -126,17 +127,7 @@ export default function PermissionsViewTable() {
           //     : onOpenAssignPermissionModal(row),
         },
       },
-      {
-        name: "Edit",
-        caption: "ویرایش",
-        icon: <FaPen />,
-        color: "warning",
-        className: "!rounded-none",
-        handler: () => {
-        //   setRole(row);
-        //   setEditRoleModal(true);
-        },
-      },
+
       {
         name: "Delete",
         caption: "حذف",
@@ -180,11 +171,7 @@ export default function PermissionsViewTable() {
           setEditRoleModal={setEditRoleModal}
         />
       )}
-      <CreateRoleModal
-        setCreateRoleModal={setCreateRoleModal}
-        createRoleModal={createRoleModal}
-        onCloseCreateRoleModal={onCloseCreateRoleModal}
-      />
+
       {role && (
         <DeleteRoleModal
           deleteRoleModal={deleteRoleModal}
@@ -193,6 +180,11 @@ export default function PermissionsViewTable() {
           onCloseDeleteRoleModal={onCloseDeleteRoleModal}
         />
       )} */}
+      <CreatePermissionModal
+        setCreatePermissionModal={setCreatePermissionModal}
+        createPermissionModal={createPermissionModal}
+        onCloseCreatePermissionModal={onCloseCreatePermissionModal}
+      />
     </>
   );
 }

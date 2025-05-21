@@ -18,7 +18,6 @@ export const createRoleSchema = (checkRoleNameIsUnique: (roleName: string) => Pr
               fieldValue: value,
               checkUniqueFunction: checkRoleNameIsUnique,
             });
-            console.log("isUnique:", isUnique);
             return isUnique;
           }
           return false;
