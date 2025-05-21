@@ -21,6 +21,7 @@ export const TextInputThemeConfig = createTheme({
         md: "p-3 text-sm",
         lg: "p-4 text-base",
       },
+
       colors: {
         default: "focus:border-border-focus",
         info: "border-[var(--colors-status-info-border)] focus:border-[var(--colors-status-info-border)] focus:ring-[var(--colors-status-info-border)]",

@@ -88,6 +88,7 @@ export default function CreatePermissionForm({
         disabled={loading === DataStatus.PENDING}
         loading={uniqueLoading === DataStatus.PENDING}
         data={actionOptions}
+
       />
 
       <DynamicInputField

@@ -12,6 +12,7 @@ import { usePermission } from "@/hooks/usePermission";
 import { Permission } from "@/types/Permission";
 import { FaEye, FaTrashCan, FaUserPen } from "react-icons/fa6";
 import CreatePermissionModal from "./CreatePermissionModal";
+import DeletePermissionModal from "./DeletePermissionModal";
 
 export default function PermissionsViewTable() {
   const {
@@ -23,7 +24,7 @@ export default function PermissionsViewTable() {
   } = usePermission();
   const [permissionsPage, setPermissionsPage] = useState("1");
   const [selectedPermissionId, setSelectedPermissionId] = useState<number | null>(null);
-//   const [permission, setPermission] = useState<Permission | null>(null);
+  const [permission, setPermission] = useState<Permission | null>(null);
   useEffect(() => {
     const fetchPermissionsData = async () => {
       await fetchPermissions(permissionsPage, "5");
@@ -34,15 +35,14 @@ export default function PermissionsViewTable() {
 //   const [assignPermissionModal, setAssignPermissionModal] = useState(false);
   const [createPermissionModal, setCreatePermissionModal] = useState(false);
 //   const [editRoleModal, setEditRoleModal] = useState(false);
-//   const [deleteRoleModal, setDeleteRoleModal] = useState(false);
+  const [deletePermissionModal, setDeletePermissionModal] = useState(false);
   function onCloseCreatePermissionModal() {
     setCreatePermissionModal(false);
   }
-//   function onCloseDeleteRoleModal() {
-//     setDeleteRoleModal(false);
-//     setRoleId(null);
-//     setRole(null);
-//   }
+  function onCloseDeletePermissionModal() {
+    setDeletePermissionModal(false);
+    setPermission(null);
+  }
 //   function onCloseEditRoleModal() {
 //     setEditRoleModal(false);
 //     setSelectedRoleId(null);
@@ -134,9 +134,9 @@ export default function PermissionsViewTable() {
         icon: <FaTrashCan />,
         color: "danger",
         className: "!rounded-r-none",
-        handler: () => {
-        //   setRole(row);
-        //   setDeleteRoleModal(true);
+        handler: (row) => {
+          setPermission(row);
+          setDeletePermissionModal(true);
         },
       },
     ],
@@ -172,19 +172,20 @@ export default function PermissionsViewTable() {
         />
       )}
 
-      {role && (
-        <DeleteRoleModal
-          deleteRoleModal={deleteRoleModal}
-          setDeleteRoleModal={setDeleteRoleModal}
-          roleId={role.id}
-          onCloseDeleteRoleModal={onCloseDeleteRoleModal}
-        />
-      )} */}
+       */}
       <CreatePermissionModal
         setCreatePermissionModal={setCreatePermissionModal}
         createPermissionModal={createPermissionModal}
         onCloseCreatePermissionModal={onCloseCreatePermissionModal}
       />
+      {permission && (
+        <DeletePermissionModal
+          deletePermissionModal={deletePermissionModal}
+          setDeletePermissionModal={setDeletePermissionModal}
+          permissionId={permission.id}
+          onCloseDeletePermissionModal={onCloseDeletePermissionModal}
+        />
+      )}
     </>
   );
 }

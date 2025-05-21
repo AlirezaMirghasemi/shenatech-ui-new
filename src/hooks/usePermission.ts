@@ -2,6 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   checkPermissionNameIsUniqueAsync,
   createPermissionAsync,
+  deletePermissionAsync,
   fetchPermissionsAsync,
   fetchRoleNotPermissionsAsync,
   fetchRolePermissionsAsync,
@@ -25,7 +26,7 @@ export const usePermission = () => {
         return dispatch(createPermissionAsync(permissionName)).unwrap();
       } catch (error) {
         console.error("Error creating permission:", error);
-        return null;
+        throw error;
       }
     },
     [dispatch]
@@ -36,7 +37,7 @@ export const usePermission = () => {
         return dispatch(fetchPermissionsAsync({ page, perPage })).unwrap();
       } catch (error) {
         console.error("Error fetching permissions:", error);
-        return [];
+        throw error;
       }
     },
     [dispatch]
@@ -49,7 +50,7 @@ export const usePermission = () => {
         ).unwrap();
       } catch (error) {
         console.error("Error fetching role permissions:", error);
-        return [];
+        throw error;
       }
     },
     [dispatch]
@@ -63,7 +64,18 @@ export const usePermission = () => {
         ).unwrap();
       } catch (error) {
         console.error("Error fetching role not permissions:", error);
-        return [];
+        throw error;
+      }
+    },
+    [dispatch]
+  );
+  const deletePermission = useCallback(
+    async (permissionId: number) => {
+      try {
+        return await dispatch(deletePermissionAsync(permissionId)).unwrap();
+      } catch (error) {
+        console.error("Error deleting permission:", error);
+        throw error;
       }
     },
     [dispatch]
@@ -96,6 +108,7 @@ export const usePermission = () => {
       fetchRolePermissions,
       fetchRoleNotPermissions,
       permissionNameIsUnique,
+      deletePermission,
     },
   };
 };

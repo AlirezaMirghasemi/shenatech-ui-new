@@ -34,7 +34,8 @@ export default function RootLayout({
               label: "replace",
               spinner: "replace",
               dropdown: "replace",
-              pagination:"replace"
+              pagination:"replace",
+              select:"replace",
             }}
           >
             <Toaster />

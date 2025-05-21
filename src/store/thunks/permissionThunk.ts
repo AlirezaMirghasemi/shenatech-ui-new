@@ -44,7 +44,28 @@ export const checkPermissionNameIsUniqueAsync = createAsyncThunk(
     }
   }
 );
-
+export const deletePermissionAsync = createAsyncThunk(
+  "permission/deletePermission",
+  async (permissionId: number | null, { rejectWithValue }) => {
+    try {
+      if (permissionId) {
+        const response = await api.delete(`/permissions/${permissionId}`);
+        return response.data.data;
+      } else {
+        throw new Error("شناسه مجوز یافت نشد!");
+      }
+    } catch (error: unknown) {
+         console.log("error");
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای حذف مجوز",
+      });
+    }
+  }
+)
 export const fetchPermissionsAsync = createAsyncThunk(
   "permission/fetchPermissions",
   async (

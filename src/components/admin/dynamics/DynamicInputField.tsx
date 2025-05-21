@@ -25,7 +25,7 @@ export default function DynamicInputField({
   multiple,
   defaultValue,
   loading,
-...inputFieldProps
+  ...inputFieldProps
 }: IDynamicInputField) {
   const [field, meta] = useField(id);
   const { setFieldValue } = useFormikContext();
@@ -48,7 +48,7 @@ export default function DynamicInputField({
       )}
       {type == InputType.HIDDEN && (
         <input
-        {...inputFieldProps}
+          {...inputFieldProps}
           {...field}
           name={name}
           id={id}
@@ -61,7 +61,7 @@ export default function DynamicInputField({
         type == InputType.EMAIL ||
         type == InputType.PASSWORD) && (
         <TextInput
-        {...inputFieldProps}
+          {...inputFieldProps}
           addon={loading ? <Spinner size="sm" color="warning" /> : undefined}
           {...field}
           name={name}
@@ -82,7 +82,7 @@ export default function DynamicInputField({
       )}
       {type == InputType.TEXTAREA && (
         <Textarea
-        {...inputFieldProps}
+          {...inputFieldProps}
           {...field}
           disabled={disabled}
           id={id}
@@ -102,8 +102,8 @@ export default function DynamicInputField({
 
       {type == InputType.FILE && (
         <FileInput
-        {...inputFieldProps}
-        {...field}
+          {...inputFieldProps}
+          {...field}
           id={id}
           name={name}
           onChange={(event) => {
@@ -116,7 +116,7 @@ export default function DynamicInputField({
       {type == InputType.SELECT && (
         <Select
           {...inputFieldProps}
-        {...field}
+          {...field}
           id={id}
           disabled={disabled}
           className={className}
@@ -130,14 +130,24 @@ export default function DynamicInputField({
           }`}
           multiple={multiple}
         >
-          <option value="" disabled>
-            {placeholder}
-          </option>
-          {data?.map((option) => (
-            <option key={option.id} value={option.id}>
-              {option.name}
+          {data?.length == 0 ? (
+            <option value="" disabled>
+              {" "}
+              محتوایی برای نمایش وجود ندارد
             </option>
-          ))}
+          ) : (
+            <>
+              <option value="" disabled>
+                  {placeholder}
+              </option>
+              {data?.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </>
+          )}
+
         </Select>
       )}
 
