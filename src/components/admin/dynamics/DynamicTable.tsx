@@ -1,6 +1,7 @@
 import EmptyState from "@/components/common/EmptyState";
 import LoadingSkeleton from "@/components/common/LoadingSkeleton";
 import ValidatingError from "@/components/common/ValidatingError";
+import { toggleAll, toggleRow } from "@/helpers/TableWithCheckBox";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import {
   Button,
@@ -19,15 +20,9 @@ import {
 export default function DynamicTable<T extends object>({
   dynamicTable,
   setPage,
-  selectedIds,
-  onToggleRow,
-  onToggleAll,
 }: {
   dynamicTable: IDynamicTable<T>;
   setPage?: (page: string) => void;
-  selectedIds?: Set<T[keyof T]>;
-  onToggleRow?: (id: T[keyof T]) => void;
-  onToggleAll?: (checked: boolean) => void;
 }) {
   if (dynamicTable.loading) return <LoadingSkeleton />;
   if (dynamicTable.error) return <ValidatingError error={dynamicTable.error} />;
@@ -98,25 +93,40 @@ export default function DynamicTable<T extends object>({
                         {dynamicTable.actions && (
                           <TableHeadCell>عملیات</TableHeadCell>
                         )}
-                        {dynamicTable.checkbox && (
+                        {dynamicTable.checkboxTable && (
                           <TableHeadCell
                             className={dynamicTable.columns[0].className ?? ""}
                           >
                             <Checkbox
                               checked={
-                                selectedIds
-                                  ? selectedIds.size ===
-                                    dynamicTable.data.length
-                                  : false
+                                dynamicTable.checkboxTable.selectedIds.size >
+                                  0 &&
+                                dynamicTable.checkboxTable.selectedIds.size ===
+                                  dynamicTable.data.length
                               }
                               indeterminate={
-                                !!selectedIds &&
-                                selectedIds.size > 0 &&
-                                selectedIds.size < dynamicTable.data.length
+                                dynamicTable.checkboxTable.selectedIds.size >
+                                  0 &&
+                                dynamicTable.checkboxTable.selectedIds.size <
+                                  dynamicTable.data.length
                               }
-                              onChange={(e) =>
-                                onToggleAll?.(e.currentTarget.checked)
-                              }
+                              onChange={(e) => {
+                                if (dynamicTable.data.length === 0) return;
+                                if (
+                                  dynamicTable.checkboxTable &&
+                                  dynamicTable.checkboxTable?.setSelectedIds
+                                ) {
+                                  toggleAll(
+                                    e.target.checked,
+                                    dynamicTable.checkboxTable.setSelectedIds,
+                                    dynamicTable.data.map((row) => ({
+                                      id: row[dynamicTable.rowKey] as number,
+                                    }))
+                                  );
+                                }
+                              }}
+                              aria-label="Select all"
+                              className="mx-auto"
                             />
                           </TableHeadCell>
                         )}
@@ -128,7 +138,15 @@ export default function DynamicTable<T extends object>({
                           key={String(row[dynamicTable.rowKey])}
                           className={`
     ${dynamicTable.className?.(row) ?? ""}
-    ${selectedIds?.has(row[dynamicTable.rowKey]) ? "!bg-accent/25" : ""}
+    ${
+      dynamicTable.checkboxTable
+        ? dynamicTable.checkboxTable.selectedIds?.has(
+            row[dynamicTable.rowKey] as number
+          )
+          ? "!bg-accent/25"
+          : ""
+        : ""
+    }
   `}
                         >
                           {dynamicTable.columns.map((column) => (
@@ -171,20 +189,27 @@ export default function DynamicTable<T extends object>({
                               </ButtonGroup>
                             </TableCell>
                           )}
-                          {dynamicTable.checkbox && (
-                            <TableCell
-                              className={
-                                dynamicTable.columns[0].className ?? ""
-                              }
-                            >
+                          {dynamicTable.checkboxTable && (
+                            <TableCell className="w-4 text-center">
                               <Checkbox
-                                checked={
-                                  selectedIds?.has(row[dynamicTable.rowKey]) ??
-                                  false
-                                }
-                                onChange={() =>
-                                  onToggleRow?.(row[dynamicTable.rowKey])
-                                }
+                                checked={dynamicTable.checkboxTable.selectedIds.has(
+                                  row[dynamicTable.rowKey] as number
+                                )}
+                                onChange={() => {
+                                  if (
+                                    dynamicTable.checkboxTable &&
+                                    dynamicTable.checkboxTable.setSelectedIds
+                                  ) {
+                                    toggleRow(
+                                      row[dynamicTable.rowKey] as number,
+                                      dynamicTable.checkboxTable.setSelectedIds
+                                    );
+                                  }
+                                }}
+                                aria-label={`Select row ${
+                                  row[dynamicTable.rowKey]
+                                }`}
+                                className="mx-auto"
                               />
                             </TableCell>
                           )}

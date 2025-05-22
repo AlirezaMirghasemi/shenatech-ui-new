@@ -40,7 +40,6 @@ export default function AssignPermissionForm({
     values: AssignPermission,
     { setSubmitting }: FormikHelpers<AssignPermission>
   ) => {
-    console.log("values:", values);
     try {
       await assignRolePermissions(role.id, values.permissionIds);
       await toast.success("مجوزها با موفقیت تخصیص داده شدند.");

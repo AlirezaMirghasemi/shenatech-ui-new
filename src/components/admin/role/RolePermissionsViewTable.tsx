@@ -40,24 +40,6 @@ export default function RolePermissionsViewTable({
     fetchRolePermissionsData();
   }, [roleId, rolePermissionsPage]);
 
-  function toggleRow(id: string | number) {
-    const numericId = typeof id === "string" ? Number(id) : id;
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(numericId)) next.delete(numericId);
-      else next.add(numericId);
-      return next;
-    });
-  }
-  function toggleAll(checked: boolean) {
-    if (checked) {
-      const allIds = new Set<number>(assigned.map((row) => row.id));
-      setSelectedIds(allIds);
-    } else {
-      setSelectedIds(new Set());
-    }
-  }
-
   async function onCloseDeleteRolePermissionsModal() {
     setDeleteRolePermissionsModal(false);
     setSelectedIds(new Set());
@@ -121,16 +103,16 @@ export default function RolePermissionsViewTable({
     error: error?.toString(),
     loading: loading === DataStatus.PENDING,
     pagination: meta,
-    checkbox: true,
+    checkboxTable: {
+      selectedIds,
+      setSelectedIds,
+    },
   };
   return (
     <>
       <DynamicTable
         dynamicTable={InitialRolePermissionsViewTable}
         setPage={setRolePermissionsPage}
-        selectedIds={selectedIds}
-        onToggleRow={toggleRow}
-        onToggleAll={toggleAll}
       />
       {roleId && (
         <DeleteRolePermissionsModal

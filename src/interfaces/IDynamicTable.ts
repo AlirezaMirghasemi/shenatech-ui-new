@@ -16,13 +16,13 @@ export interface IDynamicTable<T extends object> {
   className?: (row: T) => string;
   ariaLabel?: string;
   rowKey: keyof T;
-    actionCellClassName?: string;
-    checkbox?: boolean;
-     selectedIds?: Set<T[keyof T]>;
-  onToggleRow?: (id: T[keyof T]) => void;
-  onToggleAll?: (checked: boolean) => void;
+  actionCellClassName?: string;
+  checkboxTable?: ICheckBoxTable;
 }
-
+export interface ICheckBoxTable {
+  selectedIds: Set<number>;
+  setSelectedIds: React.Dispatch<React.SetStateAction<Set<number>>>;
+}
 export interface IDynamicTableColumn<T extends object> {
   header: string;
   HeadCellClassName?: string;
@@ -38,9 +38,9 @@ export interface IDynamicTableColumn<T extends object> {
 
 export interface IDynamicTableAction<T extends object> {
   name: string;
-  caption:string;
+  caption: string;
   icon: ReactNode;
-  color?:string;
+  color?: string;
   handler?: (row: T) => void;
   className?: string;
   disabled?: boolean | ((row: T) => boolean);
@@ -53,13 +53,11 @@ export interface IDynamicTableHeader {
   actions?: IDynamicTableHeaderAction[];
 }
 export interface IDynamicTableHeaderAction {
-    name: string;
-  caption:string;
+  name: string;
+  caption: string;
   icon?: ReactNode;
-  handler:()=>void;
+  handler: () => void;
   className?: string;
   disabled?: boolean;
-    color?: string;
-
-
+  color?: string;
 }

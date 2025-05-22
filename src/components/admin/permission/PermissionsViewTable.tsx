@@ -22,6 +22,8 @@ export default function PermissionsViewTable() {
     meta,
     actions: { fetchPermissions },
   } = usePermission();
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+
   const [permissionsPage, setPermissionsPage] = useState("1");
   const [selectedPermissionId, setSelectedPermissionId] = useState<number | null>(null);
   const [permission, setPermission] = useState<Permission | null>(null);
@@ -43,22 +45,6 @@ export default function PermissionsViewTable() {
     setDeletePermissionModal(false);
     setPermission(null);
   }
-//   function onCloseEditRoleModal() {
-//     setEditRoleModal(false);
-//     setSelectedRoleId(null);
-//   }
-//   function onCloseAssignPermissionModal() {
-//     setAssignPermissionModal(false);
-//     setSelectedRoleId(null);
-//     setRoleId(null);
-//     setRole(null);
-//   }
-//   function onOpenAssignPermissionModal(role: Role) {
-//     setRole(role);
-//     setSelectedRoleId(role.id);
-//     setRoleId(role.id);
-//     setAssignPermissionModal(true);
-//   }
 
   const InitialPermissionsViewTable: IDynamicTable<Permission> = {
     header: {
@@ -141,6 +127,10 @@ export default function PermissionsViewTable() {
       },
     ],
     rowKey: "id",
+    checkboxTable: {
+      selectedIds,
+      setSelectedIds
+    },
     error: error?.toString(),
     loading: loading === DataStatus.PENDING,
     pagination: meta,
