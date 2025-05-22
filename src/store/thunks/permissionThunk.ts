@@ -44,12 +44,14 @@ export const checkPermissionNameIsUniqueAsync = createAsyncThunk(
     }
   }
 );
-export const deletePermissionAsync = createAsyncThunk(
-  "permission/deletePermission",
-  async (permissionId: number | null, { rejectWithValue }) => {
+export const deletePermissionsAsync = createAsyncThunk(
+  "permission/deletePermissions",
+  async (permissionIds: number[] | null, { rejectWithValue }) => {
     try {
-      if (permissionId) {
-        const response = await api.delete(`/permissions/${permissionId}`);
+      if (permissionIds) {
+        const response = await api.delete(`/permissions`, {
+           data: { permissionIds: permissionIds },
+        });
         return response.data.data;
       } else {
         throw new Error("شناسه مجوز یافت نشد!");

@@ -6,7 +6,7 @@ import { PermissionState } from "@/constants/state/Permission";
 import {
   checkPermissionNameIsUniqueAsync,
   createPermissionAsync,
-  deletePermissionAsync,
+  deletePermissionsAsync,
   fetchPermissionsAsync,
   fetchRoleNotPermissionsAsync,
   fetchRolePermissionsAsync,
@@ -44,15 +44,15 @@ const permissionSlice = createSlice({
           state.error = null;
         }
       })
-      .addCase(deletePermissionAsync.pending, (state) => {
+      .addCase(deletePermissionsAsync.pending, (state) => {
         state.loading = DataStatus.PENDING;
         state.error = null;
       })
-      .addCase(deletePermissionAsync.fulfilled, (state) => {
+      .addCase(deletePermissionsAsync.fulfilled, (state) => {
         state.loading = DataStatus.SUCCEEDED;
         state.error = null;
       })
-      .addCase(deletePermissionAsync.rejected, (state, action) => {
+      .addCase(deletePermissionsAsync.rejected, (state, action) => {
         state.loading = DataStatus.FAILED;
         state.data = [];
         if (typeof action.payload === "string") {

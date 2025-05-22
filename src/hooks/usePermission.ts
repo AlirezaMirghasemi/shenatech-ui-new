@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   checkPermissionNameIsUniqueAsync,
   createPermissionAsync,
-  deletePermissionAsync,
+  deletePermissionsAsync,
   fetchPermissionsAsync,
   fetchRoleNotPermissionsAsync,
   fetchRolePermissionsAsync,
@@ -70,9 +70,9 @@ export const usePermission = () => {
     [dispatch]
   );
   const deletePermission = useCallback(
-    async (permissionId: number) => {
+    async (permissionIds: number[]) => {
       try {
-        return await dispatch(deletePermissionAsync(permissionId)).unwrap();
+        return await dispatch(deletePermissionsAsync(permissionIds)).unwrap();
       } catch (error) {
         console.error("Error deleting permission:", error);
         throw error;
