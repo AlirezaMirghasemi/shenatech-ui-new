@@ -6,6 +6,7 @@ import { PermissionState } from "@/constants/state/Permission";
 import {
   checkPermissionNameIsUniqueAsync,
   createPermissionAsync,
+  deletePermissionRolesAsync,
   deletePermissionsAsync,
   fetchPermissionsAsync,
   fetchRoleNotPermissionsAsync,
@@ -170,7 +171,26 @@ const permissionSlice = createSlice({
         } else {
           state.error = null;
         }
-      });
+      })
+      .addCase(deletePermissionRolesAsync.pending, (state) => {
+              state.loading = DataStatus.PENDING;
+              state.error = null;
+            })
+            .addCase(deletePermissionRolesAsync.fulfilled, (state) => {
+              state.loading = DataStatus.SUCCEEDED;
+              state.error = null;
+            })
+            .addCase(deletePermissionRolesAsync.rejected, (state, action) => {
+              state.loading = DataStatus.FAILED;
+              state.data = [];
+              if (typeof action.payload === "string") {
+                state.error = action.payload || {
+                  message: "Failed to delete permission roles",
+                };
+              } else {
+                state.error = null;
+              }
+            });
   },
 });
 export default permissionSlice.reducer;

@@ -77,9 +77,7 @@ export default function AssignPermissionForm({
           className="rounded-lg block w-full p-0.2 mb-2"
           multiple={true}
           data={
-            loading === DataStatus.PENDING
-              ? [{ id: 0, name: "در حال بارگذاری..." }]
-              : unassigned
+             unassigned
           }
         />
       </DynamicForm>

@@ -20,13 +20,11 @@ export default function RolesPage() {
       />
       <Tabs
         variant="fullWidth"
-        className=" mt-5 max-w-[85rem]  sm:px-2   mx-auto  "
       >
         <TabItem
           active
           title="مجوز ها"
           icon={FaUserLock}
-          className="cursor-pointer"
         >
           <RolePermissionsViewTable
             roleId={roleId ? roleId : null}
@@ -34,7 +32,7 @@ export default function RolesPage() {
             rolePermissionsPage={rolePermissionsPage}
           />
         </TabItem>
-        <TabItem title="کاربران" icon={FaUsersGear} className="cursor-pointer">
+        <TabItem title="کاربران" icon={FaUsersGear} >
           <RoleUsersViewTable
             roleId={roleId ? roleId : null}
             setRoleUsersPage={setRoleUsersPage}

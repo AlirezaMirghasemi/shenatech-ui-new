@@ -7,12 +7,10 @@ import { FaSkullCrossbones } from "react-icons/fa6";
 import { toast } from "sonner";
 
 export default function DeleteRoleModal({
-  setDeleteRoleModal,
   deleteRoleModal,
   roleId,
   onCloseDeleteRoleModal,
 }: {
-  setDeleteRoleModal: (value: boolean) => void;
   deleteRoleModal: boolean;
   roleId: number | null;
   onCloseDeleteRoleModal: () => void;
@@ -27,11 +25,12 @@ export default function DeleteRoleModal({
       try {
         await deleteRole(roleId);
         await fetchRoles(meta?.current_page, meta?.per_page);
-        setDeleteRoleModal(false);
         toast.success("نقش با موفقیت حذف شد!");
       } catch (err: unknown) {
         const axiosError = err as AxiosError<ApiError>;
         toast.error(axiosError.message);
+      } finally {
+        onCloseDeleteRoleModal();
       }
     }
   };

@@ -133,6 +133,37 @@ export const fetchRolePermissionsAsync = createAsyncThunk(
     }
   }
 );
+
+export const deletePermissionRolesAsync = createAsyncThunk(
+  "role/revokeRoles",
+  async (
+    {
+      permissionId,
+      roleIds,
+    }: {
+      permissionId: number;
+      roleIds: Set<number>;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.delete(`/permissions/${permissionId}/revoke-roles`, {
+        data: { roleIds: Array.from(roleIds) },
+      });
+
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای حذف نقش از مجوز",
+      });
+    }
+  }
+);
+
 export const fetchRoleNotPermissionsAsync = createAsyncThunk(
   "role/fetchRoleNotPermissions",
   async ({ roleId }: { roleId: number }, { rejectWithValue }) => {

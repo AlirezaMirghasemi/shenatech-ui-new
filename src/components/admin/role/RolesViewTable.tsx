@@ -217,7 +217,6 @@ export default function RolesViewTable({
       {role && (
         <DeleteRoleModal
           deleteRoleModal={deleteRoleModal}
-          setDeleteRoleModal={setDeleteRoleModal}
           roleId={role.id}
           onCloseDeleteRoleModal={onCloseDeleteRoleModal}
         />

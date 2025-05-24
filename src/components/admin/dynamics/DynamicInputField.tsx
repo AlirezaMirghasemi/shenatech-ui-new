@@ -130,15 +130,20 @@ export default function DynamicInputField({
           }`}
           multiple={multiple}
         >
+          {loading && (
+            <option value={0} selected disabled>
+              در حال بارگذاری...
+            </option>
+          )}
           {data?.length == 0 ? (
-            <option value="" disabled>
+            <option value={0} disabled selected>
               {" "}
               محتوایی برای نمایش وجود ندارد
             </option>
           ) : (
             <>
-              <option value="" disabled>
-                  {placeholder}
+              <option value="" selected>
+                {placeholder}
               </option>
               {data?.map((item) => (
                 <option key={item.id} value={item.id}>
@@ -147,7 +152,6 @@ export default function DynamicInputField({
               ))}
             </>
           )}
-
         </Select>
       )}
 

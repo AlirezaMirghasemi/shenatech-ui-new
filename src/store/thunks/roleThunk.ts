@@ -173,3 +173,39 @@ export const checkRoleNameIsUniqueAsync = createAsyncThunk(
     }
   }
 );
+export const fetchPermissionRolesAsync = createAsyncThunk(
+  "role/fetchPermissionRoles",
+  async (
+    {
+      permissionId,
+      perPage = "10",
+      page = "1",
+    }: {
+      permissionId: number;
+      perPage?: string;
+      page?: string;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.get(`/permissions/${permissionId}/roles`, {
+        params: {
+          page: page,
+          per_page: perPage,
+        },
+      });
+      return {
+        data: response.data.data,
+        meta: response.data.meta,
+      };
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای دریافت نقش های مجوز",
+      });
+    }
+  }
+);

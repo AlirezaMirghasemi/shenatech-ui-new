@@ -11,6 +11,7 @@ import { SpinnerThemeConfig } from "./SpinnerThemeConfig";
 import { DropdownThemeConfig } from "./DropdownThemeConfig";
 import { PaginationThemeConfig } from "./PaginationThemeConfig";
 import { SelectInputThemeConfig } from "./SelectInputTheme";
+import{TabsThemeConfig}from "./TabsThemeConfig"
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -24,5 +25,6 @@ export const ManageTheme = createTheme({
   spinner: { ...SpinnerThemeConfig },
   dropdown: { ...DropdownThemeConfig },
   pagination:{...PaginationThemeConfig},
-  select:{... SelectInputThemeConfig}
+  select:{... SelectInputThemeConfig},
+  tabs:{...TabsThemeConfig}
 });

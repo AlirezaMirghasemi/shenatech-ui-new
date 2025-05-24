@@ -10,6 +10,7 @@ export interface Permission {
 export interface AssignRolePermissions{
     permissionIds: number[];
 }
+
 export interface CreatePermission{
 permissionName:string;
 actionName:Actions | "";

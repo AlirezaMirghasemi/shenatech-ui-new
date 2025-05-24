@@ -1,5 +1,7 @@
 import { DataStatus } from "@/constants/data/DataStatus";
 import { usePermission } from "@/hooks/usePermission";
+import { ApiError } from "@/types/Api";
+import { AxiosError } from "axios";
 import { Button, Modal, ModalBody, ModalHeader, Spinner } from "flowbite-react";
 import { FaSkullCrossbones } from "react-icons/fa6";
 import { toast } from "sonner";
@@ -27,10 +29,10 @@ export default function DeletePermissionsModal({
         await fetchPermissions(meta?.current_page, meta?.per_page);
         setDeletePermissionsModal(false);
         toast.success("مجوز با موفقیت حذف شد!");
-      } catch (error) {
-        console.error("Error deleting permission:", error);
-        toast.error(" خطا در حذف مجوز ها.");
-      } finally {
+      } catch (err: unknown) {
+              const axiosError = err as AxiosError<ApiError>;
+              toast.error(axiosError.message);
+            } finally {
         await fetchPermissions(meta?.current_page, meta?.per_page);
         setDeletePermissionsModal(false);
       }

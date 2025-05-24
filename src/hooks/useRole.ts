@@ -7,6 +7,7 @@ import {
   deleteRoleAsync,
   deleteRolePermissionsAsync,
   editRoleAsync,
+  fetchPermissionRolesAsync,
   fetchRolesAsync,
 } from "@/store/thunks/roleThunk";
 
@@ -18,6 +19,7 @@ export const useRole = () => {
     loading,
     error,
     uniqueLoading,
+    assigned
   } = useAppSelector((state) => state.roles);
   const createRole = useCallback(
     (roleName: string) => {
@@ -76,6 +78,19 @@ export const useRole = () => {
     },
     [dispatch]
   );
+  const fetchPermissionRoles = useCallback(
+      async (permissionId: number, perPage?: string, page?: string) => {
+        try {
+          return await dispatch(
+            fetchPermissionRolesAsync({ permissionId, perPage, page })
+          ).unwrap();
+        } catch (error) {
+          console.error("Error fetching permission roles:", error);
+          throw error;
+        }
+      },
+      [dispatch]
+    );
   const deleteRolePermissions = useCallback(
     (roleId: number, permissionIds: Set<number>) => {
       try {
@@ -113,6 +128,7 @@ export const useRole = () => {
     error,
     loading,
     uniqueLoading,
+    assigned,
     actions: {
       fetchRoles,
       assignRolePermissions,
@@ -120,7 +136,8 @@ export const useRole = () => {
       roleNameIsUnique,
       createRole,
       editRole,
-      deleteRole
+      deleteRole,
+      fetchPermissionRoles
     },
   };
 };

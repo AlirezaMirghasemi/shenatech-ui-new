@@ -12,8 +12,17 @@ import { Permission } from "@/types/Permission";
 import { FaEye, FaTrash, FaTrashCan, FaUserPen } from "react-icons/fa6";
 import CreatePermissionModal from "./CreatePermissionModal";
 import DeletePermissionModal from "./DeletePermissionsModal";
+import AssignPermissionsToRoleModal from "./AssignPermissionsToRoleModal";
 
-export default function PermissionsViewTable() {
+export default function PermissionsViewTable({
+  setPermissionId,
+  setPermissionRolesPage,
+  setPermissionUsersPage,
+}: {
+  setPermissionId: (id: number | null) => void;
+  setPermissionRolesPage: (page: string) => void;
+  setPermissionUsersPage: (page: string) => void;
+}) {
   const {
     permissions,
     loading,
@@ -34,18 +43,26 @@ export default function PermissionsViewTable() {
     const fetchPermissionsData = async () => {
       await fetchPermissions(permissionsPage, "5");
       setSelectedPermissionId(null);
+         setPermissionRolesPage("1");
+      setPermissionUsersPage("1");
+      setPermissionId(null);
     };
     fetchPermissionsData();
-  }, [permissionsPage]);
-  //   const [assignPermissionModal, setAssignPermissionModal] = useState(false);
+  }, [permissionsPage,permission]);
+  const [assignPermissionsToRoleModal, setAssignPermissionsToRoleModal] =
+    useState(false);
   const [createPermissionModal, setCreatePermissionModal] = useState(false);
-  //   const [editRoleModal, setEditRoleModal] = useState(false);
   const [deletePermissionsModal, setDeletePermissionsModal] = useState(false);
-  function onCloseCreatePermissionModal() {
+     function onCloseCreatePermissionModal() {
     setCreatePermissionModal(false);
   }
   function onCloseDeletePermissionsModal() {
     setDeletePermissionsModal(false);
+    setPermission(null);
+  }
+  function onCloseAssignPermissionsToRoleModal() {
+    setAssignPermissionsToRoleModal(false);
+    setSelectedPermissionId(null);
     setPermission(null);
   }
 
@@ -54,21 +71,31 @@ export default function PermissionsViewTable() {
       title: "مجوز ها",
       actions: [
         {
-          name: "Create",
-          caption: "ایجاد مجوز",
-          handler: () => {
-            setCreatePermissionModal(true);
-          },
-        },
-        {
           name: "delete",
-          caption: "حذف مجوز",
+          caption: "حذف مجوز ها",
           icon: <FaTrash />,
           handler: () => {
             setDeletePermissionsModal(true);
           },
           disabled: selectedIds.size === 0,
           color: "danger",
+        },
+        {
+          name: "assignPermissionsToRole",
+          caption: "تخصیص مجوز ها به نقش",
+          icon: <FaUserPen />,
+          handler: () => {
+            setAssignPermissionsToRoleModal(true);
+          },
+          disabled: selectedIds.size === 0,
+          color: "info",
+        },
+        {
+          name: "Create",
+          caption: "ایجاد مجوز",
+          handler: () => {
+            setCreatePermissionModal(true);
+          },
         },
       ],
     },
@@ -106,9 +133,9 @@ export default function PermissionsViewTable() {
       {
         name: "ShowRoleDetails",
         caption: "مشاهده ی جزییات",
-        handler: () => {
-          //   setSelectedRoleId(row.id);
-          //   setRoleId(row.id);
+        handler: (row) => {
+            setSelectedPermissionId(row.id);
+            setPermissionId(row.id);
         },
         icon: <FaEye />,
         color: "info",
@@ -120,10 +147,10 @@ export default function PermissionsViewTable() {
         icon: <FaUserPen />,
         color: "primary",
         className: "!rounded-none",
-        handler: () => {
-          //   assignPermissionModal
-          //     ? onCloseAssignPermissionModal()
-          //     : onOpenAssignPermissionModal(row),
+        handler: (row) => {
+          setPermission(row);
+          setSelectedIds(row.id ? new Set([row.id]) : new Set());
+          setAssignPermissionsToRoleModal(true);
         },
       },
 
@@ -159,39 +186,35 @@ export default function PermissionsViewTable() {
         setPage={setPermissionsPage}
       />
 
-      {/* {role && (
-        <AssignPermissionModal
-          assignPermissionModal={assignPermissionModal}
-          onCloseAssignPermissionModal={onCloseAssignPermissionModal}
-          role={role}
-          setAssignPermissionModal={setAssignPermissionModal}
-          setRoleId={setRoleId}
-        />
-      )}
-      {role && (
-        <EditRoleModal
-          editRoleModal={editRoleModal}
-          onCloseEditRoleModal={onCloseEditRoleModal}
-          role={role}
-          setEditRoleModal={setEditRoleModal}
-        />
-      )}
-
-       */}
       <CreatePermissionModal
         setCreatePermissionModal={setCreatePermissionModal}
         createPermissionModal={createPermissionModal}
         onCloseCreatePermissionModal={onCloseCreatePermissionModal}
       />
       {(selectedIds || permission) && (
-        <DeletePermissionModal
-          deletePermissionsModal={deletePermissionsModal}
-          setDeletePermissionsModal={setDeletePermissionsModal}
-          permissionIds={
-            selectedIds ? [...selectedIds] : permission ? [permission.id] : []
-          }
-          onCloseDeletePermissionsModal={onCloseDeletePermissionsModal}
-        />
+        <>
+          <DeletePermissionModal
+            deletePermissionsModal={deletePermissionsModal}
+            setDeletePermissionsModal={setDeletePermissionsModal}
+            permissionIds={
+              selectedIds ? [...selectedIds] : permission ? [permission.id] : []
+            }
+            onCloseDeletePermissionsModal={onCloseDeletePermissionsModal}
+          />
+          <AssignPermissionsToRoleModal
+            setAssignPermissionsToRoleModal={setAssignPermissionsToRoleModal}
+            assignPermissionsToRoleModal={assignPermissionsToRoleModal}
+            onCloseAssignPermissionsToRoleModal={
+              onCloseAssignPermissionsToRoleModal
+            }
+            permissions={permissions}
+            selectedIds={
+              selectedIds ? [...selectedIds] : permission ? [permission.id] : []
+            }
+            setSelectedIds={setSelectedIds}
+            setPermissionId={setPermissionId }
+          />
+        </>
       )}
     </>
   );
