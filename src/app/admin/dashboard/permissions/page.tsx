@@ -1,6 +1,7 @@
 "use client";
 import PermissionRolesViewTable from "@/components/admin/permission/PermissionRolesViewTable";
 import PermissionsViewTable from "@/components/admin/permission/PermissionsViewTable";
+import PermissionUsersViewTable from "@/components/admin/permission/PermissionUsersViewTable";
 import { TabItem, Tabs } from "flowbite-react";
 import { useState } from "react";
 import { FaBuildingShield, FaUsersGear } from "react-icons/fa6";
@@ -16,22 +17,24 @@ export default function PermissionsPage() {
         setPermissionRolesPage={setPermissionRolesPage}
         setPermissionUsersPage={setPermissionUsersPage}
       />
-      <Tabs variant="underline">
-        <TabItem active title="نقش ها" icon={FaBuildingShield}>
-          <PermissionRolesViewTable
-            permissionId={permissionId ? permissionId : null}
-            setPermissionRolesPage={setPermissionRolesPage}
-            permissionRolesPage={permissionRolesPage}
-          />
-        </TabItem>
-        <TabItem title="کاربران" icon={FaUsersGear}>
-          {/* <RoleUsersViewTable
-            roleId={roleId ? roleId : null}
-            setRoleUsersPage={setRoleUsersPage}
-            roleUsersPage={roleUsersPage}
-          /> */}
-        </TabItem>
-      </Tabs>
+      {permissionId && (
+        <Tabs variant="underline">
+          <TabItem active title="نقش ها" icon={FaBuildingShield}>
+            <PermissionRolesViewTable
+              permissionId={permissionId ? permissionId : null}
+              setPermissionRolesPage={setPermissionRolesPage}
+              permissionRolesPage={permissionRolesPage}
+            />
+          </TabItem>
+          <TabItem title="کاربران" icon={FaUsersGear}>
+            <PermissionUsersViewTable
+              permissionId={permissionId ? permissionId : null}
+              setPermissionUsersPage={setPermissionUsersPage}
+              permissionUsersPage={permissionUsersPage}
+            />
+          </TabItem>
+        </Tabs>
+      )}
     </>
   );
 }

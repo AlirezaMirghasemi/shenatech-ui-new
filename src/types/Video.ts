@@ -1,17 +1,22 @@
 import { User } from './User';
 import { Tag } from './Tag';
-import { Image } from './Image';
 import { Slug } from './Slug';
+import { Status } from '@/constants/data/Status';
+import { ImageType } from '@/constants/data/Type';
 
 export interface Video {
     id: number;
     title: string;
     content: string | null;
-    status: 'draft' | 'pending' | 'approved' | 'rejected';
+    status: Status;
     url: string;
     user: User;
     slug: Slug;
-    poster: Image | null;
+     poster: {
+        id: number;
+        path: string;
+        type: ImageType.VIDEO;
+      } | null;
     tags: Tag[];
     created_at: string;
     updated_at: string;

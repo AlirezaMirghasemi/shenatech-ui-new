@@ -12,6 +12,7 @@ import { DropdownThemeConfig } from "./DropdownThemeConfig";
 import { PaginationThemeConfig } from "./PaginationThemeConfig";
 import { SelectInputThemeConfig } from "./SelectInputTheme";
 import{TabsThemeConfig}from "./TabsThemeConfig"
+import { BadgeThemeConfig } from "./BadgeThemeConfig";
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -26,5 +27,6 @@ export const ManageTheme = createTheme({
   dropdown: { ...DropdownThemeConfig },
   pagination:{...PaginationThemeConfig},
   select:{... SelectInputThemeConfig},
-  tabs:{...TabsThemeConfig}
+  tabs:{...TabsThemeConfig},
+  badge:{...BadgeThemeConfig}
 });

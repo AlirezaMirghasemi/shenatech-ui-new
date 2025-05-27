@@ -1,24 +1,28 @@
+import { Status } from "@/constants/data/Status";
 import { User } from "./User";
+import { ImageType } from "@/constants/data/Type";
+import { Tag } from "./Tag";
+import { Slug } from "./Slug";
 
 export interface Article {
+  id: number;
+  title: string;
+  content: string;
+  status: Status;
+  user: User;
+  image: {
     id: number;
-    title: string;
-    content: string;
-    status: 'draft' | 'pending' | 'approved' | 'rejected';
-    user: User;
-    slug: {
-        id: number;
-        title_persian: string;
-        title_english: string;
-    };
-    poster: {
-        id: number;
-        path: string;
-        type: 'poster' | 'profile' | 'content';
-    } | null;
-    tags: {
-        id: number;
-        title_persian: string;
-        title_english: string;
-    }[];
+    path: string;
+    type: ImageType.ARTICLE;
+  } | null;
+  slug: Slug;
+  poster: {
+    id: number;
+    path: string;
+    type: ImageType.POSTER;
+  } | null;
+  tags: Tag[];
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
 }

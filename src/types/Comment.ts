@@ -1,3 +1,4 @@
+import { Status } from "@/constants/data/Status";
 import { Article } from "./Article";
 import { User } from "./User";
 import { Video } from "./Video";
@@ -5,7 +6,7 @@ import { Video } from "./Video";
 export interface Comment {
     id: number;
     content: string;
-    status: 'pending' | 'approved' | 'rejected';
+    status: Status;
     user: User;
     article: Article | null;
     video: Video | null;
