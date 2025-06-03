@@ -2,7 +2,9 @@ import DynamicCheckUniqueField from "@/helpers/CheckUniqueField";
 import { validationMessages } from "@/utils/ValidationMessages";
 import * as Yup from "yup";
 
-export const createRoleSchema = (checkRoleNameIsUnique: (roleName: string) => Promise<boolean>) =>
+export const createRoleSchema = (
+  checkRoleNameIsUnique: (roleName: string) => Promise<boolean>
+) =>
   Yup.object().shape({
     roleName: Yup.string()
       .required(validationMessages.required("نام نقش"))

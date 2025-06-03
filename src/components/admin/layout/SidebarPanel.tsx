@@ -34,8 +34,8 @@ export function SidebarPanel({
       </div>
       <DrawerItems>
         <Sidebar>
-          <SidebarItems>
-            <DynamicSidebarButtons sidebarButtons={SidebarButtons} />
+          <SidebarItems >
+            <DynamicSidebarButtons key={Math.random()}  sidebarButtons={SidebarButtons} />
           </SidebarItems>
         </Sidebar>
       </DrawerItems>

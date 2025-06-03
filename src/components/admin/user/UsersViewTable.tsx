@@ -3,12 +3,7 @@ import DynamicTable from "@/components/admin/dynamics/DynamicTable";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { useEffect, useState } from "react";
-import {
-  FaClipboardUser,
-  FaEye,
-  FaPen,
-  FaTrashCan,
-} from "react-icons/fa6";
+import { FaClipboardUser, FaEye, FaPen, FaTrashCan } from "react-icons/fa6";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import PersianDate from "persian-date";
@@ -16,6 +11,7 @@ import { User } from "@/types/User";
 import { useUser } from "@/hooks/useUser";
 import { UserStatus } from "@/constants/data/UserStatus";
 import UserProfileModal from "./UserProfileModal";
+import CreateUserModal from "./CreateUserModal";
 export default function UsersViewTable({
   setUserId,
 }: {
@@ -32,6 +28,7 @@ export default function UsersViewTable({
   //const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [userProfileModal, setUserProfileModal] = useState(false);
+  const [createUserModal, setCreateUserModal] = useState(false);
   useEffect(() => {
     const fetchUsersData = async () => {
       await fetchUsers(usersPage, "5");
@@ -47,6 +44,13 @@ export default function UsersViewTable({
     setUserProfileModal(true);
     setUser(row);
   };
+  const onOpenCreateUserModal = () => {
+    setCreateUserModal(true);
+  };
+  const onCloseCreateUserModal = () => {
+    setCreateUserModal(false);
+    setUser(null);
+  };
   const InitialUsersViewTable: IDynamicTable<User> = {
     header: {
       title: "کاربران",
@@ -55,7 +59,7 @@ export default function UsersViewTable({
           name: "Create",
           caption: "ایجاد کاربر",
           handler: () => {
-            // setCreateUserModal(true);
+            onOpenCreateUserModal();
           },
         },
       ],
@@ -172,13 +176,16 @@ export default function UsersViewTable({
         dynamicTable={InitialUsersViewTable}
         setPage={setUsersPage}
       />
+      <CreateUserModal
+        createUserModal={createUserModal}
+        onCloseCreateUserModal={onCloseCreateUserModal}
+      />
       {user && (
         <UserProfileModal
           user={user}
           onClose={onCloseUserProfileModal}
           userProfileModal={userProfileModal}
         />
-
       )}
     </>
   );

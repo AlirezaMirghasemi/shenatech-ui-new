@@ -88,7 +88,6 @@ export default function CreatePermissionForm({
         disabled={loading === DataStatus.PENDING}
         loading={uniqueLoading === DataStatus.PENDING}
         data={actionOptions}
-
       />
 
       <DynamicInputField
@@ -119,15 +118,14 @@ export default function CreatePermissionForm({
         placeholder="نام مجوز"
         label="نام مجوز"
         type={InputType.TEXT}
-        readOnly
+        readOnly={true}
         loading={uniqueLoading === DataStatus.PENDING}
       />
 
       <DynamicInputField
         id="permissionName"
         name="permissionName"
-        type={InputType.TEXT}
-        hidden
+        type={InputType.HIDDEN}
       />
 
       <PermissionFormEffects setIsUnique={setIsUnique} />

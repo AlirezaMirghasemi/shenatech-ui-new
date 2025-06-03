@@ -1,12 +1,28 @@
+// interfaces/IDynamicInputField.ts
 import { InputType } from "@/constants/data/InputType";
-import { FileInput, Select, Textarea, TextInput } from "flowbite-react";
 import { ComponentProps } from "react";
-type BaseInputProps = ComponentProps<"input"> &
-  ComponentProps<typeof TextInput> &
-  ComponentProps<typeof Textarea> &
-  ComponentProps<typeof Select> &
-  ComponentProps<typeof FileInput>;
-export default interface IDynamicInputField extends BaseInputProps{
+import { FileInput, Select, Textarea, TextInput } from "flowbite-react";
+
+// حذف props های تکراری که مستقیماً مدیریت می‌شوند
+type OmittedProps =
+  | "id"
+  | "name"
+  | "type"
+  | "placeholder"
+  | "label"
+  | "disabled"
+  | "data"
+  | "className"
+  | "multiple"
+  | "defaultValue"
+  | "loading"
+  | "helperText"
+  | "color"
+  | "onChange"
+  | "onBlur"
+  | "value";
+
+export default interface IDynamicInputField {
   id: string;
   name: string;
   type?: InputType;
@@ -18,4 +34,12 @@ export default interface IDynamicInputField extends BaseInputProps{
   multiple?: boolean;
   defaultValue?: string | number;
   loading?: boolean;
+  helperText?: string;
+  readOnly?: boolean;
+  // اضافه کردن props اختصاصی برای انواع مختلف
+  textInputProps?: Omit<ComponentProps<typeof TextInput>, OmittedProps>;
+  textareaProps?: Omit<ComponentProps<typeof Textarea>, OmittedProps>;
+  selectProps?: Omit<ComponentProps<typeof Select>, OmittedProps>;
+  fileInputProps?: Omit<ComponentProps<typeof FileInput>, OmittedProps> & React.InputHTMLAttributes<HTMLInputElement>;
+  hiddenInputProps?: Omit<ComponentProps<"input">, OmittedProps>;
 }
