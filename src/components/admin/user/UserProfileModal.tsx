@@ -33,8 +33,11 @@ export default function UserProfileModal({
                 <div className="flex space-x-4">
                   {user?.profile_image ? (
                     <Avatar
-                      img={user.profile_image.path}
+                      img={`http://localhost:8000/storage/${user.profile_image.path}`}
                       alt={user.full_name ?? ""}
+                      rounded
+                      size="lg"
+                      placeholderInitials={user.username}
                     />
                   ) : (
                     <FaUser className="h-16 w-16 rounded-lg" />

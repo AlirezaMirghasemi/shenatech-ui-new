@@ -4,6 +4,8 @@ import { PaginatedResponse } from "@/types/Api";
 import { User } from "@/types/User";
 import { UserState } from "@/constants/state/User";
 import {
+    checkFieldIsUniqueAsync,
+  createUserAsync,
   fetchPermissionUsersAsync,
   fetchRoleUsersAsync,
   getUsersAsync,
@@ -13,6 +15,7 @@ const initialState: UserState = {
   meta: {} as PaginatedResponse<User>,
   loading: DataStatus.IDLE,
   error: null,
+  uniqueLoading: DataStatus.IDLE,
 };
 const UserSlice = createSlice({
   name: "Users",
@@ -20,6 +23,24 @@ const UserSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+    .addCase(createUserAsync.pending, (state) => {
+            state.loading = DataStatus.PENDING;
+            // Don't clear error immediately, might be useful from previous action
+          })
+          .addCase(createUserAsync.fulfilled, (state) => {
+            state.loading = DataStatus.SUCCEEDED;
+            state.error = null;
+          })
+          .addCase(createUserAsync.rejected, (state, action) => {
+            state.loading = DataStatus.FAILED;
+            if (typeof action.payload === "string") {
+              state.error = action.payload || {
+                message: "Failed to create user",
+              };
+            } else {
+              state.error = null;
+            }
+          })
       .addCase(fetchRoleUsersAsync.pending, (state) => {
         state.loading = DataStatus.PENDING;
         // Don't clear error immediately, might be useful from previous action
@@ -108,7 +129,25 @@ const UserSlice = createSlice({
         } else {
           state.error = null;
         }
-      });
+      })
+      .addCase(checkFieldIsUniqueAsync.pending, (state) => {
+              state.uniqueLoading = DataStatus.PENDING;
+              state.error = null;
+            })
+            .addCase(checkFieldIsUniqueAsync.fulfilled, (state) => {
+              state.uniqueLoading = DataStatus.SUCCEEDED;
+              state.error = null;
+            })
+            .addCase(checkFieldIsUniqueAsync.rejected, (state, action) => {
+              state.uniqueLoading = DataStatus.FAILED;
+              if (typeof action.payload === "string") {
+                state.error = action.payload || {
+                  message: "Failed to check field uniqueness",
+                };
+              } else {
+                state.error = null;
+              }
+            });
   },
 });
 export default UserSlice.reducer;

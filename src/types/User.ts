@@ -37,7 +37,7 @@ export interface CreateUser {
   mobile: string | null;
   //mobile_verified_at: string | null;
   status: UserStatus;
-  profile_image: Image | null;
+  profile_image: File | null;
   //roles: Role[]|null;
   //permissions: Permission[]|null;
 }

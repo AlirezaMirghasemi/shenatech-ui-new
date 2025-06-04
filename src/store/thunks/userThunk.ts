@@ -1,5 +1,6 @@
 import { api } from "@/lib/axiosInstance";
 import { ApiError } from "@/types/Api";
+import { CreateUser } from "@/types/User";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 export const getUsersAsync = createAsyncThunk(
@@ -36,6 +37,41 @@ export const getUsersAsync = createAsyncThunk(
     }
   }
 );
+
+export const createUserAsync = createAsyncThunk(
+  "user/createUser",
+  async (
+    { user, profileImage }: { user: CreateUser; profileImage?: File },
+    { rejectWithValue }
+  ) => {
+    try {
+      const formData = new FormData();
+      Object.entries(user).forEach(([key, value]) => {
+        if (key !== "profile_image" && value !== null && value !== undefined) {
+          formData.append(key, value as string);
+        }
+      });
+      if (profileImage) {
+        formData.append("profile_image", profileImage);
+      }
+      const response = await api.post("/users", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ایجاد کاربر",
+      });
+    }
+  }
+);
+
 export const fetchRoleUsersAsync = createAsyncThunk(
   "role/fetchRoleUsers",
   async ({
@@ -89,6 +125,35 @@ export const fetchPermissionUsersAsync = createAsyncThunk(
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
       return axiosError.response?.data || { message: axiosError.message };
+    }
+  }
+);
+export const checkFieldIsUniqueAsync = createAsyncThunk<
+  boolean,
+  { fieldValue: string; fieldName: string },
+  { rejectValue: ApiError }
+>(
+  "user/checkFieldIsUniqueAsync",
+  async (
+    { fieldName: fieldName, fieldValue: fieldValue },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.get("/users/field-is-unique", {
+        params: {
+          fieldName: fieldName,
+          fieldValue: fieldValue,
+        },
+      });
+      return response.data == 1 ? true : false;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای چک کردن یکتایی فیلد",
+      });
     }
   }
 );

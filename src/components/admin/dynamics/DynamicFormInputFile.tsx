@@ -8,6 +8,7 @@ import { useFormikContext } from "formik";
 import { IDynamicFormInputFile } from "@/interfaces/IDynamicFormInputFile";
 const DynamicFormInputFile = <T extends Record<string, unknown>>({
   loading,
+  uniqueLoading,
   fileInputFieldName,
   dynamicInputFieldProps,
 }: IDynamicFormInputFile<T>) => {
@@ -82,7 +83,7 @@ const DynamicFormInputFile = <T extends Record<string, unknown>>({
           type={InputType.FILE}
           className="mb-1"
           disabled={
-            loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
+            loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
           }
           fileInputProps={{
             accept: "image/*",

@@ -18,7 +18,7 @@ export default function CreateRoleForm({
 }) {
   //const router = useRouter();
   const {
-    actions: { createRole, fetchRoles },
+    actions: { createRole, fetchRoles, roleNameIsUnique },
     loading,
     uniqueLoading,
     meta,
@@ -41,9 +41,7 @@ export default function CreateRoleForm({
       setSubmitting(false);
     }
   };
-  const {
-    actions: { roleNameIsUnique },
-  } = useRole();
+
   return (
     <DynamicForm
       initialValues={createRoleInitial}

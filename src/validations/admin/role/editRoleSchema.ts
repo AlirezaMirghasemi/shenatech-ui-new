@@ -1,4 +1,3 @@
-import DynamicCheckUniqueField from "@/helpers/CheckUniqueField";
 import { validationMessages } from "@/utils/ValidationMessages";
 import * as Yup from "yup";
 
@@ -18,10 +17,7 @@ export const editRoleSchema = (
         async (value) => {
           if (value == currentRoleName ) return true;
           if (value) {
-            const isUnique = await DynamicCheckUniqueField({
-              fieldValue: value,
-              checkUniqueFunction: checkRoleNameIsUnique,
-            });
+            const isUnique = await checkRoleNameIsUnique(value);
             return isUnique;
           }
           return false;

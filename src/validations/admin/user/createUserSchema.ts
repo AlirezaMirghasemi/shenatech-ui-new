@@ -1,73 +1,61 @@
 import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";
 //import DynamicCheckUniqueField from "@/helpers/CheckUniqueField";
-import { Image } from "@/types/Image";
 import { validationMessages } from "@/utils/ValidationMessages";
 import * as Yup from "yup";
 
-export const createUserSchema =
-  // =
-  //(
-  //   checkUserNameIsUnique: (userName: string) => Promise<boolean>,
-  //   checkEmailIsUnique: (email: string) => Promise<boolean>,
-  //   checkMobileIsUnique: (mobile: string) => Promise<boolean>
-  //)
-  //>
+export const createUserSchema = (
+  checkFieldIsUnique: (
+    fieldValue: string,
+    fieldName: string
+  ) => Promise<boolean>
+) =>
   Yup.object().shape({
     username: Yup.string()
       .required(validationMessages.required("نام کاربری"))
       .min(2, validationMessages.minLength(2))
       .max(50, validationMessages.maxLength(50))
-      .matches(/^[a-zA-Z0-9_]+$/, validationMessages.matchEnglish),
-    //   .test(
-    //     "check-user-name-unique",
-    //     validationMessages.unique("نام کاربری"),
-    //     async (value) => {
-    //       if (value) {
-    //         const isUnique = await DynamicCheckUniqueField({
-    //           fieldValue: value,
-    //           checkUniqueFunction: checkUserNameIsUnique,
-    //         });
-    //         return isUnique;
-    //       }
-    //       return false;
-    //     }
-    //   ),
+      .matches(/^[a-zA-Z0-9_]+$/, validationMessages.matchEnglish)
+      .test(
+        "check-user-name-unique",
+        validationMessages.unique("نام کاربری"),
+        async (value) => {
+          if (value) {
+            const isUnique = await checkFieldIsUnique(value, "username");
+            return isUnique;
+          }
+          return false;
+        }
+      ),
     email: Yup.string()
       .required(validationMessages.required("ایمیل"))
-      .email(validationMessages.invalidEmail),
-    //   .test(
-    //     "check-email-unique",
-    //     validationMessages.unique("ایمیل"),
-    //     async (value) => {
-    //       if (value) {
-    //         const isUnique = await DynamicCheckUniqueField({
-    //           fieldValue: value,
-    //           checkUniqueFunction: checkEmailIsUnique,
-    //         });
-    //         return isUnique;
-    //       }
-    //       return false;
-    //     }
-    //   ),
+      .email(validationMessages.invalidEmail)
+      .test(
+        "check-email-unique",
+        validationMessages.unique("ایمیل"),
+        async (value) => {
+          if (value) {
+            const isUnique = await checkFieldIsUnique(value, "email");
+            return isUnique;
+          }
+          return false;
+        }
+      ),
     mobile: Yup.string()
       .nullable()
       .required(validationMessages.required("شماره موبایل"))
-      .matches(/^(\+?98|0)9\d{9}$/, validationMessages.invalidMobile),
-    //   .test(
-    //     "check-mobile-unique",
-    //     validationMessages.unique("شماره موبایل"),
-    //     async (value) => {
-    //       if (value) {
-    //         const isUnique = await DynamicCheckUniqueField({
-    //           fieldValue: value,
-    //           checkUniqueFunction: checkMobileIsUnique,
-    //         });
-    //         return isUnique;
-    //       }
-    //       return false;
-    //     }
-    //   ),
+      .matches(/^(\+?98|0)9\d{9}$/, validationMessages.invalidMobile)
+      .test(
+        "check-mobile-unique",
+        validationMessages.unique("شماره موبایل"),
+        async (value) => {
+          if (value) {
+            const isUnique = await checkFieldIsUnique(value, "mobile");
+            return isUnique;
+          }
+          return false;
+        }
+      ),
     password: Yup.string()
       .min(8, validationMessages.minLength(8))
       .required(validationMessages.required("رمز عبور"))
@@ -88,7 +76,7 @@ export const createUserSchema =
     status: Yup.string()
       .oneOf(Object.values(UserStatus))
       .default(UserStatus.PENDING),
-    profile_image: Yup.mixed<Image>()
+    profile_image: Yup.mixed<File>()
       .nullable()
       .defined()
       .notRequired()

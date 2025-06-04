@@ -9,10 +9,10 @@ export const createUserInitial: CreateUser = {
   first_name: "",
   last_name: "",
   full_name: "",
-  bio: null,
+  bio: "",
   gender: Gender.NotSpecified,
-  mobile: null,
+  mobile: "",
   status: UserStatus.PENDING,
   profile_image: null,
-  password_confirmation: null
+  password_confirmation: ""
 };

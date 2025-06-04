@@ -7,4 +7,5 @@ export interface UserState {
   meta?: PaginatedResponse<User>;
   loading: DataStatus;
   error: ApiError | null;
+  uniqueLoading: DataStatus;
 }

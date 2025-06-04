@@ -8,9 +8,7 @@ export enum Image {
   POSTER = "poster",
 }
 export enum ImageType {
-  ARTICLE = "article",
-  EVENT = "event",
-  VIDEO = "video",
-  PROFILE = "profilePicture",
+  PROFILE = "profile",
   POSTER = "poster",
+  CONTENT = "content",
 }
