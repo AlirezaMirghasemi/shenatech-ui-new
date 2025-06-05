@@ -13,6 +13,8 @@ import { PaginationThemeConfig } from "./PaginationThemeConfig";
 import { SelectInputThemeConfig } from "./SelectInputTheme";
 import{TabsThemeConfig}from "./TabsThemeConfig"
 import { BadgeThemeConfig } from "./BadgeThemeConfig";
+import { PopoverThemeConfig } from "./PopoverThemeConfig";
+import { TooltipThemeConfig } from "./TooltipThemeConfig";
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -28,5 +30,7 @@ export const ManageTheme = createTheme({
   pagination:{...PaginationThemeConfig},
   select:{... SelectInputThemeConfig},
   tabs:{...TabsThemeConfig},
-  badge:{...BadgeThemeConfig}
+  badge:{...BadgeThemeConfig},
+  popover:{...PopoverThemeConfig},
+  tooltip:{...TooltipThemeConfig}
 });

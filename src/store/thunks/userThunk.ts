@@ -1,3 +1,4 @@
+import { UserStatus } from "@/constants/data/UserStatus";
 import { api } from "@/lib/axiosInstance";
 import { ApiError } from "@/types/Api";
 import { CreateUser } from "@/types/User";
@@ -153,6 +154,26 @@ export const checkFieldIsUniqueAsync = createAsyncThunk<
       }
       return rejectWithValue({
         message: axiosError.message || "خطای چک کردن یکتایی فیلد",
+      });
+    }
+  }
+);
+export const editUserStatusAsync = createAsyncThunk(
+  "user/editUserStatus",
+  async (
+    { userId, status }: { userId: number; status: UserStatus },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.put(`/users/${userId}/status`, { status });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ویرایش وضعیت کاربر",
       });
     }
   }

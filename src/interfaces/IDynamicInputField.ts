@@ -31,6 +31,7 @@ export default interface IDynamicInputField {
   disabled?: boolean;
   data?: { id: number | string; name: string }[];
   className?: string;
+  labelHidden?: boolean;
   multiple?: boolean;
   defaultValue?: string | number;
   loading?: boolean;

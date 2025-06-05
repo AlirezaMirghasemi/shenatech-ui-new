@@ -16,4 +16,6 @@ export default interface IDynamicForm<T extends object> {
   disabledButton?: boolean;
   validateOnChange?: boolean;
   validateOnBlur?: boolean;
+  submitButtonColor?: string;
+  submitButtonSize?: string;
 }

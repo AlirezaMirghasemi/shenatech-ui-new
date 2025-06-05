@@ -3,7 +3,13 @@ import DynamicTable from "@/components/admin/dynamics/DynamicTable";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { useEffect, useState } from "react";
-import { FaClipboardUser, FaEye, FaPen, FaTrashCan } from "react-icons/fa6";
+import {
+  FaClipboardUser,
+  FaEye,
+  FaPen,
+  FaTrashCan,
+  FaUserCheck,
+} from "react-icons/fa6";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import PersianDate from "persian-date";
@@ -12,6 +18,7 @@ import { useUser } from "@/hooks/useUser";
 import { UserStatus } from "@/constants/data/UserStatus";
 import UserProfileModal from "./UserProfileModal";
 import CreateUserModal from "./CreateUserModal";
+import ChangeUserStatusPopover from "./ChangeUserStatusPopover";
 export default function UsersViewTable({
   setUserId,
 }: {
@@ -36,6 +43,7 @@ export default function UsersViewTable({
     };
     fetchUsersData();
   }, [usersPage, user]);
+
   const onCloseUserProfileModal = () => {
     setUserProfileModal(false);
     setUser(null);
@@ -131,6 +139,19 @@ export default function UsersViewTable({
         className: "!rounded-l-none",
       },
       {
+        name: "ChangeUserStatus",
+        caption: "تغییر وضعیت کاربر",
+        // handler: (row: User) => {
+        //   onOpenChangeUserStatusPopover(row);
+        // },
+        icon: <FaUserCheck />,
+        color: "primary",
+        className: "!rounded-none",
+        actionRenderer(row) {
+          return <ChangeUserStatusPopover user={row} buttonProps={this} />;
+        },
+      },
+      {
         name: "ShowUserProfile",
         caption: "مشاهده ی پروفایل",
         handler: (row: User) => {
@@ -181,11 +202,13 @@ export default function UsersViewTable({
         onCloseCreateUserModal={onCloseCreateUserModal}
       />
       {user && (
-        <UserProfileModal
-          user={user}
-          onClose={onCloseUserProfileModal}
-          userProfileModal={userProfileModal}
-        />
+        <>
+          <UserProfileModal
+            user={user}
+            onClose={onCloseUserProfileModal}
+            userProfileModal={userProfileModal}
+          />
+        </>
       )}
     </>
   );

@@ -9,8 +9,26 @@ export const createUserSchema = (
     fieldValue: string,
     fieldName: string
   ) => Promise<boolean>
-) =>
-  Yup.object().shape({
+) => {
+  const uniquenessCache: Record<string, boolean> = {};
+  const checkUniqueness = async (
+    value: string | null,
+    fieldName: string
+  ): Promise<boolean> => {
+    if (!value) return false;
+
+    const cacheKey = `${fieldName}:${value}`;
+
+    if (uniquenessCache[cacheKey] !== undefined) {
+      return uniquenessCache[cacheKey];
+    }
+
+    const isUnique = await checkFieldIsUnique(value, fieldName);
+    uniquenessCache[cacheKey] = isUnique;
+    return isUnique;
+  };
+
+  return Yup.object().shape({
     username: Yup.string()
       .required(validationMessages.required("نام کاربری"))
       .min(2, validationMessages.minLength(2))
@@ -19,13 +37,7 @@ export const createUserSchema = (
       .test(
         "check-user-name-unique",
         validationMessages.unique("نام کاربری"),
-        async (value) => {
-          if (value) {
-            const isUnique = await checkFieldIsUnique(value, "username");
-            return isUnique;
-          }
-          return false;
-        }
+        async (value) => checkUniqueness(value, "username")
       ),
     email: Yup.string()
       .required(validationMessages.required("ایمیل"))
@@ -33,13 +45,7 @@ export const createUserSchema = (
       .test(
         "check-email-unique",
         validationMessages.unique("ایمیل"),
-        async (value) => {
-          if (value) {
-            const isUnique = await checkFieldIsUnique(value, "email");
-            return isUnique;
-          }
-          return false;
-        }
+        async (value) => checkUniqueness(value, "email")
       ),
     mobile: Yup.string()
       .nullable()
@@ -48,13 +54,7 @@ export const createUserSchema = (
       .test(
         "check-mobile-unique",
         validationMessages.unique("شماره موبایل"),
-        async (value) => {
-          if (value) {
-            const isUnique = await checkFieldIsUnique(value, "mobile");
-            return isUnique;
-          }
-          return false;
-        }
+        async (value) => checkUniqueness(value, "mobile")
       ),
     password: Yup.string()
       .min(8, validationMessages.minLength(8))
@@ -109,3 +109,4 @@ export const createUserSchema = (
       .max(250, validationMessages.maxLength(250))
       .default(null),
   });
+};

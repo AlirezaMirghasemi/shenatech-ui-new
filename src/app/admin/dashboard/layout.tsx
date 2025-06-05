@@ -14,16 +14,16 @@ export default function AdminPageLayout({
 
   return (
     <>
-      <div className="  max-h-screen">
+      <div className=" flex flex-col max-h-screen max-w-screen items-center">
         <Header handleOpen={handleOpen} />
         <SidebarPanel handleOpen={handleOpen} isOpen={isOpen} />
-      <main
-        className={`max-h-screen flex-1 transition-all duration-300 pt-25  ${
-          !isOpen ? "lg:px-35" : "lg:px-95"
-        }`}
-      >
-        {children}
-      </main>
+        <main
+          className={`max-h-screen max-w-screen transition-all duration-300 pt-25    p-5 `}
+        >
+          <div className={` items-center ${isOpen ? "mr-[350px] transition-all duration-300" : "transition-all duration-300"}  sm:px-6 mx-auto   `}>
+            {children}
+          </div>
+        </main>
       </div>
     </>
   );

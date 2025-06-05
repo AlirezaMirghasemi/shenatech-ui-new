@@ -14,7 +14,7 @@ export function SidebarPanel({
 }) {
   return (
     <Drawer
-      className="overflow-y-auto  h-full  p-0 m-0"
+      className={`overflow-y-auto  h-full  p-0 m-0 transition-all transition-discrete  duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
       open={isOpen}
       onClose={handleOpen}
       position="right"

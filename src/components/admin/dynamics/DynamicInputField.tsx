@@ -33,6 +33,7 @@ export default function DynamicInputField({
   selectProps = {},
   fileInputProps = {},
   hiddenInputProps = {},
+  labelHidden = false,
   ...rest
 }: IDynamicInputField) {
   const [field, meta] = useField(id);
@@ -51,6 +52,7 @@ export default function DynamicInputField({
           htmlFor={id}
           className="block mb-2 text-sm font-medium"
           color={color}
+          hidden={labelHidden}
         >
           {label}
         </Label>

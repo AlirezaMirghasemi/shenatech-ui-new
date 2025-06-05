@@ -4,7 +4,7 @@ export const ButtonThemeConfig = createTheme({
   base: "relative flex items-center justify-center text-center font-medium transition-all duration-[--transition-duration] ease-[--transition-timing] focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-[--opacity-disabled]",
   fullSized: "w-full",
   grouped:
-    "rounded-none border-l-0 first:rounded-s-lg first:border-l last:rounded-e-lg focus:ring-2 focus:ring-inset",
+    "rounded-none  first:rounded-s-lg  last:rounded-e-lg focus:ring-2 focus:ring-inset",
   pill: "rounded-full",
   size: {
     xs: "h-8 px-3 text-xs rounded-md",

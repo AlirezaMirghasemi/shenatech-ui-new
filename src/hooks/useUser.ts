@@ -1,7 +1,9 @@
+import { UserStatus } from "@/constants/data/UserStatus";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   checkFieldIsUniqueAsync,
   createUserAsync,
+  editUserStatusAsync,
   fetchPermissionUsersAsync,
   fetchRoleUsersAsync,
   getUsersAsync,
@@ -76,6 +78,18 @@ export const useUser = () => {
     },
     [dispatch]
   );
+
+  const editUserStatus = useCallback(
+    async (userId: number, status: UserStatus) => {
+      try {
+        return dispatch(editUserStatusAsync({ userId, status })).unwrap();
+      } catch (error) {
+        console.error("Error editing user status:", error);
+        throw error;
+      }
+    },
+    [dispatch]
+  );
   return {
     users,
     meta,
@@ -86,6 +100,7 @@ export const useUser = () => {
       createUser,
       fetchRoleUsers,
       fetchPermissionUsers,
+      editUserStatus,
       fetchUsers,
       checkFieldIsUnique,
     },

@@ -41,3 +41,6 @@ export interface CreateUser {
   //roles: Role[]|null;
   //permissions: Permission[]|null;
 }
+export interface EditUserStatus{
+  status: UserStatus
+}

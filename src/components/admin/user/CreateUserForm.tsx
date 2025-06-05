@@ -25,9 +25,8 @@ export default function CreateUserForm({
     actions: {
       createUser,
       fetchUsers,
-      checkFieldIsUnique
-      //emailIsUnique,
-      //mobileIsUnique,
+      checkFieldIsUnique,
+
     },
     loading,
     uniqueLoading,
@@ -39,7 +38,6 @@ export default function CreateUserForm({
   ) => {
     try {
       onCloseCreateUserModal();
-      console.log(values);
       await createUser(values, values.profile_image as File | undefined);
       await fetchUsers(meta?.current_page, meta?.per_page);
       toast.success("کاربر با موفقیت ایجاد شد.");
@@ -58,15 +56,16 @@ export default function CreateUserForm({
           <DynamicForm
             initialValues={createUserInitial}
             validationSchema={createUserSchema(
-              (fieldValue: string, fieldName: string) => checkFieldIsUnique({ fieldValue, fieldName })
+              (fieldValue: string, fieldName: string) =>
+                checkFieldIsUnique({ fieldValue, fieldName })
             )}
             buttonTitle="ایجاد کاربر"
             onSubmit={onSubmit}
             validateOnChange={false}
             validateOnBlur={true}
             disabledButton={
-              loading == DataStatus.PENDING
-              || uniqueLoading == DataStatus.PENDING
+              loading == DataStatus.PENDING ||
+              uniqueLoading == DataStatus.PENDING
             }
           >
             <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -78,10 +77,11 @@ export default function CreateUserForm({
                   label="نام کاربری"
                   type={InputType.TEXT}
                   disabled={
-                    loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
+                    loading == DataStatus.PENDING ||
+                    uniqueLoading == DataStatus.PENDING
                   }
                   className="block w-full"
-                   loading={uniqueLoading == DataStatus.PENDING}
+                  loading={uniqueLoading == DataStatus.PENDING}
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -131,7 +131,7 @@ export default function CreateUserForm({
                   disabled={
                     loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
                   }
-                    loading={uniqueLoading == DataStatus.PENDING}
+                  loading={uniqueLoading == DataStatus.PENDING}
                   className="block w-full"
                 />
               </div>
@@ -204,10 +204,11 @@ export default function CreateUserForm({
                   label="بیوگرافی"
                   type={InputType.TEXTAREA}
                   disabled={
-                    loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
+                    loading == DataStatus.PENDING ||
+                    uniqueLoading == DataStatus.PENDING
                   }
                   className="block w-full"
-                loading={uniqueLoading == DataStatus.PENDING}
+                  loading={uniqueLoading == DataStatus.PENDING}
                 />
               </div>
 
@@ -237,7 +238,8 @@ export default function CreateUserForm({
                     { id: UserStatus.DEACTIVATED, name: "غیرفعال" },
                   ]}
                   disabled={
-                    loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
+                    loading == DataStatus.PENDING ||
+                    uniqueLoading == DataStatus.PENDING
                   }
                   loading={uniqueLoading == DataStatus.PENDING}
                 />

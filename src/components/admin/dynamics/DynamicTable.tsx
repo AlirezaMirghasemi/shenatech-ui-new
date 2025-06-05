@@ -29,8 +29,7 @@ export default function DynamicTable<T extends object>({
 
   return (
     <>
-      <div className=" max-w-[85rem]  sm:px-6   mx-auto">
-        <div className="flex flex-col">
+        <div className="flex flex-col px-5">
           <div className="-m-1.5 overflow-x-auto">
             <div className=" min-w-full inline-block align-middle">
               <div className=" border  rounded-xl shadow-2xs overflow-hidden ">
@@ -166,26 +165,40 @@ export default function DynamicTable<T extends object>({
                               className={dynamicTable.actionCellClassName ?? ""}
                             >
                               <ButtonGroup>
-                                {dynamicTable.actions.map((action) => (
-                                  <Tooltip
-                                    content={action.caption}
-                                    animation="duration-500"
-                                    key={action.name}
-                                  >
-                                    <Button
+                                {dynamicTable.actions.map((action) =>
+                                  action.actionRenderer ? (
+                                    <Tooltip
+                                      content={action.caption}
+                                      animation="duration-500"
                                       key={action.name}
-                                      onClick={() => action.handler?.(row)}
-                                      color={
-                                        action.color ? action.color : "default"
-                                      }
-                                      className={
-                                        action.className ? action.className : ""
-                                      }
                                     >
-                                      {action.icon}
-                                    </Button>
-                                  </Tooltip>
-                                ))}
+                                      {action.actionRenderer(row)}
+                                    </Tooltip>
+                                  ) : (
+                                    <Tooltip
+                                      content={action.caption}
+                                      animation="duration-500"
+                                      key={action.name}
+                                    >
+                                      <Button
+                                        key={action.name}
+                                        onClick={() => action.handler?.(row)}
+                                        color={
+                                          action.color
+                                            ? action.color
+                                            : "default"
+                                        }
+                                        className={
+                                          action.className
+                                            ? action.className
+                                            : ""
+                                        }
+                                      >
+                                        {action.icon}
+                                      </Button>
+                                    </Tooltip>
+                                  )
+                                )}
                               </ButtonGroup>
                             </TableCell>
                           )}
@@ -247,7 +260,6 @@ export default function DynamicTable<T extends object>({
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 }

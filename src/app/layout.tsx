@@ -38,7 +38,9 @@ export default function RootLayout({
               select: "replace",
               tabs: "replace",
               badge: "replace",
-              fileInput:"replace"
+              fileInput: "replace",
+              popover: "replace",
+              tooltip: "replace",
             }}
           >
             <Toaster />
