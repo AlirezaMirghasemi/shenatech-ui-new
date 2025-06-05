@@ -1,65 +1,59 @@
-"use client";
-//import { useRouter } from "next/navigation";
+import { EditUser, User } from "@/types/User";
 import DynamicForm from "../dynamics/DynamicForm";
+import { DataStatus } from "@/constants/data/DataStatus";
 import DynamicInputField from "../dynamics/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
-import { FormikHelpers } from "formik";
-import { DataStatus } from "@/constants/data/DataStatus";
-import { toast } from "sonner";
-import { useUser } from "@/hooks/useUser";
-import { CreateUser } from "@/types/User";
-import { createUserInitial } from "@/validations/admin/user/createUserInitial";
-import { createUserSchema } from "@/validations/admin/user/createUserSchema";
 import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";
 import FullNameSync from "./FullNameSync";
-import React from "react";
 import DynamicFormInputFile from "../dynamics/DynamicFormInputFile";
+import { useUser } from "@/hooks/useUser";
+import { toast } from "sonner";
+import { FormikHelpers } from "formik";
+import { editUserInitial } from "@/validations/admin/user/editUserInitial";
+import { editUserSchema } from "@/validations/admin/user/editUserSchema";
 
-export default function CreateUserForm({
-  onCloseCreateUserModal,
+export default function EditUserForm({
+  onCloseEditUserModal,
+  user,
 }: {
-  onCloseCreateUserModal: () => void;
+  onCloseEditUserModal: () => void;
+  user: User;
 }) {
   const {
-    actions: {
-      createUser,
-      fetchUsers,
-      checkFieldIsUnique,
-
-    },
+    actions: { editUser, fetchUsers, checkFieldIsUnique },
     loading,
     uniqueLoading,
     meta,
   } = useUser();
   const onSubmit = async (
-    values: CreateUser,
-    { setSubmitting }: FormikHelpers<CreateUser>
+    values: EditUser,
+    { setSubmitting }: FormikHelpers<EditUser>
   ) => {
     try {
-      onCloseCreateUserModal();
-      await createUser(values, values.profile_image as File | undefined);
+      onCloseEditUserModal();
+      await editUser(user.id, values, values.profile_image as File | undefined);
       await fetchUsers(meta?.current_page, meta?.per_page);
-      toast.success("کاربر با موفقیت ایجاد شد.");
+      toast.success("کاربر با موفقیت ویرایش شد.");
     } catch (error) {
       console.error("Error creating user:", error);
-      toast.error("خطا در ایجاد کاربر.");
+      toast.error("خطا در ویرایش کاربر.");
     } finally {
       setSubmitting(false);
     }
   };
-
   return (
     <>
       <div className="max-h-auto relative max-h-full w-full max-w-lg p-4">
         <div className="relative rounded-lg">
           <DynamicForm
-            initialValues={createUserInitial}
-            validationSchema={createUserSchema(
+            initialValues={editUserInitial({ user })}
+            validationSchema={editUserSchema(
               (fieldValue: string, fieldName: string) =>
-                checkFieldIsUnique({ fieldValue, fieldName })
+                checkFieldIsUnique({ fieldValue, fieldName }),
+              { currentUser: user }
             )}
-            buttonTitle="ایجاد کاربر"
+            buttonTitle="ویرایش کاربر"
             onSubmit={onSubmit}
             validateOnChange={false}
             validateOnBlur={true}
@@ -168,34 +162,6 @@ export default function CreateUserForm({
                   loading={uniqueLoading == DataStatus.PENDING}
                 />
               </div>
-              <div className="col-span-2 sm:col-span-1">
-                <DynamicInputField
-                  id="password"
-                  name="password"
-                  placeholder="رمز عبور"
-                  label="رمز عبور"
-                  type={InputType.PASSWORD}
-                  disabled={
-                    loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
-                  }
-                  className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
-                />
-              </div>
-              <div className="col-span-2 sm:col-span-1">
-                <DynamicInputField
-                  id="password_confirmation"
-                  name="password_confirmation"
-                  placeholder="تکرار رمز عبور"
-                  label="تکرار رمز عبور"
-                  type={InputType.PASSWORD}
-                  disabled={
-                    loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
-                  }
-                  className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
-                />
-              </div>
               <div className="col-span-2">
                 <DynamicInputField
                   id="bio"
@@ -236,6 +202,7 @@ export default function CreateUserForm({
                     { id: UserStatus.PENDING, name: "در انتظار تایید" },
                     { id: UserStatus.ACTIVE, name: "فعال" },
                     { id: UserStatus.DEACTIVATED, name: "غیرفعال" },
+                    { id: UserStatus.SUSPENDED, name: "معلق" },
                   ]}
                   disabled={
                     loading == DataStatus.PENDING ||

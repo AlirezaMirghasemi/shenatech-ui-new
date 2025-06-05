@@ -3,12 +3,13 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   checkFieldIsUniqueAsync,
   createUserAsync,
+  editUserAsync,
   editUserStatusAsync,
   fetchPermissionUsersAsync,
   fetchRoleUsersAsync,
   getUsersAsync,
 } from "@/store/thunks/userThunk";
-import { CreateUser } from "@/types/User";
+import { CreateUser, EditUser } from "@/types/User";
 import { useCallback } from "react";
 
 export const useUser = () => {
@@ -90,6 +91,17 @@ export const useUser = () => {
     },
     [dispatch]
   );
+  const editUser = useCallback(
+    async (userId: number, user: EditUser, profileImage?: File) => {
+      try {
+        return dispatch(editUserAsync({ userId, user, profileImage })).unwrap();
+      } catch (error) {
+        console.error("Error editing user:", error);
+        throw error;
+      }
+    },
+    [dispatch]
+  );
   return {
     users,
     meta,
@@ -98,6 +110,7 @@ export const useUser = () => {
     uniqueLoading,
     actions: {
       createUser,
+      editUser,
       fetchRoleUsers,
       fetchPermissionUsers,
       editUserStatus,

@@ -1,7 +1,7 @@
 import { UserStatus } from "@/constants/data/UserStatus";
 import { api } from "@/lib/axiosInstance";
 import { ApiError } from "@/types/Api";
-import { CreateUser } from "@/types/User";
+import { CreateUser, EditUser } from "@/types/User";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 export const getUsersAsync = createAsyncThunk(
@@ -174,6 +174,41 @@ export const editUserStatusAsync = createAsyncThunk(
       }
       return rejectWithValue({
         message: axiosError.message || "خطای ویرایش وضعیت کاربر",
+      });
+    }
+  }
+);
+export const editUserAsync = createAsyncThunk(
+  "user/editUser",
+  async (
+    {
+      userId,
+      user,
+      profileImage,
+    }: { userId: number; user: EditUser; profileImage?: File },
+    { rejectWithValue }
+  ) => {
+    console.log("user:", user);
+    try {
+      const formData = new FormData();
+      Object.entries(user).forEach(([key, value]) => {
+        if (key !== "profile_image" && value !== null && value !== undefined) {
+          formData.append(key, value);
+        }
+      });
+      if (profileImage) {
+        formData.append("profile_image", profileImage);
+      }
+
+      const response = await api.postForm(`/users/${userId}`, formData);
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ویرایش کاربر",
       });
     }
   }

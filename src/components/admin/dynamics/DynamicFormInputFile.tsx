@@ -21,35 +21,33 @@ const DynamicFormInputFile = <T extends Record<string, unknown>>({
     setFieldTouched,
   } = useFormikContext<T>();
   // استفاده از state محلی جهت نگهداری اطلاعات عکس قبلی
-  const [previewOldImage, setPreviewOldImage] = useState(null);
+  const [previewOldImage, setPreviewOldImage] = useState<string | null>(null);
+  const fieldName = fileInputFieldName as string;
 
   useEffect(() => {
     // اگر initialValues.imageId خالی نباشد، عکس قبلی را بارگیری کن
-    const fieldValue = values[fileInputFieldName];
+    const fetchImage = async () => {
+      const fieldValue = values[fileInputFieldName];
 
-    if (fieldValue && typeof fieldValue === "object" && "id" in fieldValue) {
-      const fetchOldImage = async () => {
-        try {
-          const image = await actions.getImageById(fieldValue.id);
-          if (image.payload) {
-            setPreviewOldImage(image.payload);
-          }
-        } catch (error) {
-          console.error("خطا در دریافت عکس قبلی:", error);
-          setPreviewOldImage(null);
-        }
-      };
-      fetchOldImage();
-    } else {
-      // در صورت نداشتن imageId، مقدار state را به null تنظیم کن
-      setPreviewOldImage(null);
-    }
+      if (
+        fieldValue &&
+        typeof fieldValue === "object" &&
+        "path" in fieldValue
+      ) {
+        await setPreviewOldImage(
+          `http://localhost:8000/storage/${fieldValue.path as string}`
+        );
+      } else {
+        setPreviewOldImage(null);
+
+      }
+    };
+    fetchImage();
   }, [fileInputFieldName, values]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const fieldName = fileInputFieldName as string;
     setFieldTouched(fieldName, true, true);
     setFieldError(fieldName, undefined);
     const file = event.target.files?.[0] ?? "";

@@ -6,6 +6,7 @@ import { UserState } from "@/constants/state/User";
 import {
   checkFieldIsUniqueAsync,
   createUserAsync,
+  editUserAsync,
   editUserStatusAsync,
   fetchPermissionUsersAsync,
   fetchRoleUsersAsync,
@@ -162,6 +163,24 @@ const UserSlice = createSlice({
         if (typeof action.payload === "string") {
           state.error = action.payload || {
             message: "Failed to edit user status",
+          };
+        } else {
+          state.error = null;
+        }
+      })
+      .addCase(editUserAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+        // Don't clear error immediately, might be useful from previous action
+      })
+      .addCase(editUserAsync.fulfilled, (state) => {
+        state.loading = DataStatus.SUCCEEDED;
+        state.error = null;
+      })
+      .addCase(editUserAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        if (typeof action.payload === "string") {
+          state.error = action.payload || {
+            message: "Failed to edit user",
           };
         } else {
           state.error = null;

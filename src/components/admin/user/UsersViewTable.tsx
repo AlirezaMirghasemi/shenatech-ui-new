@@ -19,6 +19,7 @@ import { UserStatus } from "@/constants/data/UserStatus";
 import UserProfileModal from "./UserProfileModal";
 import CreateUserModal from "./CreateUserModal";
 import ChangeUserStatusPopover from "./ChangeUserStatusPopover";
+import EditUserModal from "./EditUserModal";
 export default function UsersViewTable({
   setUserId,
 }: {
@@ -36,6 +37,7 @@ export default function UsersViewTable({
   const [user, setUser] = useState<User | null>(null);
   const [userProfileModal, setUserProfileModal] = useState(false);
   const [createUserModal, setCreateUserModal] = useState(false);
+  const [editUserModal, setEditUserModal] = useState(false);
   useEffect(() => {
     const fetchUsersData = async () => {
       await fetchUsers(usersPage, "5");
@@ -57,6 +59,14 @@ export default function UsersViewTable({
   };
   const onCloseCreateUserModal = () => {
     setCreateUserModal(false);
+    setUser(null);
+  };
+  const onOpenEditUserModal = (row: User) => {
+    setEditUserModal(true);
+    setUser(row);
+  };
+  const onCloseEditUserModal = () => {
+    setEditUserModal(false);
     setUser(null);
   };
   const InitialUsersViewTable: IDynamicTable<User> = {
@@ -141,9 +151,6 @@ export default function UsersViewTable({
       {
         name: "ChangeUserStatus",
         caption: "تغییر وضعیت کاربر",
-        // handler: (row: User) => {
-        //   onOpenChangeUserStatusPopover(row);
-        // },
         icon: <FaUserCheck />,
         color: "primary",
         className: "!rounded-none",
@@ -168,8 +175,7 @@ export default function UsersViewTable({
         color: "warning",
         className: "!rounded-none",
         handler: (row) => {
-          setUser(row);
-          //setEditUserModal(true);
+          onOpenEditUserModal(row);
         },
       },
       {
@@ -207,6 +213,11 @@ export default function UsersViewTable({
             user={user}
             onClose={onCloseUserProfileModal}
             userProfileModal={userProfileModal}
+          />
+          <EditUserModal
+            editUserModal={editUserModal}
+            onCloseEditUserModal={onCloseEditUserModal}
+            user={user}
           />
         </>
       )}

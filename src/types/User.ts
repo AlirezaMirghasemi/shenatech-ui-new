@@ -17,7 +17,7 @@ export interface User {
   mobile: string | null;
   mobile_verified_at: string | null;
   status: UserStatus;
-  profile_image: Image | null;
+  profile_image: Image | File | null;
   roles: Role[] | null;
   permissions: Permission[] | null;
   created_at: string;
@@ -41,6 +41,18 @@ export interface CreateUser {
   //roles: Role[]|null;
   //permissions: Permission[]|null;
 }
-export interface EditUserStatus{
-  status: UserStatus
+export interface EditUserStatus {
+  status: UserStatus;
+}
+export interface EditUser {
+  username: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  full_name: string | null;
+  bio: string | null;
+  gender: Gender | null;
+  mobile: string | null;
+  status: UserStatus;
+  profile_image: File | null;
 }
