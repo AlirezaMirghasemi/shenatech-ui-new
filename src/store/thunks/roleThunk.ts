@@ -22,6 +22,7 @@ export const createRoleAsync = createAsyncThunk(
     }
   }
 );
+
 export const editRoleAsync = createAsyncThunk(
   "role/editRole",
   async (
@@ -205,6 +206,28 @@ export const fetchPermissionRolesAsync = createAsyncThunk(
       }
       return rejectWithValue({
         message: axiosError.message || "خطای دریافت نقش های مجوز",
+      });
+    }
+  }
+);
+export const assignRoleToUsersAsync = createAsyncThunk(
+  "role/assignRoleToUsers",
+  async (
+    { roleId, userIds }: { roleId: number; userIds: number[] },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.put(`/roles/${roleId}/assign-users`, {
+        userIds: userIds,
+      });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای تخصیص نقش به کاربران",
       });
     }
   }

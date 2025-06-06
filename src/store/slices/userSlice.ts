@@ -10,11 +10,13 @@ import {
   editUserStatusAsync,
   fetchPermissionUsersAsync,
   fetchRoleUsersAsync,
+  fetchUnAssignedRoleUsersAsync,
   getUsersAsync,
 } from "../thunks/userThunk";
 const initialState: UserState = {
   data: [],
   meta: {} as PaginatedResponse<User>,
+  unassignedRoleUsers: [],
   loading: DataStatus.IDLE,
   error: null,
   uniqueLoading: DataStatus.IDLE,
@@ -182,6 +184,26 @@ const UserSlice = createSlice({
           state.error = action.payload || {
             message: "Failed to edit user",
           };
+        } else {
+          state.error = null;
+        }
+      })
+      .addCase(fetchUnAssignedRoleUsersAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+      })
+      .addCase(
+        fetchUnAssignedRoleUsersAsync.fulfilled,
+        (state, { payload }) => {
+          state.loading = DataStatus.SUCCEEDED;
+          state.error = null;
+          state.unassignedRoleUsers = payload.data as User[];
+        }
+      )
+      .addCase(fetchUnAssignedRoleUsersAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        state.unassignedRoleUsers = [];
+        if (typeof action.payload === "string") {
+          state.error = action.payload || { message: "Failed to fetch Users" };
         } else {
           state.error = null;
         }

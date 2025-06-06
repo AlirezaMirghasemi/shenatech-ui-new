@@ -5,12 +5,10 @@ import { Role } from "@/types/Role";
 export default function EditRoleModal({
   editRoleModal,
   onCloseEditRoleModal,
-  setEditRoleModal,
   role
 }: {
   editRoleModal: boolean;
   onCloseEditRoleModal: () => void;
-  setEditRoleModal: (value: boolean) => void;
   role:Role
 }) {
   return (
@@ -23,7 +21,7 @@ export default function EditRoleModal({
       >
         <ModalHeader />
         <ModalBody>
-          <EditRoleForm setEditRoleModal={setEditRoleModal} role={role}/>
+          <EditRoleForm onCloseEditRoleModal={onCloseEditRoleModal} role={role}/>
         </ModalBody>
       </Modal>
     </>

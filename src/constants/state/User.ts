@@ -8,4 +8,5 @@ export interface UserState {
   loading: DataStatus;
   error: ApiError | null;
   uniqueLoading: DataStatus;
+  unassignedRoleUsers: User[] | [];
 }

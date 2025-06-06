@@ -12,9 +12,9 @@ import { DataStatus } from "@/constants/data/DataStatus";
 import { toast } from "sonner";
 
 export default function CreateRoleForm({
-  setCreateRoleModal,
+  onCloseCreateRoleModal,
 }: {
-  setCreateRoleModal: (value: boolean) => void;
+  onCloseCreateRoleModal: () => void;
 }) {
   //const router = useRouter();
   const {
@@ -28,12 +28,10 @@ export default function CreateRoleForm({
     { setSubmitting }: FormikHelpers<CreateRole>
   ) => {
     try {
-      setCreateRoleModal(false);
-      console.log(values);
       await createRole(values.roleName);
       await fetchRoles(meta?.current_page, meta?.per_page);
+      onCloseCreateRoleModal();
       toast.success("نقش با موفقیت ایجاد شد.");
-      //await router.push("/admin/dashboard/roles");
     } catch (error) {
       console.error("Error creating role:", error);
       toast.error("خطا در ایجاد نقش.");

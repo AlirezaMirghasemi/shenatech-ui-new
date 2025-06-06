@@ -4,26 +4,28 @@ import { DataStatus } from "@/constants/data/DataStatus";
 import { InputType } from "@/constants/data/InputType";
 import { usePermission } from "@/hooks/usePermission";
 import { useRole } from "@/hooks/useRole";
+import { Permission } from "@/types/Permission";
 import { AssignPermission, Role } from "@/types/Role";
 import { assignPermissionInitial } from "@/validations/admin/role/assignPermissionInitial";
 import { assignPermissionSchema } from "@/validations/admin/role/assignPermissionSchema";
 import { AxiosError } from "axios";
+import { Badge, TextInput } from "flowbite-react";
 import { FormikHelpers } from "formik";
 import { ApiError } from "next/dist/server/api-utils";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import { toast } from "sonner";
 
 export default function AssignPermissionForm({
   role,
-  setAssignPermissionModal,
-  setRoleId,
+  onCloseAssignPermissionModal,
 }: {
   role: Role;
-  setAssignPermissionModal: (isOpen: boolean) => void;
-  setRoleId: (roleId: number | null) => void;
+  onCloseAssignPermissionModal: () => void;
 }) {
-  const router = useRouter();
+  const [unAssignedPermissions, setUnAssignedPermissions] = useState<
+    Permission[]
+  >([]);
   const {
     actions: { fetchRoleNotPermissions },
     loading,
@@ -32,22 +34,41 @@ export default function AssignPermissionForm({
   const {
     meta,
     actions: { assignRolePermissions, fetchRoles },
+    loading: assignLoading,
   } = useRole();
+
   useEffect(() => {
-    fetchRoleNotPermissions(role.id);
-  }, [role.id, setRoleId]);
+    (async () => {
+      await fetchRoleNotPermissions(role.id);
+    })();
+  }, [role.id]);
+
+  useEffect(() => {
+    (async () => {
+      setUnAssignedPermissions(unassigned);
+    })();
+  }, [unassigned]);
+  const searchPermissions = async (query: string) => {
+    await setUnAssignedPermissions(
+      unAssignedPermissions.filter((permission) =>
+        permission.name.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    if (query.length === 0) {
+      await setUnAssignedPermissions(unassigned);
+    }
+    return unAssignedPermissions;
+  };
+
   const onSubmit = async (
     values: AssignPermission,
     { setSubmitting }: FormikHelpers<AssignPermission>
   ) => {
     try {
       await assignRolePermissions(role.id, values.permissionIds);
-      await toast.success("مجوزها با موفقیت تخصیص داده شدند.");
-      await setAssignPermissionModal(false);
-      await setRoleId(null);
-      await router.push("/admin/dashboard/roles");
       await fetchRoles(meta?.current_page, meta?.per_page);
-      await setRoleId(role.id);
+      await toast.success("مجوزها با موفقیت تخصیص داده شدند.");
+      await onCloseAssignPermissionModal();
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
       console.error("assign-permissions error:", axiosError.response?.data);
@@ -63,22 +84,42 @@ export default function AssignPermissionForm({
         validationSchema={assignPermissionSchema}
         onSubmit={onSubmit}
         buttonTitle="تخصیص مجوز"
-        disabledButton={loading === DataStatus.PENDING}
+        disabledButton={
+          loading === DataStatus.PENDING || assignLoading === DataStatus.PENDING
+        }
       >
-        <p className="text-xs font-bold text-neutral-100 mt-3 mb-1">نام نقش</p>
-        <p className="text-lg text-neutral-100 mb-1">{role.name}</p>
+        <Badge color="info" size="md" className="cursor-default mb-3">
+          نام نقش
+        </Badge>
+        <br />
+        <Badge color="light" className="cursor-default p-2 ">
+          {role.name}
+        </Badge>
+        <TextInput
+          className="w-full !block"
+          rightIcon={FaMagnifyingGlass}
+          type="search"
+          placeholder="جستجوی مجوز ها"
+          onChange={(e) => searchPermissions(e.target.value)}
+          disabled={
+            loading === DataStatus.PENDING ||
+            assignLoading === DataStatus.PENDING
+          }
+        />
         <DynamicInputField
           id="permissionIds"
           name="permissionIds"
           type={InputType.SELECT}
           placeholder="مجوز ها"
           label="مجوز ها"
-          disabled={loading === DataStatus.PENDING}
+          disabled={
+            loading === DataStatus.PENDING ||
+            assignLoading === DataStatus.PENDING
+          }
           className="rounded-lg block w-full p-0.2 mb-2"
           multiple={true}
-          data={
-             unassigned
-          }
+          data={unAssignedPermissions}
+          loading={loading === DataStatus.PENDING}
         />
       </DynamicForm>
     </>

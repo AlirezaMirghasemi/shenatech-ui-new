@@ -41,6 +41,7 @@ export default function RootLayout({
               fileInput: "replace",
               popover: "replace",
               tooltip: "replace",
+              avatar: "replace",
             }}
           >
             <Toaster />

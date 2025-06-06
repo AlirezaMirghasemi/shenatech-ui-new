@@ -13,10 +13,10 @@ import { AxiosError } from "axios";
 import { ApiError } from "@/types/Api";
 
 export default function EditRoleForm({
-  setEditRoleModal,
+  onCloseEditRoleModal,
   role,
 }: {
-  setEditRoleModal: (value: boolean) => void;
+  onCloseEditRoleModal: () => void;
   role: Role;
 }) {
   //const router = useRouter();
@@ -26,13 +26,11 @@ export default function EditRoleForm({
     uniqueLoading,
     meta,
   } = useRole();
-  const onSubmit = async (
-    values: EditRole,
-  ) => {
+  const onSubmit = async (values: EditRole) => {
     try {
       await editRole(role.id, values.roleName);
       await fetchRoles(meta?.current_page, meta?.per_page);
-      setEditRoleModal(false);
+      onCloseEditRoleModal();
       toast.success("نقش با موفقیت ویرایش شد.");
     } catch (err: unknown) {
       const axiosError = err as AxiosError<ApiError>;

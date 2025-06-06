@@ -7,6 +7,7 @@ import {
   editUserStatusAsync,
   fetchPermissionUsersAsync,
   fetchRoleUsersAsync,
+  fetchUnAssignedRoleUsersAsync,
   getUsersAsync,
 } from "@/store/thunks/userThunk";
 import { CreateUser, EditUser } from "@/types/User";
@@ -20,6 +21,7 @@ export const useUser = () => {
     loading,
     error,
     uniqueLoading,
+    unassignedRoleUsers
   } = useAppSelector((state) => state.users);
   const createUser = useCallback(
     async (user: CreateUser, profileImage?: File) => {
@@ -102,12 +104,23 @@ export const useUser = () => {
     },
     [dispatch]
   );
+  const fetchUnAssignedRoleUsers = useCallback(
+    async (roleId: number) => {
+      try {
+        await dispatch(fetchUnAssignedRoleUsersAsync({ roleId })).unwrap();
+      } catch (error) {
+        console.error("Error fetching unassigned role users:", error);
+      }
+    },
+    [dispatch]
+  );
   return {
     users,
     meta,
     error,
     loading,
     uniqueLoading,
+    unassignedRoleUsers,
     actions: {
       createUser,
       editUser,
@@ -116,6 +129,7 @@ export const useUser = () => {
       editUserStatus,
       fetchUsers,
       checkFieldIsUnique,
+      fetchUnAssignedRoleUsers
     },
   };
 };

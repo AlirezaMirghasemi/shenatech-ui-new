@@ -1,7 +1,6 @@
 import { User } from "@/types/User";
 import {
   Alert,
-  Avatar,
   Badge,
   Modal,
   ModalBody,
@@ -13,6 +12,8 @@ import { FaUser } from "react-icons/fa6";
 import PersianDate from "persian-date";
 import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";
+import Image from "next/image";
+import { Image as ImageType } from "@/types/Image";
 export default function UserProfileModal({
   user,
   onClose,
@@ -32,12 +33,12 @@ export default function UserProfileModal({
               <div className="space-y-4">
                 <div className="flex space-x-4">
                   {user?.profile_image ? (
-                    <Avatar
-                      img={`http://localhost:8000/storage/${user.profile_image.path}`}
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_FILE_URL}/${(user.profile_image as ImageType).path}`}
                       alt={user.full_name ?? ""}
-                      rounded
-                      size="lg"
-                      placeholderInitials={user.username}
+                      className="rounded-full h-25 w-25"
+                      width={100}
+                      height={100}
                     />
                   ) : (
                     <FaUser className="h-16 w-16 rounded-lg" />
@@ -46,13 +47,13 @@ export default function UserProfileModal({
                     {(() => {
                       switch (user?.status) {
                         case UserStatus.ACTIVE:
-                          return <Badge color="success">فعال</Badge>;
+                          return <Badge color="success" size="xs">فعال</Badge>;
                         case UserStatus.DEACTIVATED:
-                          return <Badge color="danger">غیرفعال</Badge>;
+                          return <Badge color="danger" size="xs">غیرفعال</Badge>;
                         case UserStatus.SUSPENDED:
-                          return <Badge color="warning">معلق</Badge>;
+                          return <Badge color="warning" size="xs">معلق</Badge>;
                         case UserStatus.PENDING:
-                          return <Badge color="info">در حال بررسی</Badge>;
+                          return <Badge color="info" size="xs">در حال بررسی</Badge>;
                         default:
                           return null;
                       }
@@ -64,9 +65,9 @@ export default function UserProfileModal({
                   <dt>آدرس ایمیل</dt>
                   <dd>
                     {user.email_verified_at ? (
-                      <Badge color="success">احراز شده</Badge>
+                      <Badge color="success" size="xs">احراز شده</Badge>
                     ) : (
-                      <Badge color="danger">احراز نشده</Badge>
+                      <Badge color="danger" size="xs">احراز نشده</Badge>
                     )}
                     <br />
                     {user?.email}
@@ -77,14 +78,16 @@ export default function UserProfileModal({
                   <dd>{user?.full_name ?? "ثبت نشده"}</dd>
                 </dl>
                 <dl>
-                  <dt>نقش ها</dt>
+                  {/* <dt>نقش ها</dt> */
+                  }<dt>نقش ها</dt>
                   <dd className="flex items-center gap-1">
-                    <Alert color="info">
+
+                    <Alert color="info" >
                       {user?.roles &&
                         user?.roles.map((role) => (
-                          <span key={role.id} className="mr-1">
+                          <Badge key={role.id} size="xs" color="success">
                             {role.name}
-                          </span>
+                          </Badge>
                         ))}
                     </Alert>
                   </dd>
@@ -96,11 +99,12 @@ export default function UserProfileModal({
                   <dd>
                     {user.mobile &&
                       (user.email_verified_at ? (
-                        <Badge color="success"> احراز شده </Badge>
+                        <Badge color="success" size="xs"> احراز شده </Badge>
                       ) : (
-                        <Badge color="danger"> احراز نشده </Badge>
+                        <Badge color="danger" size="xs"> احراز نشده </Badge>
                       ))}
-                    {user?.mobile ?? <Badge color="warning">ثبت نشده</Badge>}
+                      <br />
+                    {user?.mobile ?? <Badge color="warning" size="xs">ثبت نشده</Badge>}
                   </dd>
                 </dl>
                 <dl>

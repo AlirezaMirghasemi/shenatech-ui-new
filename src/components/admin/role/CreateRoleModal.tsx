@@ -1,7 +1,7 @@
 import { Modal, ModalBody, ModalHeader } from "flowbite-react";
 import CreateRoleForm from "./CreateRoleForm";
 
-export default function CreateRoleModal({createRoleModal,onCloseCreateRoleModal,setCreateRoleModal}:{createRoleModal:boolean;onCloseCreateRoleModal:()=>void;setCreateRoleModal:(value:boolean)=>void}) {
+export default function CreateRoleModal({createRoleModal,onCloseCreateRoleModal}:{createRoleModal:boolean;onCloseCreateRoleModal:()=>void;}) {
   return (
     <>
       <Modal
@@ -12,7 +12,7 @@ export default function CreateRoleModal({createRoleModal,onCloseCreateRoleModal,
       >
         <ModalHeader />
         <ModalBody>
-          <CreateRoleForm setCreateRoleModal={setCreateRoleModal} />
+          <CreateRoleForm onCloseCreateRoleModal={onCloseCreateRoleModal} />
         </ModalBody>
       </Modal>
     </>

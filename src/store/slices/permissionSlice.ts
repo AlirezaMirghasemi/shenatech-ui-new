@@ -130,7 +130,7 @@ const permissionSlice = createSlice({
         }
       })
 
-      .addCase(fetchRoleNotPermissionsAsync.pending, (state) => {
+      .addCase(fetchRoleNotPermissionsAsync.pending , (state) => {
         state.loading = DataStatus.PENDING;
       })
       .addCase(fetchRoleNotPermissionsAsync.fulfilled, (state, { payload }) => {

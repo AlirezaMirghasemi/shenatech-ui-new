@@ -31,9 +31,10 @@ export default function EditUserForm({
     { setSubmitting }: FormikHelpers<EditUser>
   ) => {
     try {
-      onCloseEditUserModal();
+
       await editUser(user.id, values, values.profile_image as File | undefined);
       await fetchUsers(meta?.current_page, meta?.per_page);
+      onCloseEditUserModal();
       toast.success("کاربر با موفقیت ویرایش شد.");
     } catch (error) {
       console.error("Error creating user:", error);

@@ -1,6 +1,7 @@
 import { DataStatus } from "@/constants/data/DataStatus";
 import { useRole } from "@/hooks/useRole";
 import { ApiError } from "@/types/Api";
+import { Role } from "@/types/Role";
 import { AxiosError } from "axios";
 import { Button, Modal, ModalBody, ModalHeader, Spinner } from "flowbite-react";
 import { FaSkullCrossbones } from "react-icons/fa6";
@@ -8,11 +9,11 @@ import { toast } from "sonner";
 
 export default function DeleteRoleModal({
   deleteRoleModal,
-  roleId,
+  role,
   onCloseDeleteRoleModal,
 }: {
   deleteRoleModal: boolean;
-  roleId: number | null;
+  role: Role ;
   onCloseDeleteRoleModal: () => void;
 }) {
   const {
@@ -20,7 +21,7 @@ export default function DeleteRoleModal({
     meta,
     loading,
   } = useRole();
-  const deleteRoleAction = async (roleId: number | null) => {
+  const deleteRoleAction = async (roleId:number) => {
     if (roleId) {
       try {
         await deleteRole(roleId);
@@ -52,7 +53,7 @@ export default function DeleteRoleModal({
             <div className="flex justify-center gap-4">
               <Button
                 color="danger"
-                onClick={() => deleteRoleAction(roleId)}
+                onClick={() => deleteRoleAction(role.id)}
                 disabled={loading === DataStatus.PENDING}
               >
                 {loading === DataStatus.PENDING ? (

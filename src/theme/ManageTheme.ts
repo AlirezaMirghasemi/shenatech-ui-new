@@ -15,6 +15,7 @@ import{TabsThemeConfig}from "./TabsThemeConfig"
 import { BadgeThemeConfig } from "./BadgeThemeConfig";
 import { PopoverThemeConfig } from "./PopoverThemeConfig";
 import { TooltipThemeConfig } from "./TooltipThemeConfig";
+import { AvatarThemeConfig } from "./AvatarThemeConfig";
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -32,5 +33,6 @@ export const ManageTheme = createTheme({
   tabs:{...TabsThemeConfig},
   badge:{...BadgeThemeConfig},
   popover:{...PopoverThemeConfig},
-  tooltip:{...TooltipThemeConfig}
+  tooltip:{...TooltipThemeConfig},
+  avatar:{...AvatarThemeConfig}
 });

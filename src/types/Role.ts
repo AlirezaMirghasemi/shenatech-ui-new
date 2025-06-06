@@ -17,6 +17,9 @@ export interface AssignPermissionsToRole{
     roleId: number|null;
     // permissionIds: number[];
 }
+export interface AssignRoleToUsers{
+    userIds: number[]|null;
+}
 export interface CreateRole {
   roleName: string;
 }

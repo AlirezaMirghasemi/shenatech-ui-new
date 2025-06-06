@@ -35,7 +35,7 @@ const DynamicFormInputFile = <T extends Record<string, unknown>>({
         "path" in fieldValue
       ) {
         await setPreviewOldImage(
-          `http://localhost:8000/storage/${fieldValue.path as string}`
+          `${process.env.NEXT_PUBLIC_FILE_URL}/${fieldValue.path as string}`
         );
       } else {
         setPreviewOldImage(null);

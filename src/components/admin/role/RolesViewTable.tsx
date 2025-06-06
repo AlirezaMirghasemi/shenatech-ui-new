@@ -20,6 +20,7 @@ import CreateRoleModal from "./CreateRoleModal";
 import AssignPermissionModal from "./AssignPermissionModal";
 import EditRoleModal from "./EditRoleModal";
 import DeleteRoleModal from "./DeleteRoleModal";
+import AssignRoleToUsersModal from "./AssignRoleToUsersModal";
 export default function RolesViewTable({
   setRoleId,
   setRoleUsersPage,
@@ -52,13 +53,34 @@ export default function RolesViewTable({
   const [createRoleModal, setCreateRoleModal] = useState(false);
   const [editRoleModal, setEditRoleModal] = useState(false);
   const [deleteRoleModal, setDeleteRoleModal] = useState(false);
+  const [assignRoleToUsersModal, setAssignRoleToUsersModal] = useState(false);
+  function onCloseAssignRoleToUsersModal() {
+    setAssignRoleToUsersModal(false);
+    setRole(null);
+  }
+  function onOpenAssignRoleToUsersModal(row: Role) {
+    setRole(row);
+    setAssignRoleToUsersModal(true);
+  }
+  function onOpenCreateRoleModal() {
+    setCreateRoleModal(true);
+  }
   function onCloseCreateRoleModal() {
     setCreateRoleModal(false);
+    setRole(null);
+  }
+  function onOpenDeleteRoleModal(row: Role) {
+    setRole(row);
+    setDeleteRoleModal(true);
   }
   function onCloseDeleteRoleModal() {
     setDeleteRoleModal(false);
-    setRoleId(null);
+    setSelectedRoleId(null);
     setRole(null);
+  }
+  function onOpenEditRoleModal(row: Role) {
+    setRole(row);
+    setEditRoleModal(true);
   }
   function onCloseEditRoleModal() {
     setEditRoleModal(false);
@@ -66,8 +88,6 @@ export default function RolesViewTable({
   }
   function onCloseAssignPermissionModal() {
     setAssignPermissionModal(false);
-    setSelectedRoleId(null);
-    setRoleId(null);
     setRole(null);
   }
   function onOpenAssignPermissionModal(role: Role) {
@@ -85,7 +105,7 @@ export default function RolesViewTable({
           name: "Create",
           caption: "ایجاد نقش",
           handler: () => {
-            setCreateRoleModal(true);
+            onOpenCreateRoleModal();
           },
         },
       ],
@@ -138,22 +158,15 @@ export default function RolesViewTable({
         icon: <FaUserPen />,
         color: "primary",
         className: "!rounded-none",
-        handler: (row) =>
-          assignPermissionModal
-            ? onCloseAssignPermissionModal()
-            : onOpenAssignPermissionModal(row),
+        handler: (row) => onOpenAssignPermissionModal(row),
       },
       {
-        //TODO -> implement assignUser modal
         name: "assignUser",
-        caption: "تخصیص کاربر",
+        caption: "تخصیص به کاربر",
         icon: <FaUserPlus />,
         color: "secondary",
         className: "!rounded-none",
-        // handler: (row) =>
-        //   assignPermissionModal
-        //     ? onCloseAssignPermissionModal()
-        //     : onOpenAssignPermissionModal(row),
+        handler: (row) => onOpenAssignRoleToUsersModal(row),
       },
       {
         name: "Edit",
@@ -162,8 +175,7 @@ export default function RolesViewTable({
         color: "warning",
         className: "!rounded-none",
         handler: (row) => {
-          setRole(row);
-          setEditRoleModal(true);
+          onOpenEditRoleModal(row);
         },
       },
       {
@@ -173,8 +185,7 @@ export default function RolesViewTable({
         color: "danger",
         className: "!rounded-r-none",
         handler: (row) => {
-          setRole(row);
-          setDeleteRoleModal(true);
+          onOpenDeleteRoleModal(row);
         },
       },
     ],
@@ -193,34 +204,33 @@ export default function RolesViewTable({
       />
 
       {role && (
-        <AssignPermissionModal
-          assignPermissionModal={assignPermissionModal}
-          onCloseAssignPermissionModal={onCloseAssignPermissionModal}
-          role={role}
-          setAssignPermissionModal={setAssignPermissionModal}
-          setRoleId={setRoleId}
-        />
-      )}
-      {role && (
-        <EditRoleModal
-          editRoleModal={editRoleModal}
-          onCloseEditRoleModal={onCloseEditRoleModal}
-          role={role}
-          setEditRoleModal={setEditRoleModal}
-        />
+        <>
+          <AssignPermissionModal
+            assignPermissionModal={assignPermissionModal}
+            onCloseAssignPermissionModal={onCloseAssignPermissionModal}
+            role={role}
+          />
+          <EditRoleModal
+            editRoleModal={editRoleModal}
+            onCloseEditRoleModal={onCloseEditRoleModal}
+            role={role}
+          />
+          <DeleteRoleModal
+            deleteRoleModal={deleteRoleModal}
+            role={role}
+            onCloseDeleteRoleModal={onCloseDeleteRoleModal}
+          />
+          <AssignRoleToUsersModal
+            assignRoleToUsersModal={assignRoleToUsersModal}
+            onCloseAssignRoleToUsersModal={onCloseAssignRoleToUsersModal}
+            role={role}
+          />
+        </>
       )}
       <CreateRoleModal
-        setCreateRoleModal={setCreateRoleModal}
         createRoleModal={createRoleModal}
         onCloseCreateRoleModal={onCloseCreateRoleModal}
       />
-      {role && (
-        <DeleteRoleModal
-          deleteRoleModal={deleteRoleModal}
-          roleId={role.id}
-          onCloseDeleteRoleModal={onCloseDeleteRoleModal}
-        />
-      )}
     </>
   );
 }

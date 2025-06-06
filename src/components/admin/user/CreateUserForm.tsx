@@ -22,12 +22,7 @@ export default function CreateUserForm({
   onCloseCreateUserModal: () => void;
 }) {
   const {
-    actions: {
-      createUser,
-      fetchUsers,
-      checkFieldIsUnique,
-
-    },
+    actions: { createUser, fetchUsers, checkFieldIsUnique },
     loading,
     uniqueLoading,
     meta,
@@ -37,9 +32,9 @@ export default function CreateUserForm({
     { setSubmitting }: FormikHelpers<CreateUser>
   ) => {
     try {
-      onCloseCreateUserModal();
       await createUser(values, values.profile_image as File | undefined);
       await fetchUsers(meta?.current_page, meta?.per_page);
+      onCloseCreateUserModal();
       toast.success("کاربر با موفقیت ایجاد شد.");
     } catch (error) {
       console.error("Error creating user:", error);

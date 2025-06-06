@@ -3,6 +3,7 @@ import { RoleState } from "@/constants/state/Role";
 import { createSlice } from "@reduxjs/toolkit";
 import {
   assignRolePermissionsAsync,
+  assignRoleToUsersAsync,
   checkRoleNameIsUniqueAsync,
   createRoleAsync,
   deleteRoleAsync,
@@ -15,7 +16,7 @@ import { Role } from "@/types/Role";
 import { PaginatedResponse } from "@/types/Api";
 const initialState: RoleState = {
   data: [],
-  assigned:[],
+  assigned: [],
   meta: {} as PaginatedResponse<Role>,
   loading: DataStatus.IDLE,
   error: null,
@@ -166,36 +167,54 @@ const roleSlice = createSlice({
       })
 
       .addCase(fetchPermissionRolesAsync.pending, (state) => {
-              state.loading = DataStatus.PENDING;
-              // Don't clear error immediately, might be useful from previous action
-            })
-            .addCase(fetchPermissionRolesAsync.fulfilled, (state, { payload }) => {
-              state.loading = DataStatus.SUCCEEDED;
-              if (
-                payload &&
-                typeof payload === "object" &&
-                "data" in payload &&
-                "meta" in payload
-              ) {
-                state.assigned = payload.data;
-                state.meta = payload.meta;
-                state.error = null;
-              } else {
-                state.assigned = [];
-                state.error = { message: "Invalid response format" };
-              }
-            })
-            .addCase(fetchPermissionRolesAsync.rejected, (state, action) => {
-              state.loading = DataStatus.FAILED;
-              state.assigned = [];
-              if (typeof action.payload === "string") {
-                state.error = action.payload || {
-                  message: "Failed to fetch Permissions",
-                };
-              } else {
-                state.error = null;
-              }
-            });
+        state.loading = DataStatus.PENDING;
+        // Don't clear error immediately, might be useful from previous action
+      })
+      .addCase(fetchPermissionRolesAsync.fulfilled, (state, { payload }) => {
+        state.loading = DataStatus.SUCCEEDED;
+        if (
+          payload &&
+          typeof payload === "object" &&
+          "data" in payload &&
+          "meta" in payload
+        ) {
+          state.assigned = payload.data;
+          state.meta = payload.meta;
+          state.error = null;
+        } else {
+          state.assigned = [];
+          state.error = { message: "Invalid response format" };
+        }
+      })
+      .addCase(fetchPermissionRolesAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        state.assigned = [];
+        if (typeof action.payload === "string") {
+          state.error = action.payload || {
+            message: "Failed to fetch Permissions",
+          };
+        } else {
+          state.error = null;
+        }
+      })
+      .addCase(assignRoleToUsersAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+        state.error = null;
+      })
+      .addCase(assignRoleToUsersAsync.fulfilled, (state) => {
+        state.loading = DataStatus.SUCCEEDED;
+        state.error = null;
+      })
+      .addCase(assignRoleToUsersAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        if (typeof action.payload === "string") {
+          state.error = action.payload || {
+            message: "Failed to assign role to users",
+          };
+        } else {
+          state.error = null;
+        }
+      });
   },
 });
 export default roleSlice.reducer;

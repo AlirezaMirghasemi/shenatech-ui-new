@@ -6,14 +6,10 @@ export default function AssignPermissionModal({
   assignPermissionModal,
   onCloseAssignPermissionModal,
   role,
-  setAssignPermissionModal,
-  setRoleId,
 }: {
   assignPermissionModal: boolean;
   onCloseAssignPermissionModal: () => void;
   role: Role;
-  setAssignPermissionModal: (value: boolean) => void;
-  setRoleId: (value: number | null) => void;
 }) {
   return (
     <>
@@ -27,8 +23,7 @@ export default function AssignPermissionModal({
           <ModalBody>
             <AssignPermissionForm
               role={role}
-              setAssignPermissionModal={setAssignPermissionModal}
-              setRoleId={setRoleId}
+              onCloseAssignPermissionModal={onCloseAssignPermissionModal}
             />
           </ModalBody>
       </Modal>

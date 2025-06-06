@@ -8,12 +8,13 @@ import {
   Navbar,
 } from "flowbite-react";
 import { useAuth } from "@/hooks/useAuth";
-import { FaDoorOpen, FaGear, FaUser, FaUserPen } from "react-icons/fa6";
+import { FaDoorOpen, FaGear, FaUserPen } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import AdminDashboardButton from "./AdminDashboardButton";
 import ThemeToggle from "../../common/ThemeToggle";
 import LogoutModal from "../auth/logout/LogoutModal";
+import { Image } from "@/types/Image";
 
 export function Header({ handleOpen }: { handleOpen: () => void }) {
   const [logoutModalMode, setLogoutModalMode] = useState(false);
@@ -28,7 +29,7 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
   useEffect(() => {
     actions.loadUser();
   }, []);
-
+  console.log(user);
   return (
     <>
       <Navbar
@@ -44,18 +45,19 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
             arrowIcon={false}
             inline
             label={
-              user?.profile_image ? (
+              user && (
                 <Avatar
-                  alt="user profile picture"
-                  img={user?.profile_image.path}
+                  alt="عکس کاربر"
+                  img={`${process.env.NEXT_PUBLIC_FILE_URL}/${
+                    (user?.profile_image as Image).path
+                  }`}
+                  placeholderInitials={user?.username.charAt(0)}
                   rounded
-                />
-              ) : (
-                <FaUser
-                  className="rounded-full p-2 mr-2    transition-colors duration-300
-         hover:text-secondary-hover hover:bg-primary w-10 h-10 text-center"
-                />
-              )
+                  bordered
+                  color="primary"
+                  status="online"
+                  className="cursor-pointer ml-2"
+                />)
             }
           >
             <DropdownHeader>

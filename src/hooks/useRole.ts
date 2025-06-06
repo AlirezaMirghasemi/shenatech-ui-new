@@ -2,6 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useCallback } from "react";
 import {
   assignRolePermissionsAsync,
+  assignRoleToUsersAsync,
   checkRoleNameIsUniqueAsync,
   createRoleAsync,
   deleteRoleAsync,
@@ -121,7 +122,17 @@ export const useRole = () => {
     },
     [dispatch]
   );
-
+const assignRoleToUsers = useCallback(
+  (roleId: number, userIds: number[]) => {
+    try {
+      return dispatch(assignRoleToUsersAsync({ roleId, userIds })).unwrap();
+    } catch (error) {
+      console.error("Error assigning role to users:", error);
+      return null;
+    }
+  },
+  [dispatch]
+);
   return {
     roles,
     meta,
@@ -137,7 +148,8 @@ export const useRole = () => {
       createRole,
       editRole,
       deleteRole,
-      fetchPermissionRoles
+      fetchPermissionRoles,
+      assignRoleToUsers
     },
   };
 };

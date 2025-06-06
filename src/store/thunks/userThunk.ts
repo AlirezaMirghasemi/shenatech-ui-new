@@ -188,7 +188,6 @@ export const editUserAsync = createAsyncThunk(
     }: { userId: number; user: EditUser; profileImage?: File },
     { rejectWithValue }
   ) => {
-    console.log("user:", user);
     try {
       const formData = new FormData();
       Object.entries(user).forEach(([key, value]) => {
@@ -210,6 +209,23 @@ export const editUserAsync = createAsyncThunk(
       return rejectWithValue({
         message: axiosError.message || "خطای ویرایش کاربر",
       });
+    }
+  }
+);
+
+export const fetchUnAssignedRoleUsersAsync = createAsyncThunk(
+  "user/fetchUnAssignedRoleUsers",
+  async ({ roleId }: { roleId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/users/${roleId}/roles/unassigned`);
+      return {
+        data: response.data.data,
+      };
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      return rejectWithValue(
+        axiosError.response?.data || { message: axiosError.message }
+      );
     }
   }
 );

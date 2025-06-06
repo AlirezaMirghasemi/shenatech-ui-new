@@ -3,8 +3,6 @@ import { ApiError } from "@/types/Api";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 
-
-
 export const createPermissionAsync = createAsyncThunk(
   "permission/createPermission",
   async (permission: string, { rejectWithValue }) => {
@@ -26,12 +24,13 @@ export const createPermissionAsync = createAsyncThunk(
   }
 );
 
-
 export const checkPermissionNameIsUniqueAsync = createAsyncThunk(
   "permission/checkPermissionNameIsUnique",
   async (permissionName: string, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/permissions/permission-name-is-unique/${permissionName}`);
+      const response = await api.get(
+        `/permissions/permission-name-is-unique/${permissionName}`
+      );
       return response.data == 1 ? true : false;
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
@@ -50,14 +49,14 @@ export const deletePermissionsAsync = createAsyncThunk(
     try {
       if (permissionIds) {
         const response = await api.delete(`/permissions`, {
-           data: { permissionIds: permissionIds },
+          data: { permissionIds: permissionIds },
         });
         return response.data.data;
       } else {
         throw new Error("شناسه مجوز یافت نشد!");
       }
     } catch (error: unknown) {
-         console.log("error");
+      console.log("error");
       const axiosError = error as AxiosError<ApiError>;
       if (axiosError.response?.data) {
         return rejectWithValue(axiosError.response.data);
@@ -67,7 +66,7 @@ export const deletePermissionsAsync = createAsyncThunk(
       });
     }
   }
-)
+);
 export const fetchPermissionsAsync = createAsyncThunk(
   "permission/fetchPermissions",
   async (
@@ -147,9 +146,12 @@ export const deletePermissionRolesAsync = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await api.delete(`/permissions/${permissionId}/revoke-roles`, {
-        data: { roleIds: Array.from(roleIds) },
-      });
+      const response = await api.delete(
+        `/permissions/${permissionId}/revoke-roles`,
+        {
+          data: { roleIds: Array.from(roleIds) },
+        }
+      );
 
       return response.data;
     } catch (error: unknown) {
