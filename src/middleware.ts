@@ -1,15 +1,24 @@
 import { NextResponse, NextRequest } from "next/server";
 export const config = {
-    matcher: ["/admin/:path*"],
-  };
+  matcher: ["/admin/:path*"],
+};
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const loginUrl = new URL('/admin/login', request.url);
-  const dashUrl = new URL('/admin/dashboard', request.url);
+  const loginUrl = new URL("/admin/login", request.url);
+  const dashUrl = new URL("/admin/dashboard", request.url);
 
   // مسیرهای عمومی
   if (["/admin/login", "/admin/register"].includes(pathname)) {
-    if (request.cookies.has("laravel_session") && request.cookies.has("XSRF-TOKEN")) {
+    if (
+      request.cookies.has("laravel_session") &&
+      request.cookies.has("XSRF-TOKEN")
+    ) {
+      const redirectUrl = request.nextUrl.searchParams.get("redirect");
+      if (redirectUrl) {
+        return NextResponse.redirect(new URL(redirectUrl, request.url), {
+          status: 303,
+        });
+      }
       return NextResponse.redirect(dashUrl, { status: 303 });
     }
     return NextResponse.next();

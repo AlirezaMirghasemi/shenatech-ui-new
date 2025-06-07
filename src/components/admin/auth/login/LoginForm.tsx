@@ -5,7 +5,7 @@ import { InputType } from "@/constants/data/InputType";
 import { LoginCredentials } from "@/types/Auth";
 import Image from "next/image";
 import { FormikHelpers } from "formik";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { loginInitial } from "@/validations/admin/login/loginInitial";
@@ -13,6 +13,9 @@ import { loginSchema } from "@/validations/admin/login/loginSchema";
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/admin/dashboard";
+
   const { actions, isLoading } = useAuth();
   const onSubmit = async (
     values: LoginCredentials,
@@ -22,7 +25,7 @@ export default function LoginForm() {
       await actions.login(values);
       await actions.loadUser();
       toast.success("ورود موفقیت‌آمیز بود.");
-      await router.replace("/admin/dashboard");
+      await router.push(redirect);
     } catch {
       toast.error("ورود ناموفق! اطلاعات وارد شده صحیح نیست.");
     } finally {
