@@ -7,14 +7,12 @@ import { FaSkullCrossbones } from "react-icons/fa6";
 import { toast } from "sonner";
 
 export default function DeletePermissionsModal({
-  setDeletePermissionsModal,
   deletePermissionsModal,
-  permissionIds,
+  selectedIds,
   onCloseDeletePermissionsModal,
 }: {
-  setDeletePermissionsModal: (value: boolean) => void;
   deletePermissionsModal: boolean;
-  permissionIds: number[] | [];
+  selectedIds: Set<number>;
   onCloseDeletePermissionsModal: () => void;
 }) {
   const {
@@ -22,19 +20,19 @@ export default function DeletePermissionsModal({
     meta,
     loading,
   } = usePermission();
-  const deletePermissionsAction = async (permissionIds: number[] | null) => {
-    if (permissionIds && permissionIds.length > 0) {
+  const deletePermissionsAction = async (selectedIds: Set<number>) => {
+    if (selectedIds && selectedIds.size > 0) {
       try {
-        await deletePermission(permissionIds);
-        await fetchPermissions(meta?.current_page, meta?.per_page);
-        setDeletePermissionsModal(false);
+        await deletePermission(Array.from(selectedIds));
+        onCloseDeletePermissionsModal();
         toast.success("مجوز با موفقیت حذف شد!");
+        return await fetchPermissions(meta?.current_page, meta?.per_page);
       } catch (err: unknown) {
-              const axiosError = err as AxiosError<ApiError>;
-              toast.error(axiosError.message);
-            } finally {
-        await fetchPermissions(meta?.current_page, meta?.per_page);
-        setDeletePermissionsModal(false);
+        const axiosError = err as AxiosError<ApiError>;
+        toast.error(axiosError.message);
+      } finally {
+        onCloseDeletePermissionsModal();
+        return await fetchPermissions(meta?.current_page, meta?.per_page);
       }
     }
   };
@@ -51,12 +49,13 @@ export default function DeletePermissionsModal({
           <div className="text-center ">
             <FaSkullCrossbones className="mx-auto mb-4 h-14 w-14  text-status-danger-text" />
             <h3 className="mb-5 text-lg font-normal">
-              آیا از حذف {permissionIds.length > 1 ? "مجوز های انتخاب شده" : "مجوز"} اطمینان دارید؟
+              آیا از حذف {selectedIds.size > 1 ? "مجوز های انتخاب شده" : "مجوز"}{" "}
+              اطمینان دارید؟
             </h3>
             <div className="flex justify-center gap-4">
               <Button
                 color="danger"
-                onClick={() => deletePermissionsAction(permissionIds)}
+                onClick={() => deletePermissionsAction(selectedIds)}
                 disabled={loading === DataStatus.PENDING}
               >
                 {loading === DataStatus.PENDING ? (

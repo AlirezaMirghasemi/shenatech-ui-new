@@ -8,12 +8,10 @@ import { useState } from "react";
 import { FaUserLock, FaUsersGear } from "react-icons/fa6";
 
 export default function RolesPage() {
-  //const [roleId, setRoleId] = useState<number | null>(null);
   const [rolePermissionsPage, setRolePermissionsPage] = useState("1");
   const [roleUsersPage, setRoleUsersPage] = useState("1");
   const [role, setRole] = useState<Role | null>(null);
   const ShowRoleDetails = (role: Role) => {
-    //setRoleId(role.id);
     setRole(role);
     setRoleUsersPage("1");
     setRolePermissionsPage("1");
@@ -28,7 +26,7 @@ export default function RolesPage() {
         setRole={setRole}
       />
       {role?.id && (
-      <Tabs variant="fullWidth">
+      <Tabs variant="underline">
         <TabItem active title="مجوز ها" icon={FaUserLock}>
           <RolePermissionsViewTable
           role={role}

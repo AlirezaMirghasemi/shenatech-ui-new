@@ -5,19 +5,13 @@ import { Permission } from "@/types/Permission";
 export default function AssignPermissionsToRoleModal({
   assignPermissionsToRoleModal,
   onCloseAssignPermissionsToRoleModal,
-  setAssignPermissionsToRoleModal,
   permissions,
   selectedIds,
-  setSelectedIds,
-  setPermissionId
 }: {
   assignPermissionsToRoleModal: boolean;
   onCloseAssignPermissionsToRoleModal: () => void;
-  setAssignPermissionsToRoleModal: (value: boolean) => void;
   permissions: Permission[];
   selectedIds: number[];
-  setSelectedIds: (value: Set<number>) => void;
-  setPermissionId: (id: number | null) => void;
 }) {
   return (
     <>
@@ -30,11 +24,9 @@ export default function AssignPermissionsToRoleModal({
         <ModalHeader />
         <ModalBody>
           <AssignPermissionsToRoleForm
-            setAssignPermissionsToRoleModal={setAssignPermissionsToRoleModal}
+            onCloseAssignPermissionsToRoleModal={onCloseAssignPermissionsToRoleModal}
             permissions={permissions}
-            selectedIds={selectedIds}
-            setSelectedIds={setSelectedIds}
-            setPermissionId={ setPermissionId }
+            selectedIds={Array.from(selectedIds)}
           />
         </ModalBody>
       </Modal>

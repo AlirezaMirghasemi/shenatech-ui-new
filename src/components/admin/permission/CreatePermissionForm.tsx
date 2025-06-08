@@ -19,9 +19,9 @@ import PermissionNameSync from "./PermissionNameSync";
 import { useState } from "react";
 
 export default function CreatePermissionForm({
-  setCreatePermissionModal,
+  onCloseCreatePermissionModal,
 }: {
-  setCreatePermissionModal: (value: boolean) => void;
+  onCloseCreatePermissionModal: () => void;
 }) {
   const {
     actions: { createPermission, fetchPermissions },
@@ -36,10 +36,10 @@ export default function CreatePermissionForm({
     { setSubmitting }: FormikHelpers<CreatePermission>
   ) => {
     try {
-      setCreatePermissionModal(false);
       await createPermission(values.permissionName);
-      await fetchPermissions(meta?.current_page, meta?.per_page);
       toast.success("مجوز با موفقیت ایجاد شد.");
+      onCloseCreatePermissionModal();
+      return await fetchPermissions(meta?.current_page, meta?.per_page);
     } catch (error) {
       console.error("Error creating permission:", error);
       toast.error("خطا در ایجاد نقش.");

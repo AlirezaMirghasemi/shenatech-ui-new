@@ -9,22 +9,17 @@ import { toast } from "sonner";
 
 export default function DeletePermissionRolesModal({
   selectedIds,
-  setSelectedIds,
-  setDeletePermissionRolesModal,
   deletePermissionRolesModal,
   permissionId,
   onCloseDeletePermissionRolesModal,
 }: {
   selectedIds: Set<number>;
-  setSelectedIds: (ids: Set<number>) => void;
-  setDeletePermissionRolesModal: (open: boolean) => void;
   deletePermissionRolesModal: boolean;
   permissionId: number;
   onCloseDeletePermissionRolesModal: () => void;
 }) {
   const {
     meta,
-
     actions: { fetchPermissionRoles },
   } = useRole();
   const {
@@ -48,14 +43,13 @@ export default function DeletePermissionRolesModal({
           meta?.per_page,
           meta?.current_page
         );
-        setDeletePermissionRolesModal(false);
+        onCloseDeletePermissionRolesModal();
         toast.success("نقش ها با موفقیت حذف شدند");
       } catch (err: unknown) {
         const axiosError = err as AxiosError<ApiError>;
         toast.error(axiosError.message);
       } finally {
-        setSelectedIds(new Set());
-        setDeletePermissionRolesModal(false);
+        onCloseDeletePermissionRolesModal();
       }
     }
   };

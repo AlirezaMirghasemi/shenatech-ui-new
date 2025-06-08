@@ -10,13 +10,14 @@ import { FaTrash } from "react-icons/fa6";
 import { Role } from "@/types/Role";
 import { useRole } from "@/hooks/useRole";
 import DeletePermissionRolesModal from "./DeletePermissionRolesModal";
+import { Permission } from "@/types/Permission";
 
 export default function PermissionRolesViewTable({
-  permissionId,
+  permission,
   setPermissionRolesPage,
   permissionRolesPage,
 }: {
-  permissionId: number | null;
+  permission: Permission | null;
   setPermissionRolesPage: (page: string) => void;
   permissionRolesPage: string;
 }) {
@@ -33,12 +34,12 @@ export default function PermissionRolesViewTable({
     useState(false);
   useEffect(() => {
     const fetchPermissionRolesData = async () => {
-      if (permissionId) {
-        return await fetchPermissionRoles(permissionId, "10", permissionRolesPage);
+      if (permission) {
+        return await fetchPermissionRoles(permission.id, "10", permissionRolesPage);
       }
     };
     fetchPermissionRolesData();
-  }, [permissionId, permissionRolesPage]);
+  }, [permission, permissionRolesPage]);
 
   async function onCloseDeletePermissionRolesModal() {
     setDeletePermissionRolesModal(false);
@@ -64,7 +65,7 @@ export default function PermissionRolesViewTable({
         },
       ],
     },
-    data: permissionId && assigned ? assigned : [],
+    data: permission && assigned ? assigned : [],
     columns: [
       {
         className: "text-center",
@@ -114,13 +115,11 @@ export default function PermissionRolesViewTable({
         dynamicTable={InitialPermissionRolesViewTable}
         setPage={setPermissionRolesPage}
       />
-      {permissionId && (
+      {permission && (
         <DeletePermissionRolesModal
           selectedIds={selectedIds}
-          setSelectedIds={setSelectedIds}
-          setDeletePermissionRolesModal={setDeletePermissionRolesModal}
           deletePermissionRolesModal={deletePermissionRolesModal}
-          permissionId={permissionId}
+          permissionId={permission.id}
           onCloseDeletePermissionRolesModal={onCloseDeletePermissionRolesModal}
         />
       )}

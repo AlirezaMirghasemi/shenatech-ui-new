@@ -1,7 +1,13 @@
 import { Modal, ModalBody, ModalHeader } from "flowbite-react";
 import CreatePermissionForm from "./CreatePermissionForm";
 
-export default function CreatePermissionModal({createPermissionModal,onCloseCreatePermissionModal,setCreatePermissionModal}:{createPermissionModal:boolean;onCloseCreatePermissionModal:()=>void;setCreatePermissionModal:(value:boolean)=>void}) {
+export default function CreatePermissionModal({
+  createPermissionModal,
+  onCloseCreatePermissionModal,
+}: {
+  createPermissionModal: boolean;
+  onCloseCreatePermissionModal: () => void;
+}) {
   return (
     <>
       <Modal
@@ -12,7 +18,9 @@ export default function CreatePermissionModal({createPermissionModal,onCloseCrea
       >
         <ModalHeader />
         <ModalBody>
-          <CreatePermissionForm setCreatePermissionModal={setCreatePermissionModal} />
+          <CreatePermissionForm
+            onCloseCreatePermissionModal={onCloseCreatePermissionModal}
+          />
         </ModalBody>
       </Modal>
     </>

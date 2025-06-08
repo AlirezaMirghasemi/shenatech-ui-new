@@ -11,15 +11,19 @@ import { usePermission } from "@/hooks/usePermission";
 import { Permission } from "@/types/Permission";
 import { FaEye, FaTrash, FaTrashCan, FaUserPen } from "react-icons/fa6";
 import CreatePermissionModal from "./CreatePermissionModal";
-import DeletePermissionModal from "./DeletePermissionsModal";
+import DeletePermissionsModal from "./DeletePermissionsModal";
 import AssignPermissionsToRoleModal from "./AssignPermissionsToRoleModal";
 
 export default function PermissionsViewTable({
-  setPermissionId,
+  permission,
+  setPermission,
+  ShowPermissionDetails,
   setPermissionRolesPage,
   setPermissionUsersPage,
 }: {
-  setPermissionId: (id: number | null) => void;
+  permission: Permission | null;
+  setPermission: (permission: Permission | null) => void;
+  ShowPermissionDetails: (permission: Permission) => void;
   setPermissionRolesPage: (page: string) => void;
   setPermissionUsersPage: (page: string) => void;
 }) {
@@ -35,34 +39,40 @@ export default function PermissionsViewTable({
   );
 
   const [permissionsPage, setPermissionsPage] = useState("1");
-  const [selectedPermissionId, setSelectedPermissionId] = useState<
-    number | null
-  >(null);
-  const [permission, setPermission] = useState<Permission | null>(null);
   useEffect(() => {
     const fetchPermissionsData = async () => {
       await fetchPermissions(permissionsPage, "5");
-      setSelectedPermissionId(null);
-         setPermissionRolesPage("1");
+      setPermissionRolesPage("1");
       setPermissionUsersPage("1");
-      setPermissionId(null);
     };
     fetchPermissionsData();
-  }, [permissionsPage,permission]);
+  }, [permissionsPage]);
   const [assignPermissionsToRoleModal, setAssignPermissionsToRoleModal] =
     useState(false);
   const [createPermissionModal, setCreatePermissionModal] = useState(false);
   const [deletePermissionsModal, setDeletePermissionsModal] = useState(false);
-     function onCloseCreatePermissionModal() {
+  function onOpenCreatePermissionModal() {
+    setCreatePermissionModal(true);
+  }
+  function onCloseCreatePermissionModal() {
     setCreatePermissionModal(false);
+    setPermission(null);
+  }
+  function onOpenDeletePermissionsModal(permissionIds: Set<number>) {
+    setDeletePermissionsModal(true);
+    setSelectedIds(permissionIds);
   }
   function onCloseDeletePermissionsModal() {
     setDeletePermissionsModal(false);
-    setPermission(null);
+    setSelectedIds(new Set());
+  }
+  function onOpenAssignPermissionsToRoleModal(permissionIds: Set<number>) {
+    setAssignPermissionsToRoleModal(true);
+    setSelectedIds(permissionIds);
   }
   function onCloseAssignPermissionsToRoleModal() {
     setAssignPermissionsToRoleModal(false);
-    setSelectedPermissionId(null);
+    setSelectedIds(new Set());
     setPermission(null);
   }
 
@@ -75,7 +85,7 @@ export default function PermissionsViewTable({
           caption: "حذف مجوز ها",
           icon: <FaTrash />,
           handler: () => {
-            setDeletePermissionsModal(true);
+            onOpenDeletePermissionsModal(selectedIds);
           },
           disabled: selectedIds.size === 0,
           color: "danger",
@@ -85,7 +95,7 @@ export default function PermissionsViewTable({
           caption: "تخصیص مجوز ها به نقش",
           icon: <FaUserPen />,
           handler: () => {
-            setAssignPermissionsToRoleModal(true);
+            onOpenAssignPermissionsToRoleModal(selectedIds);
           },
           disabled: selectedIds.size === 0,
           color: "info",
@@ -94,7 +104,7 @@ export default function PermissionsViewTable({
           name: "Create",
           caption: "ایجاد مجوز",
           handler: () => {
-            setCreatePermissionModal(true);
+            onOpenCreatePermissionModal();
           },
         },
       ],
@@ -131,11 +141,10 @@ export default function PermissionsViewTable({
     ],
     actions: [
       {
-        name: "ShowRoleDetails",
+        name: "ShowPermissionDetails",
         caption: "مشاهده ی جزییات",
-        handler: (row) => {
-            setSelectedPermissionId(row.id);
-            setPermissionId(row.id);
+        handler: (row: Permission) => {
+          ShowPermissionDetails(row);
         },
         icon: <FaEye />,
         color: "info",
@@ -149,8 +158,7 @@ export default function PermissionsViewTable({
         className: "!rounded-none",
         handler: (row) => {
           setPermission(row);
-          setSelectedIds(row.id ? new Set([row.id]) : new Set());
-          setAssignPermissionsToRoleModal(true);
+          onOpenAssignPermissionsToRoleModal(new Set([row.id]));
         },
       },
 
@@ -162,8 +170,7 @@ export default function PermissionsViewTable({
         className: "!rounded-r-none",
         handler: (row) => {
           setPermission(row);
-          setSelectedIds(row.id ? new Set([row.id]) : new Set());
-          setDeletePermissionsModal(true);
+          onOpenDeletePermissionsModal(new Set([row.id]));
         },
       },
     ],
@@ -176,8 +183,7 @@ export default function PermissionsViewTable({
     loading: loading === DataStatus.PENDING,
     pagination: meta,
     actionCellClassName: "text-center",
-    className: (row) =>
-      row.id === selectedPermissionId ? "!bg-bg-active " : "",
+    className: (row) => (row.id === permission?.id ? "!bg-bg-active " : ""),
   };
   return (
     <>
@@ -187,32 +193,23 @@ export default function PermissionsViewTable({
       />
 
       <CreatePermissionModal
-        setCreatePermissionModal={setCreatePermissionModal}
         createPermissionModal={createPermissionModal}
         onCloseCreatePermissionModal={onCloseCreatePermissionModal}
       />
       {(selectedIds || permission) && (
         <>
-          <DeletePermissionModal
+          <DeletePermissionsModal
             deletePermissionsModal={deletePermissionsModal}
-            setDeletePermissionsModal={setDeletePermissionsModal}
-            permissionIds={
-              selectedIds ? [...selectedIds] : permission ? [permission.id] : []
-            }
             onCloseDeletePermissionsModal={onCloseDeletePermissionsModal}
+            selectedIds={selectedIds}
           />
           <AssignPermissionsToRoleModal
-            setAssignPermissionsToRoleModal={setAssignPermissionsToRoleModal}
-            assignPermissionsToRoleModal={assignPermissionsToRoleModal}
             onCloseAssignPermissionsToRoleModal={
               onCloseAssignPermissionsToRoleModal
             }
+            assignPermissionsToRoleModal={assignPermissionsToRoleModal}
+            selectedIds={Array.from(selectedIds)}
             permissions={permissions}
-            selectedIds={
-              selectedIds ? [...selectedIds] : permission ? [permission.id] : []
-            }
-            setSelectedIds={setSelectedIds}
-            setPermissionId={setPermissionId }
           />
         </>
       )}

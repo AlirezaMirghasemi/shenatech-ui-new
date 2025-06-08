@@ -14,17 +14,13 @@ import { Permission } from "@/types/Permission";
 import { Alert } from "flowbite-react";
 
 export default function AssignPermissionsToRoleForm({
-  setAssignPermissionsToRoleModal,
+  onCloseAssignPermissionsToRoleModal,
   permissions,
   selectedIds,
-  setSelectedIds,
-  setPermissionId,
 }: {
-  setAssignPermissionsToRoleModal: (value: boolean) => void;
+  onCloseAssignPermissionsToRoleModal: () => void;
   permissions: Permission[];
   selectedIds: number[];
-  setSelectedIds: (value: Set<number>) => void;
-  setPermissionId: (id: number | null) => void;
 }) {
   const {
     actions: { fetchPermissions },
@@ -57,18 +53,15 @@ export default function AssignPermissionsToRoleForm({
     if (values.roleId) {
       try {
         await assignRolePermissions(values.roleId, selectedIds);
-        await fetchPermissions(meta?.current_page, meta?.per_page);
-        setAssignPermissionsToRoleModal(false);
-
+        onCloseAssignPermissionsToRoleModal();
         toast.success("مجوز ها با موفقیت تخصیص داده شدند.");
+        return await fetchPermissions(meta?.current_page, meta?.per_page);
       } catch (error) {
         console.error("Error creating permission:", error);
         toast.error("خطا در تخصیص مجوز ها.");
       } finally {
         setSubmitting(false);
-        setSelectedIds(new Set());
-        setAssignPermissionsToRoleModal(false);
-        setPermissionId(null);
+        onCloseAssignPermissionsToRoleModal();
       }
     }
   };

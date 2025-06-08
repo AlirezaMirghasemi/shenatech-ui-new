@@ -2,6 +2,7 @@ import DynamicTable from "@/components/admin/dynamics/DynamicTable";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { useUser } from "@/hooks/useUser";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
+import { Permission } from "@/types/Permission";
 import { User } from "@/types/User";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -9,11 +10,11 @@ import PersianDate from "persian-date";
 import { useEffect } from "react";
 
 export default function PermissionUsersViewTable({
-  permissionId,
-  setPermissionUsersPage,
+  permission,
   permissionUsersPage,
+  setPermissionUsersPage,
 }: {
-  permissionId: number | null;
+  permission: Permission | null;
   setPermissionUsersPage: (page: string) => void;
   permissionUsersPage: string;
 }) {
@@ -26,17 +27,17 @@ export default function PermissionUsersViewTable({
   } = useUser();
   useEffect(() => {
     const fetchPermissionUsersData = async () => {
-      if (permissionId) {
-        await fetchPermissionUsers(permissionId, "10", permissionUsersPage);
+      if (permission) {
+        await fetchPermissionUsers(permission.id, "10", permissionUsersPage);
       }
     };
     fetchPermissionUsersData();
-  }, [permissionId, permissionUsersPage]);
+  }, [permission, permissionUsersPage]);
   const InitialPermissionUsersViewTable: IDynamicTable<User> = {
     header: {
       title: "کاربران نقش",
     },
-    data: permissionId && users ? users : [],
+    data: permission && users ? users : [],
     columns: [
       {
         className:"text-center",
