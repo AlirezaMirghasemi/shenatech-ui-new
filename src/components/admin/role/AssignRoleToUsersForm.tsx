@@ -17,12 +17,14 @@ import { FaInfo, FaMagnifyingGlass } from "react-icons/fa6";
 export default function AssignRoleToUsersForm({
   onCloseAssignRoleToUsersModal,
   role,
+  ShowRoleDetails,
 }: {
-  onCloseAssignRoleToUsersModal: () => void;
+  onCloseAssignRoleToUsersModal: (role: Role) => void;
   role: Role;
+  ShowRoleDetails: (role: Role) => void;
 }) {
   const {
-    actions: { fetchUnAssignedRoleUsers },
+    actions: { fetchUnAssignedRoleUsers, fetchRoleUsers },
     unassignedRoleUsers,
     loading: fetchUserLoading,
   } = useUser();
@@ -31,7 +33,8 @@ export default function AssignRoleToUsersForm({
     loading,
     meta,
   } = useRole();
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(unassignedRoleUsers);
+  const [filteredUsers, setFilteredUsers] =
+    useState<User[]>(unassignedRoleUsers);
   useEffect(() => {
     const fetchData = async () => {
       await fetchUnAssignedRoleUsers(role.id);
@@ -61,18 +64,18 @@ export default function AssignRoleToUsersForm({
     values: AssignRoleToUsers,
     { setSubmitting }: FormikHelpers<AssignRoleToUsers>
   ) => {
-    if (values.userIds) {
-      try {
-        await assignRoleToUsers(role.id, values.userIds);
-        await fetchRoles(meta?.current_page, meta?.per_page);
-        toast.success("نقش با موفقیت به کاربران تخصیص داده شد.");
-        onCloseAssignRoleToUsersModal();
-      } catch (error) {
-        console.error("Error Assign Role To Users:", error);
-        toast.error("خطا در تخصیص نقش به کاربران.");
-      } finally {
-        setSubmitting(false);
-      }
+    try {
+      await assignRoleToUsers(role.id, values.userIds);
+      await fetchRoles(meta?.current_page, meta?.per_page);
+      toast.success("نقش با موفقیت به کاربران تخصیص داده شد.");
+      await onCloseAssignRoleToUsersModal(role);
+      await ShowRoleDetails(role);
+      return await fetchRoleUsers(role.id);
+    } catch (error) {
+      console.error("Error Assign Role To Users:", error);
+      toast.error("خطا در تخصیص نقش به کاربران.");
+    } finally {
+      setSubmitting(false);
     }
   };
   return (

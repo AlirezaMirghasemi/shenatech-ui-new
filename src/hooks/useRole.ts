@@ -7,6 +7,7 @@ import {
   createRoleAsync,
   deleteRoleAsync,
   deleteRolePermissionsAsync,
+  deleteUsersFromRoleAsync,
   editRoleAsync,
   fetchPermissionRolesAsync,
   fetchRolesAsync,
@@ -133,6 +134,17 @@ const assignRoleToUsers = useCallback(
   },
   [dispatch]
 );
+  const deleteUsersFromRole = useCallback(
+  (roleId: number, userIds: Set<number>) => {
+    try {
+      return dispatch(deleteUsersFromRoleAsync({ roleId, userIds })).unwrap();
+    } catch (error) {
+      console.error("Error deleting users from role:", error);
+      return null;
+    }
+  },
+  [dispatch]
+);
   return {
     roles,
     meta,
@@ -149,7 +161,8 @@ const assignRoleToUsers = useCallback(
       editRole,
       deleteRole,
       fetchPermissionRoles,
-      assignRoleToUsers
+      assignRoleToUsers,
+      deleteUsersFromRole
     },
   };
 };

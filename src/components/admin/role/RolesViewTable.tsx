@@ -22,13 +22,17 @@ import EditRoleModal from "./EditRoleModal";
 import DeleteRoleModal from "./DeleteRoleModal";
 import AssignRoleToUsersModal from "./AssignRoleToUsersModal";
 export default function RolesViewTable({
-  setRoleId,
   setRoleUsersPage,
   setRolePermissionsPage,
+  ShowRoleDetails,
+  role,
+  setRole,
 }: {
-  setRoleId: (roleId: number | null) => void;
   setRoleUsersPage: (page: string) => void;
   setRolePermissionsPage: (page: string) => void;
+  ShowRoleDetails: (role: Role) => void;
+  role: Role | null;
+  setRole: (role: Role | null) => void;
 }) {
   const {
     roles,
@@ -38,25 +42,24 @@ export default function RolesViewTable({
     actions: { fetchRoles },
   } = useRole();
   const [rolesPage, setRolesPage] = useState("1");
-  const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
-  const [role, setRole] = useState<Role | null>(null);
+
   useEffect(() => {
     const fetchRolesData = async () => {
       await fetchRoles(rolesPage, "5");
-      setRoleId(null);
-      setRolePermissionsPage("1");
-      setRoleUsersPage("1");
+      await setRolePermissionsPage("1");
+      await setRoleUsersPage("1");
     };
     fetchRolesData();
-  }, [rolesPage, role]);
+  }, [rolesPage]);
+
   const [assignPermissionModal, setAssignPermissionModal] = useState(false);
   const [createRoleModal, setCreateRoleModal] = useState(false);
   const [editRoleModal, setEditRoleModal] = useState(false);
   const [deleteRoleModal, setDeleteRoleModal] = useState(false);
   const [assignRoleToUsersModal, setAssignRoleToUsersModal] = useState(false);
-  function onCloseAssignRoleToUsersModal() {
+  function onCloseAssignRoleToUsersModal(role: Role) {
+    setRole(role);
     setAssignRoleToUsersModal(false);
-    setRole(null);
   }
   function onOpenAssignRoleToUsersModal(row: Role) {
     setRole(row);
@@ -75,7 +78,6 @@ export default function RolesViewTable({
   }
   function onCloseDeleteRoleModal() {
     setDeleteRoleModal(false);
-    setSelectedRoleId(null);
     setRole(null);
   }
   function onOpenEditRoleModal(row: Role) {
@@ -84,16 +86,13 @@ export default function RolesViewTable({
   }
   function onCloseEditRoleModal() {
     setEditRoleModal(false);
-    setSelectedRoleId(null);
   }
-  function onCloseAssignPermissionModal() {
+  function onCloseAssignPermissionModal(role: Role) {
+    setRole(role);
     setAssignPermissionModal(false);
-    setRole(null);
   }
   function onOpenAssignPermissionModal(role: Role) {
     setRole(role);
-    setSelectedRoleId(role.id);
-    setRoleId(role.id);
     setAssignPermissionModal(true);
   }
 
@@ -145,8 +144,7 @@ export default function RolesViewTable({
         name: "ShowRoleDetails",
         caption: "مشاهده ی جزییات",
         handler: (row: Role) => {
-          setSelectedRoleId(row.id);
-          setRoleId(row.id);
+          ShowRoleDetails(row);
         },
         icon: <FaEye />,
         color: "info",
@@ -194,7 +192,7 @@ export default function RolesViewTable({
     loading: loading === DataStatus.PENDING,
     pagination: meta,
     actionCellClassName: "text-center",
-    className: (row) => (row.id === selectedRoleId ? "!bg-bg-active " : ""),
+    className: (row) => (row.id === role?.id ? "!bg-bg-active " : ""),
   };
   return (
     <>
@@ -209,6 +207,7 @@ export default function RolesViewTable({
             assignPermissionModal={assignPermissionModal}
             onCloseAssignPermissionModal={onCloseAssignPermissionModal}
             role={role}
+            ShowRoleDetails={ShowRoleDetails}
           />
           <EditRoleModal
             editRoleModal={editRoleModal}
@@ -224,6 +223,7 @@ export default function RolesViewTable({
             assignRoleToUsersModal={assignRoleToUsersModal}
             onCloseAssignRoleToUsersModal={onCloseAssignRoleToUsersModal}
             role={role}
+            ShowRoleDetails={ShowRoleDetails}
           />
         </>
       )}

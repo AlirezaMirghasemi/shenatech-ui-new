@@ -6,14 +6,20 @@ import { User } from "@/types/User";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import PersianDate from "persian-date";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FaTrash, FaTrashCan } from "react-icons/fa6";
+import DeleteUsersFromRoleModal from "./DeleteUsersFromRoleModal";
+import { Role } from "@/types/Role";
 
 export default function RoleUsersViewTable({
-  roleId,
+  //roleId,
+  role,
   setRoleUsersPage,
   roleUsersPage,
+
 }: {
-  roleId: number | null;
+  //roleId: number | null;
+  role: Role | null;
   setRoleUsersPage: (page: string) => void;
   roleUsersPage: string;
 }) {
@@ -26,30 +32,66 @@ export default function RoleUsersViewTable({
   } = useUser();
   useEffect(() => {
     const fetchRoleUsersData = async () => {
-      if (roleId) {
-        await fetchRoleUsers(roleId, "10", roleUsersPage);
+      if (role?.id) {
+      return  await fetchRoleUsers(role.id, "10", roleUsersPage);
       }
     };
     fetchRoleUsersData();
-  }, [roleId, roleUsersPage]);
+  }, [ role,roleUsersPage]);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [deleteUsersFromRoleModal, setDeleteUsersFromRoleModal] =
+    useState(false);
+  const onOpenDeleteUsersFromRoleModal = () => {
+    setDeleteUsersFromRoleModal(true);
+  };
+  const onCloseDeleteUsersFromRoleModal = () => {
+    setSelectedIds(new Set());
+    setDeleteUsersFromRoleModal(false);
+  };
+
   const InitialRoleUsersViewTable: IDynamicTable<User> = {
     header: {
       title: "کاربران نقش",
+      actions: [
+        {
+          name: "delete",
+          caption: "حذف کاربر از نقش",
+          icon: <FaTrash />,
+          handler: () => {
+            onOpenDeleteUsersFromRoleModal();
+          },
+          disabled: selectedIds.size === 0,
+          color: "danger",
+        },
+      ],
     },
-    data: roleId && users ? users : [],
+    actions: [
+      {
+        name: "Delete",
+        caption: "حذف",
+        icon: <FaTrashCan />,
+        color: "danger",
+        className: "!rounded-xl",
+        handler: (row) => {
+          setSelectedIds(new Set([row.id]));
+          onOpenDeleteUsersFromRoleModal();
+        },
+      },
+    ],
+    data: role && users ? users : [],
     columns: [
       {
-        className:"text-center",
+        className: "text-center",
         header: "نام کاربری",
         accessor: "username",
       },
       {
-        className:"text-center",
+        className: "text-center",
         header: "پست الکترونیکی",
         accessor: "email",
       },
       {
-        className:"text-center",
+        className: "text-center",
         header: "تاریخ ایجاد",
         accessor: "created_at",
         cellRenderer: (row) => {
@@ -60,7 +102,7 @@ export default function RoleUsersViewTable({
         },
       },
       {
-        className:"text-center",
+        className: "text-center",
         header: "تاریخ ویرایش",
         accessor: "updated_at",
         cellRenderer: (row) => {
@@ -75,6 +117,10 @@ export default function RoleUsersViewTable({
     error: error?.toString(),
     loading: loading === DataStatus.PENDING,
     pagination: meta,
+    checkboxTable: {
+      selectedIds,
+      setSelectedIds,
+    },
   };
   return (
     <>
@@ -82,6 +128,14 @@ export default function RoleUsersViewTable({
         dynamicTable={InitialRoleUsersViewTable}
         setPage={setRoleUsersPage}
       />
+      {selectedIds && role && (
+        <DeleteUsersFromRoleModal
+          deleteUsersFromRoleModal={deleteUsersFromRoleModal}
+          onCloseDeleteUsersFromRoleModal={onCloseDeleteUsersFromRoleModal}
+          selectedIds={selectedIds}
+          roleId={role.id}
+        />
+      )}
     </>
   );
 }

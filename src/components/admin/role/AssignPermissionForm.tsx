@@ -19,15 +19,17 @@ import { toast } from "sonner";
 export default function AssignPermissionForm({
   role,
   onCloseAssignPermissionModal,
+  ShowRoleDetails,
 }: {
   role: Role;
-  onCloseAssignPermissionModal: () => void;
+  onCloseAssignPermissionModal: (role: Role) => void;
+  ShowRoleDetails: (role: Role) => void;
 }) {
   const [unAssignedPermissions, setUnAssignedPermissions] = useState<
     Permission[]
   >([]);
   const {
-    actions: { fetchRoleNotPermissions },
+    actions: { fetchRoleNotPermissions, fetchRolePermissions },
     loading,
     unassigned,
   } = usePermission();
@@ -66,9 +68,11 @@ export default function AssignPermissionForm({
   ) => {
     try {
       await assignRolePermissions(role.id, values.permissionIds);
-      await fetchRoles(meta?.current_page, meta?.per_page);
       await toast.success("مجوزها با موفقیت تخصیص داده شدند.");
-      await onCloseAssignPermissionModal();
+      await fetchRoles(meta?.current_page, meta?.per_page);
+      await onCloseAssignPermissionModal(role);
+      ShowRoleDetails(role);
+      return await fetchRolePermissions(role.id);
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
       console.error("assign-permissions error:", axiosError.response?.data);

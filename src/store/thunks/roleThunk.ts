@@ -232,3 +232,31 @@ export const assignRoleToUsersAsync = createAsyncThunk(
     }
   }
 );
+export const deleteUsersFromRoleAsync = createAsyncThunk(
+  "role/deleteUsersFromRole",
+  async (
+    {
+      roleId,
+      userIds,
+    }: {
+      roleId: number;
+      userIds: Set<number>;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.delete(`/roles/${roleId}/revoke-users`, {
+        data: { userIds: Array.from(userIds) },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای حذف کاربران از نقش",
+      });
+    }
+  }
+);

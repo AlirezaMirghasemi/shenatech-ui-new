@@ -8,6 +8,7 @@ import {
   createRoleAsync,
   deleteRoleAsync,
   deleteRolePermissionsAsync,
+  deleteUsersFromRoleAsync,
   editRoleAsync,
   fetchPermissionRolesAsync,
   fetchRolesAsync,
@@ -210,6 +211,25 @@ const roleSlice = createSlice({
         if (typeof action.payload === "string") {
           state.error = action.payload || {
             message: "Failed to assign role to users",
+          };
+        } else {
+          state.error = null;
+        }
+      })
+      .addCase(deleteUsersFromRoleAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+        state.error = null;
+      })
+      .addCase(deleteUsersFromRoleAsync.fulfilled, (state) => {
+        state.loading = DataStatus.SUCCEEDED;
+        state.error = null;
+      })
+      .addCase(deleteUsersFromRoleAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        state.data = [];
+        if (typeof action.payload === "string") {
+          state.error = action.payload || {
+            message: "Failed to delete role users",
           };
         } else {
           state.error = null;

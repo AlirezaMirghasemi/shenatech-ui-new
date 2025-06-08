@@ -10,13 +10,15 @@ import { usePermission } from "@/hooks/usePermission";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { FaTrash } from "react-icons/fa6";
 import DeleteRolePermissionsModal from "@/components/admin/role/DeleteRolePermissionsModal";
+import { Role } from "@/types/Role";
 
 export default function RolePermissionsViewTable({
-  roleId,
+  role,
   setRolePermissionsPage,
   rolePermissionsPage,
+
 }: {
-  roleId: number | null;
+  role: Role | null;
   setRolePermissionsPage: (page: string) => void;
   rolePermissionsPage: string;
 }) {
@@ -33,16 +35,16 @@ export default function RolePermissionsViewTable({
     useState(false);
   useEffect(() => {
     const fetchRolePermissionsData = async () => {
-      if (roleId) {
-        return await fetchRolePermissions(roleId, "10", rolePermissionsPage);
+      if (role?.id) {
+        return await fetchRolePermissions(role?.id, "10", rolePermissionsPage);
       }
     };
     fetchRolePermissionsData();
-  }, [roleId, rolePermissionsPage]);
+  }, [role, rolePermissionsPage]);
 
   async function onCloseDeleteRolePermissionsModal() {
-    setDeleteRolePermissionsModal(false);
     setSelectedIds(new Set());
+    setDeleteRolePermissionsModal(false);
   }
   function onOpenDeleteRolePermissionsModal() {
     setDeleteRolePermissionsModal(true);
@@ -64,7 +66,7 @@ export default function RolePermissionsViewTable({
         },
       ],
     },
-    data: roleId && assigned ? assigned : [],
+    data: role && assigned ? assigned : [],
     columns: [
       {
         className: "text-center",
@@ -114,13 +116,11 @@ export default function RolePermissionsViewTable({
         dynamicTable={InitialRolePermissionsViewTable}
         setPage={setRolePermissionsPage}
       />
-      {roleId && (
+      {role && (
         <DeleteRolePermissionsModal
           selectedIds={selectedIds}
-          setSelectedIds={setSelectedIds}
-          setDeleteRolePermissionsModal={setDeleteRolePermissionsModal}
           deleteRolePermissionsModal={deleteRolePermissionsModal}
-          roleId={roleId}
+          roleId={role.id}
           onCloseDeleteRolePermissionsModal={onCloseDeleteRolePermissionsModal}
         />
       )}

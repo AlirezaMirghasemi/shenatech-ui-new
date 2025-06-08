@@ -6,16 +6,18 @@ export default function AssignPermissionModal({
   assignPermissionModal,
   onCloseAssignPermissionModal,
   role,
+  ShowRoleDetails
 }: {
   assignPermissionModal: boolean;
-  onCloseAssignPermissionModal: () => void;
+  onCloseAssignPermissionModal: (role: Role) => void;
   role: Role;
+  ShowRoleDetails: (role: Role) => void;
 }) {
   return (
     <>
       <Modal
         show={assignPermissionModal}
-        onClose={onCloseAssignPermissionModal}
+        onClose={() => onCloseAssignPermissionModal(role)}
         size="md"
         popup
       >
@@ -24,6 +26,7 @@ export default function AssignPermissionModal({
             <AssignPermissionForm
               role={role}
               onCloseAssignPermissionModal={onCloseAssignPermissionModal}
+              ShowRoleDetails={ShowRoleDetails}
             />
           </ModalBody>
       </Modal>
