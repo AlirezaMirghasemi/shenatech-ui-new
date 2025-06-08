@@ -9,37 +9,37 @@ export interface User {
   username: string;
   email: string;
   email_verified_at: string;
-  first_name: string | null;
-  last_name: string | null;
-  full_name: string | null;
-  bio: string | null;
-  gender: Gender | null;
-  mobile: string | null;
-  mobile_verified_at: string | null;
+  first_name: string | "";
+  last_name: string | "";
+  full_name: string | "";
+  bio: string | "";
+  gender: Gender | "";
+  mobile: string | "";
+  mobile_verified_at: string | "";
   status: UserStatus;
-  profile_image: Image | File | null;
-  roles: Role[] | null;
-  permissions: Permission[] | null;
+  profile_image: Image | File | "";
+  roles: Role[] | "";
+  permissions: Permission[] | "";
   created_at: string;
   updated_at: string;
-  deleted_at: string | null;
+  deleted_at: string | "";
 }
 export interface CreateUser {
   username: string;
   email: string;
   password: string;
-  password_confirmation: string | null;
-  first_name: string | null;
-  last_name: string | null;
-  full_name: string | null;
-  bio: string | null;
-  gender: Gender | null;
-  mobile: string | null;
-  //mobile_verified_at: string | null;
+  password_confirmation: string | "";
+  first_name: string | "";
+  last_name: string | "";
+  full_name: string | "";
+  bio: string | "";
+  gender: Gender | "";
+  mobile: string | "";
+  //mobile_verified_at: string | "";
   status: UserStatus;
   profile_image: File | null;
-  //roles: Role[]|null;
-  //permissions: Permission[]|null;
+  //roles: Role[]|"";
+  //permissions: Permission[]|"";
 }
 export interface EditUserStatus {
   status: UserStatus;
@@ -47,12 +47,12 @@ export interface EditUserStatus {
 export interface EditUser {
   username: string;
   email: string;
-  first_name: string | null;
-  last_name: string | null;
-  full_name: string | null;
-  bio: string | null;
-  gender: Gender | null;
-  mobile: string | null;
+  first_name: string | "";
+  last_name: string | "";
+  full_name: string | "";
+  bio: string | "";
+  gender: Gender | "";
+  mobile: string | "";
   status: UserStatus;
   profile_image: File | null;
 }

@@ -21,9 +21,13 @@ import CreateUserModal from "./CreateUserModal";
 import ChangeUserStatusPopover from "./ChangeUserStatusPopover";
 import EditUserModal from "./EditUserModal";
 export default function UsersViewTable({
-  setUserId,
+  user,
+  setUser,
+  showUserDetails,
 }: {
-  setUserId: (userId: number | null) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  showUserDetails: (user: User) => void;
 }) {
   const {
     users,
@@ -32,16 +36,16 @@ export default function UsersViewTable({
     meta,
     actions: { fetchUsers },
   } = useUser();
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(
+    new Set<number>()
+  );
   const [usersPage, setUsersPage] = useState("1");
-  //const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [user, setUser] = useState<User | null>(null);
   const [userProfileModal, setUserProfileModal] = useState(false);
   const [createUserModal, setCreateUserModal] = useState(false);
   const [editUserModal, setEditUserModal] = useState(false);
   useEffect(() => {
     const fetchUsersData = async () => {
       await fetchUsers(usersPage, "5");
-      setUserId(null);
     };
     fetchUsersData();
   }, [usersPage, user]);
@@ -56,6 +60,7 @@ export default function UsersViewTable({
   };
   const onOpenCreateUserModal = () => {
     setCreateUserModal(true);
+    setUser(null);
   };
   const onCloseCreateUserModal = () => {
     setCreateUserModal(false);
@@ -69,6 +74,13 @@ export default function UsersViewTable({
     setEditUserModal(false);
     setUser(null);
   };
+  const onOpenDeleteUserModal = (row: User) => {
+    setUser(row);
+    //setDeleteUserModal(true);
+  };
+  //   const onCloseDeleteUserModal = () => {
+  //     setUser(null);
+  //   };
   const InitialUsersViewTable: IDynamicTable<User> = {
     header: {
       title: "کاربران",
@@ -141,12 +153,12 @@ export default function UsersViewTable({
         name: "ShowUserDetails",
         caption: "مشاهده ی جزییات",
         handler: (row: User) => {
-          setUser(row);
-          setUserId(row.id);
+          showUserDetails(row);
         },
         icon: <FaEye />,
         color: "info",
         className: "!rounded-l-none",
+
       },
       {
         name: "ChangeUserStatus",
@@ -154,8 +166,8 @@ export default function UsersViewTable({
         icon: <FaUserCheck />,
         color: "primary",
         className: "!rounded-none",
-        actionRenderer(row) {
-          return <ChangeUserStatusPopover user={row} buttonProps={this} />;
+        actionRenderer(row: User) {
+          return <ChangeUserStatusPopover user={row} buttonProps={this} disabled={selectedIds.size > 0} />;
         },
       },
       {
@@ -174,7 +186,7 @@ export default function UsersViewTable({
         icon: <FaPen />,
         color: "warning",
         className: "!rounded-none",
-        handler: (row) => {
+        handler: (row: User) => {
           onOpenEditUserModal(row);
         },
       },
@@ -185,8 +197,7 @@ export default function UsersViewTable({
         color: "danger",
         className: "!rounded-r-none",
         handler: (row) => {
-          setUser(row);
-          //setDeleteUserModal(true);
+          onOpenDeleteUserModal(row);
         },
       },
     ],
@@ -196,6 +207,10 @@ export default function UsersViewTable({
     pagination: meta,
     actionCellClassName: "text-center",
     className: (row) => (row === user ? "!bg-bg-active " : ""),
+    checkboxTable: {
+      selectedIds,
+      setSelectedIds,
+    },
   };
   return (
     <>

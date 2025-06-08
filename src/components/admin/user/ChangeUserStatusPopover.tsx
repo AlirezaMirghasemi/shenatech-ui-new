@@ -6,9 +6,11 @@ import ChangeUserStatusForm from "./ChangeUserStatusForm";
 export default function ChangeUserStatusPopover({
   user,
   buttonProps,
+  disabled
 }: {
   user: User;
   buttonProps: IDynamicTableAction<User>;
+  disabled?: boolean;
 }) {
   return (
     <>
@@ -27,6 +29,7 @@ export default function ChangeUserStatusPopover({
           key={buttonProps.name}
           color={buttonProps.color ? buttonProps.color : "default"}
           className={buttonProps.className ? buttonProps.className : ""}
+          disabled={disabled ?? false}
         >
           {buttonProps.icon}
         </Button>

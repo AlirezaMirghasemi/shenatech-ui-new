@@ -193,6 +193,7 @@ export default function DynamicTable<T extends object>({
                                             ? action.className
                                             : ""
                                         }
+                                        disabled={dynamicTable.checkboxTable ? dynamicTable.checkboxTable.selectedIds.size > 0 : false}
                                       >
                                         {action.icon}
                                       </Button>
