@@ -35,7 +35,7 @@ export default function RootLayout({
               spinner: "replace",
               dropdown: "replace",
               pagination: "replace",
-              select: "replace",
+              //select: "replace",
               tabs: "replace",
               badge: "replace",
               fileInput: "replace",

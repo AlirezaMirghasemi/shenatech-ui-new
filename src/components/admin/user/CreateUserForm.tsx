@@ -153,9 +153,9 @@ export default function CreateUserForm({
                   type={InputType.SELECT}
                   className="block w-full"
                   data={[
-                    { id: Gender.Male, name: "مرد" },
-                    { id: Gender.Female, name: "زن" },
-                    { id: Gender.NotSpecified, name: "نامشخص" },
+                    { value: Gender.Male, label: "مرد" },
+                    { value: Gender.Female, label: "زن" },
+                    { value: Gender.NotSpecified, label: "نامشخص" },
                   ]}
                   disabled={
                     loading == DataStatus.PENDING // || uniqueLoading == DataStatus.PENDING
@@ -228,9 +228,9 @@ export default function CreateUserForm({
                   className="block w-full"
                   type={InputType.SELECT}
                   data={[
-                    { id: UserStatus.PENDING, name: "در انتظار تایید" },
-                    { id: UserStatus.ACTIVE, name: "فعال" },
-                    { id: UserStatus.DEACTIVATED, name: "غیرفعال" },
+                    { value: UserStatus.PENDING, label: "در انتظار تایید" },
+                    { value: UserStatus.ACTIVE, label: "فعال" },
+                    { value: UserStatus.DEACTIVATED, label: "غیرفعال" },
                   ]}
                   disabled={
                     loading == DataStatus.PENDING ||

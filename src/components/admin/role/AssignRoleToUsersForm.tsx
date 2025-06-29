@@ -4,7 +4,7 @@ import { assignRoleToUsersInitial } from "@/validations/admin/role/assignRoleToU
 import { assignRoleToUsersSchema } from "@/validations/admin/role/assignRoleToUsersSchema";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { InputType } from "@/constants/data/InputType";
-import { Badge, Popover, TextInput } from "flowbite-react";
+import { Badge } from "flowbite-react";
 import { FormikHelpers } from "formik";
 import { useUser } from "@/hooks/useUser";
 import DynamicInputField from "../dynamics/DynamicInputField";
@@ -12,7 +12,6 @@ import { useRole } from "@/hooks/useRole";
 import { useEffect, useState } from "react";
 import { User } from "@/types/User";
 import { toast } from "sonner";
-import { FaInfo, FaMagnifyingGlass } from "react-icons/fa6";
 
 export default function AssignRoleToUsersForm({
   onCloseAssignRoleToUsersModal,
@@ -46,20 +45,7 @@ export default function AssignRoleToUsersForm({
   useEffect(() => {
     setFilteredUsers(unassignedRoleUsers);
   }, [unassignedRoleUsers]);
-  const searchUser = async (query: string) => {
-    await setFilteredUsers(
-      unassignedRoleUsers.filter(
-        (user) =>
-          user.username.toLowerCase().includes(query.toLowerCase()) ||
-          user.email.toLowerCase().includes(query.toLowerCase()) ||
-          (user.full_name?.toLowerCase().includes(query.toLowerCase()) ?? false)
-      )
-    );
-    if (query.length === 0) {
-      await setFilteredUsers(unassignedRoleUsers);
-    }
-    return filteredUsers;
-  };
+
   const onSubmit = async (
     values: AssignRoleToUsers,
     { setSubmitting }: FormikHelpers<AssignRoleToUsers>
@@ -100,33 +86,6 @@ export default function AssignRoleToUsersForm({
           {role.name}
         </Badge>
 
-        <Popover
-          content={
-            <div className="space-y-2 p-3 opacity-85">
-              <h3 className="text-text-secondary">
-                <Badge color="info" className="rounded-full p-1 ml-2">
-                  <FaInfo />
-                </Badge>
-                جستجوی کاربران بر اساس ایمیل ، نام کاربری ، نام و نام خانوادگی
-              </h3>
-            </div>
-          }
-          trigger="hover"
-          placement="top"
-        >
-          <TextInput
-            className="w-full !block"
-            rightIcon={FaMagnifyingGlass}
-            type="search"
-            placeholder="جستجوی کاربران"
-            onChange={(e) => searchUser(e.target.value)}
-            disabled={
-              fetchUserLoading === DataStatus.PENDING ||
-              loading === DataStatus.PENDING
-            }
-          />
-        </Popover>
-
         <DynamicInputField
           id="userIds"
           name="userIds"
@@ -141,9 +100,10 @@ export default function AssignRoleToUsersForm({
           className="rounded-lg block w-full p-0.2 mb-2"
           multiple={true}
           data={filteredUsers.map((user) => ({
-            id: user.id,
-            name: user.username,
+            value: user.id,
+            label: user.username,
           }))}
+          isSearchable
         />
       </DynamicForm>
     </>

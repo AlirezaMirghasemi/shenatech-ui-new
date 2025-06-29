@@ -6,14 +6,15 @@ import IDynamicInputField from "@/interfaces/IDynamicInputField";
 import {
   FileInput,
   Label,
-  Select,
   Spinner,
   Textarea,
   TextInput,
 } from "flowbite-react";
-import { ErrorMessage, useField } from "formik";
+import { ErrorMessage, useField, useFormikContext } from "formik";
 import { FaEnvelope } from "react-icons/fa6";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import Select from "react-select";
+import { customSelectStyles } from "@/theme/SelectInputTheme";
 //TODO:Implement Select component from react-select
 export default function DynamicInputField({
   id,
@@ -30,15 +31,44 @@ export default function DynamicInputField({
   readOnly = false,
   textInputProps = {},
   textareaProps = {},
-  selectProps = {},
   fileInputProps = {},
   hiddenInputProps = {},
   labelHidden = false,
+  isSearchable = false,
   ...rest
 }: IDynamicInputField) {
   const [field, meta] = useField(id);
   //const { setFieldValue } = useFormikContext();
+  type SelectOption = { label: string; value: string | number };
+  const { setFieldValue } = useFormikContext();
+  const selectedOption = useMemo(() => {
+    if (type !== InputType.SELECT) return null;
 
+    if (multiple) {
+      return data?.filter((option) =>
+        (field.value || []).includes(option.value)
+      );
+    }
+    return data?.find((option) => option.value === field.value) || null;
+  }, [field.value, data, multiple, type]);
+  const handleSelectChange = (option: SelectOption | SelectOption[] | null) => {
+    if (multiple) {
+      const values = Array.isArray(option)
+        ? option.map((opt) => opt.value)
+        : [];
+      setFieldValue(field.name, values);
+    } else {
+      const value = (option as SelectOption)?.value ?? null;
+      setFieldValue(field.name, value);
+    }
+  };
+
+  // مقداردهی اولیه برای Select
+  useEffect(() => {
+    if (type === InputType.SELECT && defaultValue) {
+      setFieldValue(field.name, defaultValue);
+    }
+  }, [defaultValue, type, field.name, setFieldValue]);
   const color = useMemo(() => {
     if (meta.error && meta.touched) return "danger";
     if (!meta.error && meta.touched) return "success";
@@ -131,38 +161,21 @@ export default function DynamicInputField({
       {/* Select */}
       {type === InputType.SELECT && (
         <Select
-          {...rest}
-          {...field}
-          {...selectProps}
-          id={id}
-          disabled={disabled || loading}
-          className={`w-full ${className}`}
-          color={color}
-          multiple={multiple}
-          value={field.value ?? defaultValue}
+          value={selectedOption ?? field.value}
+          onChange={handleSelectChange}
+          options={data}
+          isSearchable={isSearchable}
           name={name}
-        >
-          {loading ? (
-            <option value="" disabled>
-              در حال بارگذاری...
-            </option>
-          ) : data?.length === 0 ? (
-            <option value="" disabled>
-              محتوایی برای نمایش وجود ندارد
-            </option>
-          ) : (
-            <>
-              <option value="" disabled>
-                {placeholder}
-              </option>
-              {data?.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </>
-          )}
-        </Select>
+          id={id}
+          placeholder={loading ? <><Spinner size="sm" color="warning" className="ml-2"/><span>در حال بارگذاری...</span></> : placeholder}
+          noOptionsMessage={() => "محتوایی برای نمایش وجود ندارد"}
+          isMulti={multiple}
+          loadingMessage={() =>   "در حال بارگذاری..." }
+          isDisabled={disabled || loading}
+          menuPosition="absolute"
+          styles={customSelectStyles}
+          classNamePrefix="react-select"
+        />
       )}
 
       <ErrorMessage name={id}>

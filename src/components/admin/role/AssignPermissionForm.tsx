@@ -9,11 +9,10 @@ import { AssignPermission, Role } from "@/types/Role";
 import { assignPermissionInitial } from "@/validations/admin/role/assignPermissionInitial";
 import { assignPermissionSchema } from "@/validations/admin/role/assignPermissionSchema";
 import { AxiosError } from "axios";
-import { Badge, TextInput } from "flowbite-react";
+import { Badge } from "flowbite-react";
 import { FormikHelpers } from "formik";
 import { ApiError } from "next/dist/server/api-utils";
 import { useEffect, useState } from "react";
-import { FaMagnifyingGlass } from "react-icons/fa6";
 import { toast } from "sonner";
 
 export default function AssignPermissionForm({
@@ -50,17 +49,6 @@ export default function AssignPermissionForm({
       setUnAssignedPermissions(unassigned);
     })();
   }, [unassigned]);
-  const searchPermissions = async (query: string) => {
-    await setUnAssignedPermissions(
-      unAssignedPermissions.filter((permission) =>
-        permission.name.toLowerCase().includes(query.toLowerCase())
-      )
-    );
-    if (query.length === 0) {
-      await setUnAssignedPermissions(unassigned);
-    }
-    return unAssignedPermissions;
-  };
 
   const onSubmit = async (
     values: AssignPermission,
@@ -99,17 +87,7 @@ export default function AssignPermissionForm({
         <Badge color="light" className="cursor-default p-2 ">
           {role.name}
         </Badge>
-        <TextInput
-          className="w-full !block"
-          rightIcon={FaMagnifyingGlass}
-          type="search"
-          placeholder="جستجوی مجوز ها"
-          onChange={(e) => searchPermissions(e.target.value)}
-          disabled={
-            loading === DataStatus.PENDING ||
-            assignLoading === DataStatus.PENDING
-          }
-        />
+
         <DynamicInputField
           id="permissionIds"
           name="permissionIds"
@@ -122,8 +100,12 @@ export default function AssignPermissionForm({
           }
           className="rounded-lg block w-full p-0.2 mb-2"
           multiple={true}
-          data={unAssignedPermissions}
+          data={unAssignedPermissions.map((permission) => ({
+            value: permission.id,
+            label: permission.name,
+          }))}
           loading={loading === DataStatus.PENDING}
+          isSearchable
         />
       </DynamicForm>
     </>

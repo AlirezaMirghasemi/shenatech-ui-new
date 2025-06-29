@@ -1,7 +1,7 @@
 // interfaces/IDynamicInputField.ts
 import { InputType } from "@/constants/data/InputType";
 import { ComponentProps } from "react";
-import { FileInput, Select, Textarea, TextInput } from "flowbite-react";
+import { FileInput, Textarea, TextInput } from "flowbite-react";
 
 // حذف props های تکراری که مستقیماً مدیریت می‌شوند
 type OmittedProps =
@@ -29,7 +29,7 @@ export default interface IDynamicInputField {
   placeholder?: string;
   label?: string;
   disabled?: boolean;
-  data?: { id: number | string; name: string }[];
+  data?: { value: number | string; label: string }[];
   className?: string;
   labelHidden?: boolean;
   multiple?: boolean;
@@ -37,10 +37,11 @@ export default interface IDynamicInputField {
   loading?: boolean;
   helperText?: string;
   readOnly?: boolean;
+  isSearchable?: boolean;
   // اضافه کردن props اختصاصی برای انواع مختلف
   textInputProps?: Omit<ComponentProps<typeof TextInput>, OmittedProps>;
   textareaProps?: Omit<ComponentProps<typeof Textarea>, OmittedProps>;
-  selectProps?: Omit<ComponentProps<typeof Select>, OmittedProps>;
-  fileInputProps?: Omit<ComponentProps<typeof FileInput>, OmittedProps> & React.InputHTMLAttributes<HTMLInputElement>;
+  fileInputProps?: Omit<ComponentProps<typeof FileInput>, OmittedProps> &
+    React.InputHTMLAttributes<HTMLInputElement>;
   hiddenInputProps?: Omit<ComponentProps<"input">, OmittedProps>;
 }

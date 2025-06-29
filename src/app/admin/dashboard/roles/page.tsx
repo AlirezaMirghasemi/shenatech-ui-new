@@ -46,4 +46,3 @@ export default function RolesPage() {
     </>
   );
 }
-//TODO: correct show role details

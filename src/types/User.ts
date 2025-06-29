@@ -28,13 +28,13 @@ export interface CreateUser {
   username: string;
   email: string;
   password: string;
-  password_confirmation: string | "";
-  first_name: string | "";
-  last_name: string | "";
-  full_name: string | "";
-  bio: string | "";
-  gender: Gender | "";
-  mobile: string | "";
+  password_confirmation: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  full_name: string | null;
+  bio: string | null;
+  gender: Gender | null;
+  mobile: string | null;
   //mobile_verified_at: string | "";
   status: UserStatus;
   profile_image: File | null;
@@ -47,12 +47,12 @@ export interface EditUserStatus {
 export interface EditUser {
   username: string;
   email: string;
-  first_name: string | "";
-  last_name: string | "";
-  full_name: string | "";
-  bio: string | "";
-  gender: Gender | "";
-  mobile: string | "";
+  first_name: string | null;
+  last_name: string | null;
+  full_name: string | null;
+  bio: string | null;
+  gender: Gender | null;
+  mobile: string | null;
   status: UserStatus;
   profile_image: File | null;
 }

@@ -10,7 +10,7 @@ import { LabelThemeConfig } from "./LabelThemeConfig";
 import { SpinnerThemeConfig } from "./SpinnerThemeConfig";
 import { DropdownThemeConfig } from "./DropdownThemeConfig";
 import { PaginationThemeConfig } from "./PaginationThemeConfig";
-import { SelectInputThemeConfig } from "./SelectInputTheme";
+//import { SelectInputThemeConfig } from "./SelectInputTheme";
 import{TabsThemeConfig}from "./TabsThemeConfig"
 import { BadgeThemeConfig } from "./BadgeThemeConfig";
 import { PopoverThemeConfig } from "./PopoverThemeConfig";
@@ -29,7 +29,7 @@ export const ManageTheme = createTheme({
   spinner: { ...SpinnerThemeConfig },
   dropdown: { ...DropdownThemeConfig },
   pagination:{...PaginationThemeConfig},
-  select:{... SelectInputThemeConfig},
+  //select:{... SelectInputThemeConfig},
   tabs:{...TabsThemeConfig},
   badge:{...BadgeThemeConfig},
   popover:{...PopoverThemeConfig},

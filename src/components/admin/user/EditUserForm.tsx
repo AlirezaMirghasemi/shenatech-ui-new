@@ -31,7 +31,6 @@ export default function EditUserForm({
     { setSubmitting }: FormikHelpers<EditUser>
   ) => {
     try {
-
       await editUser(user.id, values, values.profile_image as File | undefined);
       await fetchUsers(meta?.current_page, meta?.per_page);
       onCloseEditUserModal();
@@ -153,9 +152,9 @@ export default function EditUserForm({
                   type={InputType.SELECT}
                   className="block w-full"
                   data={[
-                    { id: Gender.Male, name: "مرد" },
-                    { id: Gender.Female, name: "زن" },
-                    { id: Gender.NotSpecified, name: "نامشخص" },
+                    { value: Gender.Male, label: "مرد" },
+                    { value: Gender.Female, label: "زن" },
+                    { value: Gender.NotSpecified, label: "نامشخص" },
                   ]}
                   disabled={
                     loading == DataStatus.PENDING // || uniqueLoading == DataStatus.PENDING
@@ -200,10 +199,10 @@ export default function EditUserForm({
                   className="block w-full"
                   type={InputType.SELECT}
                   data={[
-                    { id: UserStatus.PENDING, name: "در انتظار تایید" },
-                    { id: UserStatus.ACTIVE, name: "فعال" },
-                    { id: UserStatus.DEACTIVATED, name: "غیرفعال" },
-                    { id: UserStatus.SUSPENDED, name: "معلق" },
+                    { value: UserStatus.PENDING, label: "در انتظار تایید" },
+                    { value: UserStatus.ACTIVE, label: "فعال" },
+                    { value: UserStatus.DEACTIVATED, label: "غیرفعال" },
+                    { value: UserStatus.SUSPENDED, label: "معلق" },
                   ]}
                   disabled={
                     loading == DataStatus.PENDING ||

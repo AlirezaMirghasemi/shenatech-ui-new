@@ -49,22 +49,22 @@ export default function CreatePermissionForm({
   };
 
   const actionOptions = Object.entries(Actions).map(([key, value]) => ({
-    id: key.toString(),
-    name: value.toString(),
+    value: key.toString(),
+    label: value.toString(),
   }));
 
   const tableOptions = Object.entries(TableNames).map(([key, value]) => ({
-    id: key.toString(),
-    name: value.toString(),
+    value: key.toString(),
+    label: value.toString(),
   }));
 
   const assignOptions = Object.entries(Assigned).map(([key, value]) => ({
-    id: key.toString(),
-    name: value.toString(),
+    value: key.toString(),
+    label: value.toString(),
   }));
 
-  const findNameById = (list: { id: string; name: string }[], id: string) =>
-    list.find((opt) => opt.id === id)?.name ?? "";
+  const findNameById = (list: { value: string; label: string }[], value: string) =>
+    list.find((opt) => opt.value === value)?.label ?? "";
   return (
     <DynamicForm
       initialValues={createPermissionInitial}

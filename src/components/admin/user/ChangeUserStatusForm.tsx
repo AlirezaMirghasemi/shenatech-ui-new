@@ -21,6 +21,7 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
     { setSubmitting }: FormikHelpers<EditUserStatus>
   ) => {
     try {
+        console.log(values);
       await editUserStatus(user.id, values.status);
       await fetchUsers(meta?.current_page, meta?.per_page);
       toast.success("وضعیت کاربر با موفقیت ویرایش شد.");
@@ -54,13 +55,14 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
           label="وضعیت"
           type={InputType.SELECT}
           data={[
-            { id: UserStatus.PENDING, name: "در انتظار تایید" },
-            { id: UserStatus.ACTIVE, name: "فعال" },
-            { id: UserStatus.DEACTIVATED, name: "غیرفعال" },
-            { id: UserStatus.SUSPENDED, name: "معلق" },
+            { value: UserStatus.PENDING, label: "در انتظار تایید" },
+            { value: UserStatus.ACTIVE, label: "فعال" },
+            { value: UserStatus.DEACTIVATED, label: "غیرفعال" },
+            { value: UserStatus.SUSPENDED, label: "معلق" },
           ]}
           disabled={loading == DataStatus.PENDING}
           loading={loading == DataStatus.PENDING}
+          defaultValue={user.status}
         />
       </DynamicForm>
       </div>

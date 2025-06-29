@@ -96,7 +96,10 @@ export default function AssignPermissionsToRoleForm({
           loading === DataStatus.PENDING || roleLoading === DataStatus.PENDING
         }
         loading={roleLoading === DataStatus.PENDING}
-        data={roleOptions}
+        data={roleOptions.map(role => ({
+          value: role.id,
+          label: role.name
+        }))}
       />
     </DynamicForm>
   );

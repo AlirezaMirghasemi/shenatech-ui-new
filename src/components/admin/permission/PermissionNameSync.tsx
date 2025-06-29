@@ -8,10 +8,10 @@ export default function PermissionNameSync({
   assignOptions,
   findNameById,
 }: {
-  actionOptions: { id: string; name: string }[];
-  tableOptions: { id: string; name: string }[];
-  assignOptions: { id: string; name: string }[];
-  findNameById: (list: { id: string; name: string }[], id: string) => string;
+  actionOptions: { value: string; label: string }[];
+  tableOptions: { value: string; label: string }[];
+  assignOptions: { value: string; label: string }[];
+  findNameById: (list: { value: string; label: string }[], value: string) => string;
 }) {
   const { values: createFormValues, setFieldValue: setCreateFormValues } =
     useFormikContext<CreatePermission>();

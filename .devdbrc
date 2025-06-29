@@ -1,0 +1,6 @@
+[
+  {
+    "type": "sqlite",
+    "path": "d:\\xampp\\htdocs\\shenatech\\shenatech-api\\database\\database.sqlite"
+  }
+]
