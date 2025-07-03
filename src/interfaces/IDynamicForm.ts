@@ -18,4 +18,5 @@ export default interface IDynamicForm<T extends object> {
   validateOnBlur?: boolean;
   submitButtonColor?: string;
   submitButtonSize?: string;
+  buttonClassName?: string;
 }

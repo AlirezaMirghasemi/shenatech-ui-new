@@ -45,6 +45,8 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
         validateOnBlur={true}
         disabledButton={loading == DataStatus.PENDING}
         submitButtonSize="sm"
+        buttonClassName="w-50"
+
 
       >
         <DynamicInputField
@@ -63,6 +65,7 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
           disabled={loading == DataStatus.PENDING}
           loading={loading == DataStatus.PENDING}
           defaultValue={user.status}
+          className="w-50"
         />
       </DynamicForm>
       </div>

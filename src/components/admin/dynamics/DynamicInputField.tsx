@@ -15,7 +15,6 @@ import { FaEnvelope } from "react-icons/fa6";
 import { useEffect, useMemo } from "react";
 import Select from "react-select";
 import { customSelectStyles } from "@/theme/SelectInputTheme";
-//TODO:Implement Select component from react-select
 export default function DynamicInputField({
   id,
   name,
@@ -175,6 +174,7 @@ export default function DynamicInputField({
           menuPosition="absolute"
           styles={customSelectStyles}
           classNamePrefix="react-select"
+          className={className?? ""}
         />
       )}
 

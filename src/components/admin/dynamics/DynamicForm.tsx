@@ -16,7 +16,8 @@ export default function DynamicForm<T extends object>({
   validateOnChange = false,
   validateOnBlur = true,
   submitButtonColor = "success",
-  submitButtonSize = "lg"
+  submitButtonSize = "lg",
+  buttonClassName,
 }: IDynamicForm<T>) {
   return (
     <>
@@ -37,10 +38,12 @@ export default function DynamicForm<T extends object>({
                 color={submitButtonColor}
                 outline
                 size={submitButtonSize}
-                className="items-center text-center rounded-lg"
+                className={`items-center text-center rounded-lg ${
+                  buttonClassName ?? ""
+                }`}
               >
                 {isSubmitting ? (
-                  <Spinner size="sm"  color="success" />
+                  <Spinner size="sm" color="success" />
                 ) : (
                   buttonTitle
                 )}

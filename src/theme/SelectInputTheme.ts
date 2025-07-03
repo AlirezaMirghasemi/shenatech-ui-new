@@ -7,11 +7,9 @@ export const customSelectStyles: StylesConfig = {
     borderColor: isFocused
       ? "var(--colors-border-focus)"
       : "var(--colors-border-default)",
-    boxShadow: isFocused
-      ? "0 0 0 2px var(--colors-ring-default)"
-      : "none",
+    boxShadow: isFocused ? "0 0 0 2px var(--colors-ring-default)" : "none",
     "&:hover": {
-      borderColor: "var(--colors-border-hover)",
+      borderColor: "var(--colors-border-interactive)",
     },
     backgroundColor: isDisabled
       ? "var(--colors-bg-disabled)"
@@ -21,35 +19,29 @@ export const customSelectStyles: StylesConfig = {
     transition: "all var(--transition-duration) var(--transition-timing)",
     opacity: isDisabled ? "var(--opacity-disabled)" : 1,
     cursor: isDisabled ? "not-allowed" : "default",
+    fontFamily: "var(--font-family-sans)",
   }),
-  option: (base, { isSelected, isFocused }) => {
-    let backgroundColor = "var(--colors-bg-surface)";
-
-    if (isSelected) {
-      backgroundColor = "var(--colors-bg-accent)";
-    } else if (isFocused) {
-      backgroundColor = "var(--colors-bg-hover)";
-    }
-
-    return {
-      ...base,
-      backgroundColor,
-      color: "var(--colors-text-default)",
-      "&:active": {
-        backgroundColor: "var(--colors-bg-active)",
-      },
-      "&:hover": {
-        backgroundColor: !isSelected
-          ? "var(--colors-bg-hover)"
-          : "var(--colors-bg-accent-hover)",
-        transform: "translateX(2px)",
-      },
-      transition: "all var(--transition-duration) var(--transition-timing)",
-      cursor: "pointer",
-      position: "relative",
-      overflow: "hidden",
-    };
-  },
+  option: (base, { isSelected, isFocused }) => ({
+    ...base,
+    backgroundColor: isSelected
+      ? "var(--colors-secondary-active)"
+      : isFocused
+      ? "var(--colors-bg-hover)"
+      : "transparent",
+    color: isSelected
+      ? "var(--colors-text-on-secondary)"
+      : "var(--colors-text-default)",
+    "&:active": {
+      backgroundColor: "var(--colors-bg-active)",
+    },
+    "&:hover": {
+      backgroundColor: isSelected
+        ? "var(--colors-secondary-hover)"
+        : "var(--colors-bg-hover)",
+    },
+    transition: "all var(--transition-duration) var(--transition-timing)",
+    cursor: "pointer",
+  }),
   menu: (base) => ({
     ...base,
     backgroundColor: "var(--colors-bg-surface)",
@@ -65,37 +57,39 @@ export const customSelectStyles: StylesConfig = {
       width: "8px",
     },
     "&::-webkit-scrollbar-track": {
-      background: "var(--colors-bg-surface)",
+      background: "var(--colors-bg-alt)",
     },
     "&::-webkit-scrollbar-thumb": {
       background: "var(--colors-bg-interactive)",
       borderRadius: "4px",
+      "&:hover": {
+        background: "var(--colors-bg-active)",
+      },
     },
   }),
   multiValue: (base) => ({
     ...base,
-    backgroundColor: "var(--colors-bg-accent)",
+    backgroundColor: "var(--colors-success)",
     borderRadius: "0.375rem",
     transition: "all var(--transition-duration) var(--transition-timing)",
     "&:hover": {
-      backgroundColor: "var(--colors-bg-accent-hover)",
+      backgroundColor: "var(--colors-secondary-hover)",
     },
   }),
   multiValueLabel: (base) => ({
     ...base,
-    color: "var(--colors-text-default)",
+    color: "var(--colors-text-on-secondary)",
     padding: "2px 6px",
     fontWeight: 500,
   }),
-  multiValueRemove: (base, { isFocused }) => ({
+  multiValueRemove: (base) => ({
     ...base,
-    color: "var(--colors-text-muted)",
+    color: "var(--colors-text-on-secondary)",
     borderRadius: "0 0.375rem 0.375rem 0",
     "&:hover": {
-      backgroundColor: "var(--colors-danger)",
-      color: "var(--colors-text-on-dark)",
+      backgroundColor: "var(--colors-secondary-hover)",
+      color: "var(--colors-text-on-primary)",
     },
-    backgroundColor: isFocused ? "var(--colors-bg-accent-hover)" : "transparent",
     transition: "all var(--transition-duration) var(--transition-timing)",
   }),
   input: (base) => ({
@@ -128,8 +122,8 @@ export const customSelectStyles: StylesConfig = {
     color: isDisabled
       ? "var(--colors-text-muted)"
       : isFocused
-        ? "var(--colors-text-default)"
-        : "var(--colors-text-muted)",
+      ? "var(--colors-text-default)"
+      : "var(--colors-text-muted)",
     "&:hover": {
       color: "var(--colors-text-default)",
     },
@@ -140,7 +134,7 @@ export const customSelectStyles: StylesConfig = {
     ...base,
     color: "var(--colors-text-muted)",
     "&:hover": {
-      color: "var(--colors-danger)",
+      color: "var(--colors-secondary-hover)",
     },
     transition: "all var(--transition-duration) var(--transition-timing)",
   }),

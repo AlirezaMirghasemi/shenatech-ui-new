@@ -3,6 +3,7 @@ import authSlice from "./slices/authSlice";
 import roleSlice from "./slices/roleSlice";
 import permissionSlice from "./slices/permissionSlice";
 import userSlice from "./slices/userSlice";
+//import tagSlice from "./slices/tagSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       roles: roleSlice,
       permissions: permissionSlice,
       users: userSlice,
+      //tags: tagSlice,
     },
   });
 };
