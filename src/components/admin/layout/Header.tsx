@@ -48,9 +48,7 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
               user && (
                 <Avatar
                   alt="عکس کاربر"
-                  img={`${process.env.NEXT_PUBLIC_FILE_URL}/${
-                    (user?.profile_image as Image).path
-                  }`}
+                  img={user?.profile_image ? `${process.env.NEXT_PUBLIC_FILE_URL}/${(user?.profile_image as Image).path}` : undefined}
                   placeholderInitials={user?.username.charAt(0)}
                   rounded
                   bordered
