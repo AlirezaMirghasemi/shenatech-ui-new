@@ -6,7 +6,6 @@ import { InputType } from "@/constants/data/InputType";
 import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";
 import FullNameSync from "./FullNameSync";
-import DynamicFormInputFile from "../dynamics/DynamicFormInputs/DynamicImageInputFile";
 import { useUser } from "@/hooks/useUser";
 import { toast } from "sonner";
 import { FormikHelpers } from "formik";
@@ -55,12 +54,15 @@ export default function EditUserForm({
             )}
             buttonTitle="ویرایش کاربر"
             onSubmit={onSubmit}
+            buttonClassName="flex flex-row m-auto w-full cursor-pointer "
+            submitButtonColor="warning"
             validateOnChange={false}
             validateOnBlur={true}
             disabledButton={
               loading == DataStatus.PENDING ||
               uniqueLoading == DataStatus.PENDING
             }
+
           >
             <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="col-span-2">
@@ -76,6 +78,7 @@ export default function EditUserForm({
                   }
                   className="block w-full"
                   loading={uniqueLoading == DataStatus.PENDING}
+                  autoComplete="username"
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -88,6 +91,7 @@ export default function EditUserForm({
                   className="block w-full"
                   disabled={loading == DataStatus.PENDING}
                   loading={uniqueLoading == DataStatus.PENDING}
+                  autoComplete="given-name"
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -100,6 +104,7 @@ export default function EditUserForm({
                   type={InputType.TEXT}
                   disabled={loading == DataStatus.PENDING}
                   loading={uniqueLoading == DataStatus.PENDING}
+                  autoComplete="family-name"
                 />
               </div>
               <div className="col-span-2">
@@ -127,6 +132,7 @@ export default function EditUserForm({
                   }
                   loading={uniqueLoading == DataStatus.PENDING}
                   className="block w-full"
+                  autoComplete="email"
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -141,6 +147,7 @@ export default function EditUserForm({
                   }
                   className="block w-full"
                   loading={uniqueLoading == DataStatus.PENDING}
+                  autoComplete="tel"
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -178,16 +185,21 @@ export default function EditUserForm({
                 />
               </div>
 
-              <DynamicFormInputFile
-                loading={loading}
-                uniqueLoading={uniqueLoading}
-                fileInputFieldName="profile_image"
-                dynamicInputFieldProps={{
-                  id: "profile_image",
-                  name: "profile_image",
-                  placeholder: "عکس پروفایل",
-                  label: "عکس پروفایل",
-                }}
+              <DynamicInputField
+                id="profile_image"
+                name="profile_image"
+                placeholder="عکس پروفایل"
+                label="عکس پروفایل"
+                type={InputType.IMAGE}
+                className="mb-5"
+                loading={
+                  loading == DataStatus.PENDING ||
+                  uniqueLoading == DataStatus.PENDING
+                }
+                disabled={
+                  loading == DataStatus.PENDING ||
+                  uniqueLoading == DataStatus.PENDING
+                }
               />
 
               <div className="col-span-2 sm:col-span-1">

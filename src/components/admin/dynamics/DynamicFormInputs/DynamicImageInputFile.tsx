@@ -1,104 +1,78 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import React, { useCallback, useEffect } from "react";
 import Image from "next/image";
 import { FaUser } from "react-icons/fa6";
-import DynamicInputField from "@/components/admin/dynamics/DynamicInputField";
-import { InputType } from "@/constants/data/InputType";
-import { DataStatus } from "@/constants/data/DataStatus";
 import { useFormikContext } from "formik";
-import { IDynamicFormInputFile } from "@/interfaces/IDynamicFormInputFile";
-const DynamicImageInputFile = <T extends Record<string, unknown>>({
+import { IDynamicImageInputProps } from "@/interfaces/IDynamicInputField";
+import { FileInput } from "flowbite-react";
+
+export default function DynamicImageInputFile({
+  id,
+  name,
+  placeholder,
   loading,
-  uniqueLoading,
-  fileInputFieldName,
-  dynamicInputFieldProps,
-}: IDynamicFormInputFile<T>) => {
+  multiple,
+  readOnly,
+  className,
+  value,
+  onChange,
+}: IDynamicImageInputProps) {
+  const { setFieldValue, setFieldError, setFieldTouched } = useFormikContext();
   const [preview, setPreview] = React.useState<string | null>(null);
-  const {
-    values,
-    setFieldValue,
-    validateField,
-    setFieldError,
-    setFieldTouched,
-  } = useFormikContext<T>();
-  // استفاده از state محلی جهت نگهداری اطلاعات عکس قبلی
-  const [previewOldImage, setPreviewOldImage] = useState<string | null>(null);
-  const fieldName = fileInputFieldName as string;
-
-  useEffect(() => {
-    // اگر initialValues.imageId خالی نباشد، عکس قبلی را بارگیری کن
-    const fetchImage = async () => {
-      const fieldValue = values[fileInputFieldName];
-
-      if (
-        fieldValue &&
-        typeof fieldValue === "object" &&
-        "path" in fieldValue
-      ) {
-        await setPreviewOldImage(
-          `${process.env.NEXT_PUBLIC_FILE_URL}/${fieldValue.path as string}`
-        );
-      } else {
-        setPreviewOldImage(null);
+  const createPreview = useCallback((file: File) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === "string") {
+        setPreview(reader.result);
       }
     };
-    fetchImage();
-  }, [fileInputFieldName, values]);
-
+    reader.readAsDataURL(file);
+  }, []);
+  useEffect(() => {
+    if (value instanceof File) {
+      createPreview(value);
+    } else if (value && typeof value === "object" && "path" in value) {
+      setPreview(`${process.env.NEXT_PUBLIC_FILE_URL}/${value.path}`);
+    } else {
+      setPreview(null);
+    }
+  }, [value, createPreview]);
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setFieldTouched(fieldName, true, true);
-    setFieldError(fieldName, undefined);
-    const file = event.target.files?.[0] ?? "";
+    const file = event.target.files?.[0] || null;
+
     if (file) {
-      await setFieldValue(fieldName, file);
-      await setFieldError(fieldName, undefined);
-      await validateField(fieldName);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setPreview(reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
+      setFieldValue(id, file);
+      createPreview(file);
     } else {
-      await setFieldValue(fieldName, null);
-      await setFieldError(fieldName, undefined);
-      await setPreview(null);
-      await setFieldTouched(fieldName, false);
+      setFieldValue(id, null);
+      setPreview(null);
+    }
+
+    setFieldTouched(id, true);
+    setFieldError(id, undefined);
+
+    if (onChange) {
+      onChange(event);
     }
   };
-
   return (
     <>
       <div className="col-span-2 sm:col-span-1">
-        <DynamicInputField
-          id={dynamicInputFieldProps.id}
-          name={dynamicInputFieldProps.name}
-          placeholder={dynamicInputFieldProps.placeholder}
-          label={dynamicInputFieldProps.label}
-          type={InputType.FILE}
-          className="mb-1"
-          disabled={
-            loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
-          }
-          fileInputProps={{
-            accept: "image/*",
-            onChange: handleFileChange,
-          }}
+        <FileInput
+          id={id}
+          name={name}
+          placeholder={placeholder}
+          className={className}
+          disabled={loading}
+          accept="image/*"
+          onChange={handleFileChange}
+          multiple={multiple}
+          readOnly={readOnly}
         />
       </div>
-      {previewOldImage ? (
-        <div className="col-span-2 sm:col-span-1">
-          <Image
-            src={previewOldImage}
-            alt="Preview"
-            width={300}
-            height={300}
-            className="rounded-full object-cover block w-30 h-30 mr-10"
-          />
-        </div>
-      ) : preview ? (
+      {preview ? (
         <div className="col-span-2 sm:col-span-1">
           <Image
             src={preview}
@@ -115,6 +89,4 @@ const DynamicImageInputFile = <T extends Record<string, unknown>>({
       )}
     </>
   );
-};
-
-export default DynamicImageInputFile;
+}

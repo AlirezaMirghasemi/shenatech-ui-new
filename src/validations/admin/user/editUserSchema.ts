@@ -1,6 +1,5 @@
 import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";
-import { Image as imageType } from "@/types/Image";
 import { User } from "@/types/User";
 //import DynamicCheckUniqueField from "@/helpers/CheckUniqueField";
 import { validationMessages } from "@/utils/ValidationMessages";
@@ -67,31 +66,15 @@ export const editUserSchema = (
       .default(UserStatus.PENDING),
     profile_image: Yup.mixed<File>()
       .nullable()
-      .defined()
-      .notRequired()
       .default(null)
-      .test("fileSize", "حجم فایل نباید `از 2 مگابایت بیشتر باشد", (value) => {
-        if (!value) return true;
-        console.log(value);
-        if (value && value.size != null) {
-          return value.size <= 2 * 1024 * 1024;
-        }
-        return true;
-      })
-      .test("fileType", "فرمت فایل باید JPEG یا PNG باشد", (value) => {
-        if (
-          !value ||
-          ((currentUser.profile_image as imageType)?.path &&
-            "path" in value &&
-            (value as unknown as imageType).path ===
-              (currentUser.profile_image as imageType)?.path)
-        ) {
-          return true;
-        }
-        return ["image/jpeg", "image/png", "image/jpg"].includes(
-          (value as File).type
-        );
-      }),
+      .test("fileSize", "حجم فایل نباید از 2 مگابایت بیشتر باشد", (value) => {
+        if (!value || !(value instanceof File)) return true;
+        return value.size <= 2 * 1024 * 1024;
+         })
+         .test("fileType", "فرمت فایل باید JPEG یا PNG باشد", (value) => {
+           if (!value || !(value instanceof File)) return true;
+           return ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
+         }),
     first_name: Yup.string()
       .nullable()
       .default(null)

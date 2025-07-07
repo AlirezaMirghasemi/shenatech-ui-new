@@ -1,7 +1,12 @@
 // interfaces/IDynamicInputField.ts
 import { InputType } from "@/constants/data/InputType";
-import { ChangeEventHandler, ComponentProps, JSX } from "react";
-import {  FileInputProps, Textarea, TextInput } from "flowbite-react";
+import {
+  ChangeEventHandler,
+  ComponentProps,
+  FocusEventHandler,
+  JSX,
+} from "react";
+import { FileInputProps, Textarea, TextInput } from "flowbite-react";
 import { IconType } from "react-icons/lib";
 
 type CommonInputProps = {
@@ -15,14 +20,17 @@ type CommonInputProps = {
   placeholder?: string;
   helperText?: string;
 };
-
+type InputEventHandlers = {
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
+};
 export interface IDynamicInputField extends CommonInputProps {
   type: InputType;
   data?: { value: number | string; label: string }[];
   multiple?: boolean;
   loading?: boolean;
   isSearchable?: boolean;
-
+  autoComplete?: string;
   textInputProps?: Omit<
     ComponentProps<typeof TextInput>,
     "id" | "name" | "value" | "onChange" | "onBlur"
@@ -34,7 +42,9 @@ export interface IDynamicInputField extends CommonInputProps {
   fileInputProps?: FileInputProps;
   hiddenInputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
-export interface IDynamicTextInputProps extends CommonInputProps {
+export interface IDynamicTextInputProps
+  extends CommonInputProps,
+    InputEventHandlers {
   type:
     | InputType.TEXT
     | InputType.EMAIL
@@ -42,38 +52,54 @@ export interface IDynamicTextInputProps extends CommonInputProps {
     | InputType.NUMBER;
   addon?: JSX.Element;
   rightIcon?: IconType;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
-  onBlur?: ChangeEventHandler<HTMLInputElement>;
+  loading?: boolean;
   value?: string | number;
   color?: string;
+  autoComplete?: string;
 }
-export interface IDynamicTextareaProps extends CommonInputProps {
+export interface IDynamicTextareaProps
+  extends CommonInputProps,
+    InputEventHandlers {
   type: InputType.TEXTAREA;
   value?: string;
   rows?: number;
   cols?: number;
-  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
-  onBlur?: ChangeEventHandler<HTMLTextAreaElement>;
+  loading?: boolean;
+  placeholder?: string;
   color?: string;
 }
-export interface IDynamicFileInputProps extends CommonInputProps {
+export interface IDynamicFileInputProps
+  extends CommonInputProps,
+    InputEventHandlers {
   type: InputType.FILE;
   multiple?: boolean;
-  value?: File | File[] | null;
+  value?: File | { path: string } | null;
   color?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  loading?: boolean;
+  accept?: string;
 }
+export interface IDynamicImageInputProps
+  extends CommonInputProps,
+    InputEventHandlers {
+  type: InputType.IMAGE;
+  multiple?: boolean;
+  value?: File | { path: string } | null;
+  color?: string;
+  loading?: boolean;
+  accept?: string;
+}
+
 export interface IDynamicHiddenInputProps extends CommonInputProps {
   type: InputType.HIDDEN;
   value?: string;
 }
-export interface IDynamicSelectInputProps extends CommonInputProps {
+export interface IDynamicSelectInputProps
+  extends CommonInputProps,
+    InputEventHandlers {
   type: InputType.SELECT;
   data: { value: string | number; label: string }[];
   defaultValue?: string | number | Array<string | number>;
   multiple?: boolean;
   isSearchable?: boolean;
   loading?: boolean;
-  onChange?: ChangeEventHandler<HTMLSelectElement>;
-  onBlur?: ChangeEventHandler<HTMLSelectElement>;
 }

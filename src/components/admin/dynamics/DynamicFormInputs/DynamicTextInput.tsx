@@ -15,6 +15,7 @@ export default function DynamicTextInput({
   readOnly,
   onChange,
   onBlur,
+  autoComplete = "off",
 }: IDynamicTextInputProps) {
   return (
     <>
@@ -25,13 +26,14 @@ export default function DynamicTextInput({
         placeholder={placeholder}
         disabled={disabled}
         color={color}
-        className={`w-full ${className}`}
+        className={`w-full  ${className}`}
         addon={addon}
         rightIcon={rightIcon}
         name={name}
         readOnly={readOnly}
         onChange={onChange}
         onBlur={onBlur}
+        autoComplete={autoComplete}
       />
     </>
   );

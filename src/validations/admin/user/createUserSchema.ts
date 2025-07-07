@@ -78,19 +78,13 @@ export const createUserSchema = (
       .default(UserStatus.PENDING),
     profile_image: Yup.mixed<File>()
       .nullable()
-      .defined()
-      .notRequired()
       .default(null)
       .test("fileSize", "حجم فایل نباید از 2 مگابایت بیشتر باشد", (value) => {
-        if (!value) return true;
-        console.log(value);
-        if (value && value.size != null) {
-          return value.size <= 2 * 1024 * 1024;
-        }
-        return true;
+        if (!(value instanceof File)) return true;
+        return value.size <= 2 * 1024 * 1024;
       })
       .test("fileType", "فرمت فایل باید JPEG یا PNG باشد", (value) => {
-        if (!value) return true;
+        if (!(value instanceof File)) return true;
         return ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
       }),
     first_name: Yup.string()

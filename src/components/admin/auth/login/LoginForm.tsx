@@ -57,7 +57,7 @@ export default function LoginForm() {
               label="ایمیل"
               disabled={isLoading}
               className="  rounded-lg  block w-full p-0.2 mb-2 text-text-link "
-
+              autoComplete="email"
             />
             <DynamicInputField
               id="password"
@@ -67,6 +67,7 @@ export default function LoginForm() {
               label="رمز عبور"
               disabled={isLoading}
               className="  rounded-lg  block w-full p-0.2 mb-2"
+              autoComplete="current-password"
             />
           </DynamicForm>
         </div>

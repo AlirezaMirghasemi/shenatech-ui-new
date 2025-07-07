@@ -14,7 +14,6 @@ import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";
 import FullNameSync from "./FullNameSync";
 import React from "react";
-import DynamicFormInputFile from "../dynamics/DynamicFormInputs/DynamicImageInputFile";
 
 export default function CreateUserForm({
   onCloseCreateUserModal,
@@ -32,7 +31,9 @@ export default function CreateUserForm({
     { setSubmitting }: FormikHelpers<CreateUser>
   ) => {
     try {
-      await createUser(values, values.profile_image as File | undefined);
+      const profileImage =
+        values.profile_image instanceof File ? values.profile_image : undefined;
+      await createUser(values, profileImage);
       await fetchUsers(meta?.current_page, meta?.per_page);
       onCloseCreateUserModal();
       toast.success("کاربر با موفقیت ایجاد شد.");
@@ -56,6 +57,7 @@ export default function CreateUserForm({
             )}
             buttonTitle="ایجاد کاربر"
             onSubmit={onSubmit}
+            buttonClassName="flex flex-row m-auto w-full cursor-pointer "
             validateOnChange={false}
             validateOnBlur={true}
             disabledButton={
@@ -77,6 +79,7 @@ export default function CreateUserForm({
                   }
                   className="block w-full"
                   loading={uniqueLoading == DataStatus.PENDING}
+                  autoComplete="username"
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -89,6 +92,7 @@ export default function CreateUserForm({
                   className="block w-full"
                   disabled={loading == DataStatus.PENDING}
                   loading={uniqueLoading == DataStatus.PENDING}
+                  autoComplete="given-name"
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -101,6 +105,7 @@ export default function CreateUserForm({
                   type={InputType.TEXT}
                   disabled={loading == DataStatus.PENDING}
                   loading={uniqueLoading == DataStatus.PENDING}
+                  autoComplete="family-name"
                 />
               </div>
               <div className="col-span-2">
@@ -128,6 +133,7 @@ export default function CreateUserForm({
                   }
                   loading={uniqueLoading == DataStatus.PENDING}
                   className="block w-full"
+                  autoComplete="email"
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -141,6 +147,7 @@ export default function CreateUserForm({
                     loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
                   }
                   className="block w-full"
+                  autoComplete="tel"
                   loading={uniqueLoading == DataStatus.PENDING}
                 />
               </div>
@@ -175,6 +182,7 @@ export default function CreateUserForm({
                   }
                   className="block w-full"
                   loading={uniqueLoading == DataStatus.PENDING}
+                  autoComplete="new-password"
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -207,17 +215,21 @@ export default function CreateUserForm({
                 />
               </div>
 
-              <DynamicFormInputFile
-                loading={loading}
-                uniqueLoading={uniqueLoading}
-                fileInputFieldName="profile_image"
-                dynamicInputFieldProps={{
-                  id: "profile_image",
-                  name: "profile_image",
-                  placeholder: "عکس پروفایل",
-                  label: "عکس پروفایل",
-                  type: InputType.FILE,
-                }}
+              <DynamicInputField
+                id="profile_image"
+                name="profile_image"
+                placeholder="عکس پروفایل"
+                label="عکس پروفایل"
+                type={InputType.IMAGE}
+                className={"mb-5"}
+                loading={
+                  loading == DataStatus.PENDING ||
+                  uniqueLoading == DataStatus.PENDING
+                }
+                disabled={
+                  loading == DataStatus.PENDING ||
+                  uniqueLoading == DataStatus.PENDING
+                }
               />
 
               <div className="col-span-2 sm:col-span-1">

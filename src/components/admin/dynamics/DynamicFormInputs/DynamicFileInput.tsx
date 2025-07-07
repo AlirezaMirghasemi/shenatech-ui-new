@@ -9,7 +9,6 @@ export default function DynamicFileInput({
   color,
   multiple,
   readOnly,
-  onChange,
 }: IDynamicFileInputProps) {
   return (
     <>
@@ -21,7 +20,6 @@ export default function DynamicFileInput({
         multiple={multiple}
         name={name}
         readOnly={readOnly}
-        onChange={onChange}
       />
     </>
   );
