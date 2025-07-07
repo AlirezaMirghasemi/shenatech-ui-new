@@ -8,4 +8,5 @@ export interface TagState {
   loading: DataStatus;
   error: ApiError | null;
   uniqueLoading: DataStatus;
+  isUnique: boolean;
 }

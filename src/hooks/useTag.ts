@@ -1,5 +1,10 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getTagsAsync } from "@/store/thunks/tagThunk";
+import {
+  createTagsAsync,
+  getTagsAsync,
+  isTagUniqueAsync,
+} from "@/store/thunks/tagThunk";
+import { CreateTag } from "@/types/Tag";
 import { useCallback } from "react";
 
 export const useTag = () => {
@@ -22,6 +27,28 @@ export const useTag = () => {
     },
     [dispatch]
   );
+  const createTags = useCallback(
+    (tags: CreateTag[]) => {
+      try {
+        return dispatch(createTagsAsync({ tags })).unwrap();
+      } catch (error) {
+        console.error("Error creating tags:", error);
+        return [];
+      }
+    },
+    [dispatch]
+  );
+  const isTagUnique = useCallback(
+    (tagName: string) => {
+      try {
+        return dispatch(isTagUniqueAsync(tagName)).unwrap();
+      } catch (error) {
+        console.error("Error checking tag uniqueness:", error);
+        return false;
+      }
+    },
+    [dispatch]
+  );
   return {
     tags,
     meta,
@@ -30,6 +57,8 @@ export const useTag = () => {
     uniqueLoading,
     actions: {
       fetchTags,
+      createTags,
+      isTagUnique,
     },
   };
 };

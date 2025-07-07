@@ -14,7 +14,7 @@ import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";
 import FullNameSync from "./FullNameSync";
 import React from "react";
-import DynamicFormInputFile from "../dynamics/DynamicFormInputFile";
+import DynamicFormInputFile from "../dynamics/DynamicFormInputs/DynamicImageInputFile";
 
 export default function CreateUserForm({
   onCloseCreateUserModal,
@@ -216,6 +216,7 @@ export default function CreateUserForm({
                   name: "profile_image",
                   placeholder: "عکس پروفایل",
                   label: "عکس پروفایل",
+                  type: InputType.FILE,
                 }}
               />
 

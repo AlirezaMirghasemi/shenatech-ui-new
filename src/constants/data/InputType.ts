@@ -10,5 +10,6 @@ export enum InputType {
   TEXTAREA = "textarea",
   FILE = "file",
   IMAGE = "image",
-  HIDDEN = "hidden"
+  HIDDEN = "hidden",
+  MULTI_INPUT = "multiInput",
 }

@@ -57,6 +57,7 @@ export default function LoginForm() {
               label="ایمیل"
               disabled={isLoading}
               className="  rounded-lg  block w-full p-0.2 mb-2 text-text-link "
+
             />
             <DynamicInputField
               id="password"

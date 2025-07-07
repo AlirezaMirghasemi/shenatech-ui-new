@@ -6,7 +6,7 @@ import { InputType } from "@/constants/data/InputType";
 import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";
 import FullNameSync from "./FullNameSync";
-import DynamicFormInputFile from "../dynamics/DynamicFormInputFile";
+import DynamicFormInputFile from "../dynamics/DynamicFormInputs/DynamicImageInputFile";
 import { useUser } from "@/hooks/useUser";
 import { toast } from "sonner";
 import { FormikHelpers } from "formik";

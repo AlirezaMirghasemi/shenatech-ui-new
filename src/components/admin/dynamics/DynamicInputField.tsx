@@ -2,101 +2,56 @@
 "use client";
 import ValidatingError from "@/components/common/ValidatingError";
 import { InputType } from "@/constants/data/InputType";
-import IDynamicInputField from "@/interfaces/IDynamicInputField";
-import {
-  FileInput,
-  Label,
-  Spinner,
-  Textarea,
-  TextInput,
-} from "flowbite-react";
-import { ErrorMessage, useField, useFormikContext } from "formik";
+import { IDynamicInputField } from "@/interfaces/IDynamicInputField";
+import { Spinner } from "flowbite-react";
+import { ErrorMessage, useField } from "formik";
 import { FaEnvelope } from "react-icons/fa6";
-import { useEffect, useMemo } from "react";
-import Select from "react-select";
-import { customSelectStyles } from "@/theme/SelectInputTheme";
+import { useMemo } from "react";
+import DynamicLabel from "./DynamicFormInputs/DynamicLabel";
+import DynamicHiddenInput from "./DynamicFormInputs/DynamicHiddenInput";
+import DynamicTextInput from "./DynamicFormInputs/DynamicTextInput";
+import DynamicTextarea from "./DynamicFormInputs/DynamicTextarea";
+import DynamicFileInput from "./DynamicFormInputs/DynamicFileInput";
+import DynamicSelectInput from "./DynamicFormInputs/DynamicSelectInput";
 export default function DynamicInputField({
   id,
   name,
   type,
   placeholder,
-  disabled,
+  disabled = false,
   data,
   label,
-  className,
-  multiple,
-  defaultValue,
-  loading,
+  className = "",
+  multiple = false,
+  loading = false,
   readOnly = false,
+  //defaultValue,
   textInputProps = {},
   textareaProps = {},
   fileInputProps = {},
   hiddenInputProps = {},
   labelHidden = false,
   isSearchable = false,
-  ...rest
 }: IDynamicInputField) {
   const [field, meta] = useField(id);
-  //const { setFieldValue } = useFormikContext();
-  type SelectOption = { label: string; value: string | number };
-  const { setFieldValue } = useFormikContext();
-  const selectedOption = useMemo(() => {
-    if (type !== InputType.SELECT) return null;
-
-    if (multiple) {
-      return data?.filter((option) =>
-        (field.value || []).includes(option.value)
-      );
-    }
-    return data?.find((option) => option.value === field.value) || null;
-  }, [field.value, data, multiple, type]);
-  const handleSelectChange = (option: SelectOption | SelectOption[] | null) => {
-    if (multiple) {
-      const values = Array.isArray(option)
-        ? option.map((opt) => opt.value)
-        : [];
-      setFieldValue(field.name, values);
-    } else {
-      const value = (option as SelectOption)?.value ?? null;
-      setFieldValue(field.name, value);
-    }
-  };
-
-  // مقداردهی اولیه برای Select
-  useEffect(() => {
-    if (type === InputType.SELECT && defaultValue) {
-      setFieldValue(field.name, defaultValue);
-    }
-  }, [defaultValue, type, field.name, setFieldValue]);
   const color = useMemo(() => {
     if (meta.error && meta.touched) return "danger";
     if (!meta.error && meta.touched) return "success";
     return "default";
   }, [meta]);
-
   return (
     <div className="mb-4">
-      {type !== InputType.HIDDEN && (
-        <Label
-          htmlFor={id}
-          className="block mb-2 text-sm font-medium"
-          color={color}
-          hidden={labelHidden}
-        >
-          {label}
-        </Label>
+      {type !== InputType.HIDDEN && labelHidden !== true && (
+        <DynamicLabel htmlFor={id} color={color} label={label ?? ""} />
       )}
-
       {/* Hidden Field */}
       {type === InputType.HIDDEN && (
-        <input
-          {...rest}
+        <DynamicHiddenInput
           {...field}
           {...hiddenInputProps}
           id={id}
+          type={type}
           name={name}
-          type="hidden"
-          value={defaultValue ?? field.value}
           readOnly={readOnly}
         />
       )}
@@ -106,12 +61,12 @@ export default function DynamicInputField({
         type === InputType.NUMBER ||
         type === InputType.EMAIL ||
         type === InputType.PASSWORD) && (
-        <TextInput
-          {...rest}
+        <DynamicTextInput
           {...field}
           {...textInputProps}
-          value={defaultValue ?? field.value}
+          //value={defaultValue ?? field.value}
           id={id}
+          name={name}
           type={type}
           placeholder={placeholder}
           disabled={disabled}
@@ -119,62 +74,59 @@ export default function DynamicInputField({
           className={`w-full ${className}`}
           addon={loading ? <Spinner size="sm" color="warning" /> : undefined}
           rightIcon={type === InputType.EMAIL ? FaEnvelope : undefined}
-          name={name}
           readOnly={readOnly}
         />
       )}
 
       {/* Textarea */}
       {type === InputType.TEXTAREA && (
-        <Textarea
-          {...rest}
+        <DynamicTextarea
           {...field}
           {...textareaProps}
-          value={defaultValue ?? field.value}
+          type={type}
+          value={field.value}
           id={id}
+          name={name}
           placeholder={placeholder}
           disabled={disabled}
           rows={4}
           className={`w-full ${className}`}
           color={color}
-          name={name}
           readOnly={readOnly}
         />
       )}
 
       {/* File Input */}
       {type === InputType.FILE && (
-        <FileInput
-          {...rest}
+        <DynamicFileInput
+          {...field}
           {...fileInputProps}
+          type={type}
           id={id}
+          name={name}
           disabled={disabled}
           className={className}
           color="info"
           multiple={multiple}
-          name={name}
           readOnly={readOnly}
         />
       )}
 
       {/* Select */}
       {type === InputType.SELECT && (
-        <Select
-          value={selectedOption ?? field.value}
-          onChange={handleSelectChange}
-          options={data}
-          isSearchable={isSearchable}
-          name={name}
+        <DynamicSelectInput
+          {...field}
+          type={type}
           id={id}
-          placeholder={loading ? <><Spinner size="sm" color="warning" className="ml-2"/><span>در حال بارگذاری...</span></> : placeholder}
-          noOptionsMessage={() => "محتوایی برای نمایش وجود ندارد"}
-          isMulti={multiple}
-          loadingMessage={() =>   "در حال بارگذاری..." }
-          isDisabled={disabled || loading}
-          menuPosition="absolute"
-          styles={customSelectStyles}
-          classNamePrefix="react-select"
-          className={className?? ""}
+          name={name}
+          data={data ?? []}
+          //defaultValue={defaultValue ?? field.value}
+          isSearchable={isSearchable}
+          placeholder={placeholder}
+          multiple={multiple}
+          loading={loading}
+          disabled={disabled || loading}
+          className={className}
         />
       )}
 

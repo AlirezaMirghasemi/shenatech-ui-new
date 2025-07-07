@@ -1,5 +1,6 @@
 import { api } from "@/lib/axiosInstance";
 import { ApiError } from "@/types/Api";
+import { CreateTag } from "@/types/Tag";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 
@@ -33,6 +34,43 @@ export const getTagsAsync = createAsyncThunk(
       }
       return rejectWithValue({
         message: axiosError.message || "خطای دریافت کاربران",
+      });
+    }
+  }
+);
+export const createTagsAsync = createAsyncThunk(
+  "tag/createTags",
+  async (
+    { tags }: { tags: CreateTag[] },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.post("/tags/store", { tags });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای ایجاد هشتگ",
+      });
+    }
+  }
+);
+export const isTagUniqueAsync = createAsyncThunk(
+  "tag/isTagUnique",
+  async (title: string, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/tags/tag-name-is-unique", { title });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای بررسی یکتایی هشتگ",
       });
     }
   }

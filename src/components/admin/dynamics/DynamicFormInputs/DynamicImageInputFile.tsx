@@ -6,7 +6,7 @@ import { InputType } from "@/constants/data/InputType";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { useFormikContext } from "formik";
 import { IDynamicFormInputFile } from "@/interfaces/IDynamicFormInputFile";
-const DynamicFormInputFile = <T extends Record<string, unknown>>({
+const DynamicImageInputFile = <T extends Record<string, unknown>>({
   loading,
   uniqueLoading,
   fileInputFieldName,
@@ -39,7 +39,6 @@ const DynamicFormInputFile = <T extends Record<string, unknown>>({
         );
       } else {
         setPreviewOldImage(null);
-
       }
     };
     fetchImage();
@@ -118,4 +117,4 @@ const DynamicFormInputFile = <T extends Record<string, unknown>>({
   );
 };
 
-export default DynamicFormInputFile;
+export default DynamicImageInputFile;

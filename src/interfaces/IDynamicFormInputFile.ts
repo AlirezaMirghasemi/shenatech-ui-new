@@ -1,5 +1,5 @@
 import { DataStatus } from "@/constants/data/DataStatus";
-import IDynamicInputField from "./IDynamicInputField";
+import {IDynamicInputField} from "./IDynamicInputField";
 
 export interface IDynamicFormInputFile<T> {
   loading?: DataStatus;

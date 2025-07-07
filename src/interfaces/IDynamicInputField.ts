@@ -1,47 +1,79 @@
 // interfaces/IDynamicInputField.ts
 import { InputType } from "@/constants/data/InputType";
-import { ComponentProps } from "react";
-import { FileInput, Textarea, TextInput } from "flowbite-react";
+import { ChangeEventHandler, ComponentProps, JSX } from "react";
+import {  FileInputProps, Textarea, TextInput } from "flowbite-react";
+import { IconType } from "react-icons/lib";
 
-// حذف props های تکراری که مستقیماً مدیریت می‌شوند
-type OmittedProps =
-  | "id"
-  | "name"
-  | "type"
-  | "placeholder"
-  | "label"
-  | "disabled"
-  | "data"
-  | "className"
-  | "multiple"
-  | "defaultValue"
-  | "loading"
-  | "helperText"
-  | "color"
-  | "onChange"
-  | "onBlur"
-  | "value";
-
-export default interface IDynamicInputField {
+type CommonInputProps = {
   id: string;
   name: string;
-  type?: InputType;
-  placeholder?: string;
   label?: string;
-  disabled?: boolean;
-  data?: { value: number | string; label: string }[];
-  className?: string;
   labelHidden?: boolean;
-  multiple?: boolean;
-  defaultValue?: string | number;
-  loading?: boolean;
-  helperText?: string;
+  disabled?: boolean;
+  className?: string;
   readOnly?: boolean;
+  placeholder?: string;
+  helperText?: string;
+};
+
+export interface IDynamicInputField extends CommonInputProps {
+  type: InputType;
+  data?: { value: number | string; label: string }[];
+  multiple?: boolean;
+  loading?: boolean;
   isSearchable?: boolean;
-  // اضافه کردن props اختصاصی برای انواع مختلف
-  textInputProps?: Omit<ComponentProps<typeof TextInput>, OmittedProps>;
-  textareaProps?: Omit<ComponentProps<typeof Textarea>, OmittedProps>;
-  fileInputProps?: Omit<ComponentProps<typeof FileInput>, OmittedProps> &
-    React.InputHTMLAttributes<HTMLInputElement>;
-  hiddenInputProps?: Omit<ComponentProps<"input">, OmittedProps>;
+
+  textInputProps?: Omit<
+    ComponentProps<typeof TextInput>,
+    "id" | "name" | "value" | "onChange" | "onBlur"
+  >;
+  textareaProps?: Omit<
+    ComponentProps<typeof Textarea>,
+    "id" | "name" | "value" | "onChange" | "onBlur"
+  >;
+  fileInputProps?: FileInputProps;
+  hiddenInputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+}
+export interface IDynamicTextInputProps extends CommonInputProps {
+  type:
+    | InputType.TEXT
+    | InputType.EMAIL
+    | InputType.PASSWORD
+    | InputType.NUMBER;
+  addon?: JSX.Element;
+  rightIcon?: IconType;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onBlur?: ChangeEventHandler<HTMLInputElement>;
+  value?: string | number;
+  color?: string;
+}
+export interface IDynamicTextareaProps extends CommonInputProps {
+  type: InputType.TEXTAREA;
+  value?: string;
+  rows?: number;
+  cols?: number;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
+  onBlur?: ChangeEventHandler<HTMLTextAreaElement>;
+  color?: string;
+}
+export interface IDynamicFileInputProps extends CommonInputProps {
+  type: InputType.FILE;
+  multiple?: boolean;
+  value?: File | File[] | null;
+  color?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+}
+export interface IDynamicHiddenInputProps extends CommonInputProps {
+  type: InputType.HIDDEN;
+  value?: string;
+}
+export interface IDynamicSelectInputProps extends CommonInputProps {
+  type: InputType.SELECT;
+  data: { value: string | number; label: string }[];
+  defaultValue?: string | number | Array<string | number>;
+  multiple?: boolean;
+  isSearchable?: boolean;
+  loading?: boolean;
+  onChange?: ChangeEventHandler<HTMLSelectElement>;
+  onBlur?: ChangeEventHandler<HTMLSelectElement>;
 }
