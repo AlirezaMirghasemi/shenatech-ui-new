@@ -11,11 +11,12 @@ import { SpinnerThemeConfig } from "./SpinnerThemeConfig";
 import { DropdownThemeConfig } from "./DropdownThemeConfig";
 import { PaginationThemeConfig } from "./PaginationThemeConfig";
 //import { SelectInputThemeConfig } from "./SelectInputTheme";
-import{TabsThemeConfig}from "./TabsThemeConfig"
+import { TabsThemeConfig } from "./TabsThemeConfig";
 import { BadgeThemeConfig } from "./BadgeThemeConfig";
 import { PopoverThemeConfig } from "./PopoverThemeConfig";
 import { TooltipThemeConfig } from "./TooltipThemeConfig";
 import { AvatarThemeConfig } from "./AvatarThemeConfig";
+import { FloatingLabelThemeConfig } from "./FloatingLabelThemeConfig";
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -28,11 +29,12 @@ export const ManageTheme = createTheme({
   label: { ...LabelThemeConfig },
   spinner: { ...SpinnerThemeConfig },
   dropdown: { ...DropdownThemeConfig },
-  pagination:{...PaginationThemeConfig},
+  pagination: { ...PaginationThemeConfig },
   //select:{... SelectInputThemeConfig},
-  tabs:{...TabsThemeConfig},
-  badge:{...BadgeThemeConfig},
-  popover:{...PopoverThemeConfig},
-  tooltip:{...TooltipThemeConfig},
-  avatar:{...AvatarThemeConfig}
+  tabs: { ...TabsThemeConfig },
+  badge: { ...BadgeThemeConfig },
+  popover: { ...PopoverThemeConfig },
+  tooltip: { ...TooltipThemeConfig },
+  avatar: { ...AvatarThemeConfig },
+  floatingLabel: { ...FloatingLabelThemeConfig },
 });

@@ -85,7 +85,7 @@ export const editUserSchema = (
       .default(null)
       .min(3, validationMessages.minLength(3))
       .max(50, validationMessages.maxLength(50)),
-    full_name: Yup.string().nullable().default(null),
+    full_name: Yup.string().default(""),
     bio: Yup.string()
       .nullable()
       .max(250, validationMessages.maxLength(250))

@@ -1,5 +1,5 @@
 import { IDynamicTextInputProps } from "@/interfaces/IDynamicInputField";
-import { TextInput } from "flowbite-react";
+import { FloatingLabel } from "flowbite-react";
 
 export default function DynamicTextInput({
   id,
@@ -10,25 +10,32 @@ export default function DynamicTextInput({
   disabled,
   color,
   className,
-  addon,
-  rightIcon,
   readOnly,
   onChange,
   onBlur,
   autoComplete = "off",
+  label,
+  loading,
 }: IDynamicTextInputProps) {
   return (
     <>
-      <TextInput
+      <FloatingLabel
         value={value}
         id={id}
         type={type}
-        placeholder={placeholder}
-        disabled={disabled}
-        color={color}
+        placeholder={label == "" ? placeholder : ""}
+        disabled={disabled ? disabled : loading}
+        label={label ?? ""}
+        sizing="md"
+        variant="standard"
+        color={
+          color == "error"
+            ? "error"
+            : color == "success"
+              ? "success"
+              : "default"
+        }
         className={`w-full  ${className}`}
-        addon={addon}
-        rightIcon={rightIcon}
         name={name}
         readOnly={readOnly}
         onChange={onChange}

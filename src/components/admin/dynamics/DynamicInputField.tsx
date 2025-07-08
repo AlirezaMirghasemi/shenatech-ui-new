@@ -32,11 +32,11 @@ export default function DynamicInputField({
   hiddenInputProps = {},
   labelHidden = false,
   isSearchable = false,
-  autoComplete ,
+  autoComplete,
 }: IDynamicInputField) {
   const [field, meta] = useField(id);
   const color = useMemo(() => {
-    if (meta.error && meta.touched) return "danger";
+    if (meta.error && meta.touched) return "error";
     if (!meta.error && meta.touched) return "success";
     return "default";
   }, [meta]);
@@ -44,9 +44,15 @@ export default function DynamicInputField({
   return (
     <>
       <div className="mb-4">
-        {type !== InputType.HIDDEN && labelHidden !== true && (
-          <DynamicLabel htmlFor={id} color={color} label={label ?? ""} />
-        )}
+        {!(
+  type === InputType.TEXT ||
+  type === InputType.NUMBER ||
+  type === InputType.EMAIL ||
+  type === InputType.PASSWORD
+) && labelHidden === false &&
+           (
+            <DynamicLabel htmlFor={id} color={color} label={label ?? ""} />
+          )}
         {/* Hidden Field */}
         {type === InputType.HIDDEN && (
           <DynamicHiddenInput
@@ -78,7 +84,9 @@ export default function DynamicInputField({
             addon={loading ? <Spinner size="sm" color="warning" /> : undefined}
             rightIcon={type === InputType.EMAIL ? FaEnvelope : undefined}
             readOnly={readOnly}
+            loading={loading}
             autoComplete={autoComplete}
+            label={label ?? ""}
           />
         )}
 

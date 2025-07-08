@@ -62,7 +62,6 @@ export default function EditUserForm({
               loading == DataStatus.PENDING ||
               uniqueLoading == DataStatus.PENDING
             }
-
           >
             <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="col-span-2">
@@ -114,9 +113,9 @@ export default function EditUserForm({
                   placeholder="نام کامل"
                   label="نام کامل"
                   type={InputType.TEXT}
-                  disabled={true}
+                  readOnly
                   loading={uniqueLoading == DataStatus.PENDING}
-                  className="block w-full"
+                  className="w-full"
                 />
               </div>
 

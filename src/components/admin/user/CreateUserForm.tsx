@@ -115,9 +115,9 @@ export default function CreateUserForm({
                   placeholder="نام کامل"
                   label="نام کامل"
                   type={InputType.TEXT}
-                  disabled={true}
+                  readOnly
                   loading={uniqueLoading == DataStatus.PENDING}
-                  className="block w-full"
+                  className=" w-full"
                 />
               </div>
 

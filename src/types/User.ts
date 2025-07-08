@@ -31,7 +31,7 @@ export interface CreateUser {
   password_confirmation: string | null;
   first_name: string | null;
   last_name: string | null;
-  full_name: string | null;
+  full_name: string | undefined;
   bio: string | null;
   gender: Gender | null;
   mobile: string | null;
@@ -49,7 +49,7 @@ export interface EditUser {
   email: string;
   first_name: string | null;
   last_name: string | null;
-  full_name: string | null;
+  full_name: string | undefined;
   bio: string | null;
   gender: Gender | null;
   mobile: string | null;

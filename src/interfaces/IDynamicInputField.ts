@@ -6,7 +6,12 @@ import {
   FocusEventHandler,
   JSX,
 } from "react";
-import { FileInputProps, Textarea, TextInput } from "flowbite-react";
+import {
+  FileInputProps,
+  FloatingLabelColor,
+  Textarea,
+  TextInput,
+} from "flowbite-react";
 import { IconType } from "react-icons/lib";
 
 type CommonInputProps = {
@@ -19,6 +24,7 @@ type CommonInputProps = {
   readOnly?: boolean;
   placeholder?: string;
   helperText?: string;
+  color?: string | FloatingLabelColor;
 };
 type InputEventHandlers = {
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -54,7 +60,6 @@ export interface IDynamicTextInputProps
   rightIcon?: IconType;
   loading?: boolean;
   value?: string | number;
-  color?: string;
   autoComplete?: string;
 }
 export interface IDynamicTextareaProps
@@ -66,7 +71,6 @@ export interface IDynamicTextareaProps
   cols?: number;
   loading?: boolean;
   placeholder?: string;
-  color?: string;
 }
 export interface IDynamicFileInputProps
   extends CommonInputProps,
@@ -74,7 +78,6 @@ export interface IDynamicFileInputProps
   type: InputType.FILE;
   multiple?: boolean;
   value?: File | { path: string } | null;
-  color?: string;
   loading?: boolean;
   accept?: string;
 }
@@ -84,7 +87,6 @@ export interface IDynamicImageInputProps
   type: InputType.IMAGE;
   multiple?: boolean;
   value?: File | { path: string } | null;
-  color?: string;
   loading?: boolean;
   accept?: string;
 }
