@@ -4,7 +4,8 @@
 @font-face {
   font-family: Vazir;
   src: url("/fonts/Vazir-Regular.eot");
-  src: url("/fonts/Vazir-Regular.eot?#iefix") format("embedded-opentype"),
+  src:
+    url("/fonts/Vazir-Regular.eot?#iefix") format("embedded-opentype"),
     url("/fonts/Vazir-Regular.woff2") format("woff2"),
     url("/fonts/Vazir-Regular.woff") format("woff"),
     url("/fonts/Vazir-Regular.ttf") format("truetype");
@@ -15,7 +16,8 @@
 @font-face {
   font-family: Vazir;
   src: url("/fonts/Vazir-Bold.eot");
-  src: url("/fonts/Vazir-Bold.eot?#iefix") format("embedded-opentype"),
+  src:
+    url("/fonts/Vazir-Bold.eot?#iefix") format("embedded-opentype"),
     url("/fonts/Vazir-Bold.woff2") format("woff2"),
     url("/fonts/Vazir-Bold.woff") format("woff"),
     url("/fonts/Vazir-Bold.ttf") format("truetype");
@@ -169,15 +171,16 @@
   --colors-bg-disabled: var(--color-neutral-300);
 
   --colors-text-default: var(--color-neutral-900);
-    --colors-text-secondary: var(--color-neutral-700);
-    --colors-text-muted: var(--color-neutral-600);
-    --colors-text-placeholder: var(--color-neutral-500);
+  --colors-text-secondary: var(--color-neutral-700);
+  --colors-text-muted: var(--color-neutral-600);
+  --colors-text-placeholder: var(--color-neutral-500);
   --colors-text-link: var(--color-primary-600);
   --colors-text-link-hover: var(--color-primary-700);
   --colors-text-on-primary: hsl(0, 0%, 100%);
   --colors-text-on-secondary: var(--color-secondary-50);
   --colors-text-on-accent: var(--color-accent-50);
   --colors-text-on-dark: hsl(0, 0%, 95%);
+  --colors-text-disabled: var(--colors-text-muted);
 
   --colors-border-default: var(--color-neutral-400);
   --colors-border-surface: var(--color-neutral-300);
@@ -204,28 +207,28 @@
   --colors-neutral-active: var(--color-neutral-700);
 
   --colors-success: var(--color-success-500);
-   --colors-status-success-bg: var(--color-success-100);
-    --colors-status-success-border: var(--color-success-600);
-    --colors-status-success-text: var(--color-success-900);
+  --colors-status-success-bg: var(--color-success-100);
+  --colors-status-success-border: var(--color-success-600);
+  --colors-status-success-text: var(--color-success-900);
 
   --colors-warning: var(--color-warning-500);
   --colors-status-warning-bg: var(--color-warning-200);
-    --colors-status-warning-border: var(--color-warning-600);
-    --colors-status-warning-text: var(--color-warning-900);
+  --colors-status-warning-border: var(--color-warning-600);
+  --colors-status-warning-text: var(--color-warning-900);
 
   --colors-danger: var(--color-danger-500);
   --colors-status-danger-bg: var(--color-danger-100);
-    --colors-status-danger-border: var(--color-danger-600);
-    --colors-status-danger-text: var(--color-danger-900);
+  --colors-status-danger-border: var(--color-danger-600);
+  --colors-status-danger-text: var(--color-danger-900);
 
   --colors-info: var(--color-info-500);
-   --colors-status-info-bg: var(--color-info-100);
-    --colors-status-info-border: var(--color-info-600);
-    --colors-status-info-text: var(--color-info-900);
+  --colors-status-info-bg: var(--color-info-100);
+  --colors-status-info-border: var(--color-info-600);
+  --colors-status-info-text: var(--color-info-900);
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 15px 25px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 15px 25px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
   --shadow-sm-dark: 0 1px 3px rgba(255, 255, 255, 0.1);
   --shadow-md-dark: 0 4px 6px -1px rgba(255, 255, 255, 0.1);
@@ -259,6 +262,7 @@
     --colors-text-on-secondary: var(--color-secondary-900);
     --colors-text-on-accent: var(--color-accent-900);
     --colors-text-on-dark: var(--color-background-dark-100);
+    --colors-text-disabled: var(--colors-text-secondary);
 
     --colors-border-default: var(--color-background-dark-700);
     --colors-border-surface: var(--color-background-dark-800);
@@ -324,10 +328,10 @@
 
 html {
   @apply bg-bg-default text-text-default;
-  transition: background-color var(--transition-duration)
-      var(--transition-timing),
+  transition:
+    background-color var(--transition-duration) var(--transition-timing),
     color var(--transition-duration) var(--transition-timing);
-    font-size: var(--font-size-base);
+  font-size: var(--font-size-base);
   line-height: var(--line-height-base);
 }
 
@@ -335,8 +339,8 @@ body {
   @apply antialiased;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--transition-duration)
-      var(--transition-timing),
+  transition:
+    background-color var(--transition-duration) var(--transition-timing),
     color var(--transition-duration) var(--transition-timing);
 }
 
@@ -345,9 +349,15 @@ a {
   transition: color var(--transition-duration) var(--transition-timing);
 }
 
-h1 { font-size: var(--font-size-xl); }
-h2 { font-size: var(--font-size-lg); }
-h3 { font-size: var(--font-size-base); }
+h1 {
+  font-size: var(--font-size-xl);
+}
+h2 {
+  font-size: var(--font-size-lg);
+}
+h3 {
+  font-size: var(--font-size-base);
+}
 h4 {
   @apply text-xl font-bold mb-2;
 }
@@ -359,7 +369,8 @@ h6 {
 }
 
 layer components {
-  button, [role="button"] {
+  button,
+  [role="button"] {
     transition-property: transform, opacity, background-color;
     transition-timing-function: var(--transition-timing);
     transition-duration: var(--transition-duration);
@@ -374,7 +385,6 @@ layer components {
     }
   }
 }
-
 
 @layer utilities {
   .space-y-adaptive > * + * {

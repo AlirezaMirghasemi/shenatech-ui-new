@@ -4,12 +4,20 @@ export const customSelectStyles: StylesConfig = {
   control: (base, { isFocused, isDisabled }) => ({
     ...base,
     minHeight: "42px",
-    borderColor: isFocused
+    borderColor: isDisabled
+      ? "var(--colors-border-disabled)"
+      : isFocused
       ? "var(--colors-border-focus)"
       : "var(--colors-border-default)",
-    boxShadow: isFocused ? "0 0 0 2px var(--colors-ring-default)" : "none",
+    boxShadow: isFocused && !isDisabled
+      ? "0 0 0 2px var(--colors-ring-default)"
+      : "none",
     "&:hover": {
-      borderColor: "var(--colors-border-interactive)",
+      borderColor: isDisabled
+        ? "var(--colors-border-disabled)"
+        : isFocused
+        ? "var(--colors-border-focus)"
+        : "var(--colors-border-interactive)",
     },
     backgroundColor: isDisabled
       ? "var(--colors-bg-disabled)"
@@ -17,30 +25,41 @@ export const customSelectStyles: StylesConfig = {
     borderRadius: "0.5rem",
     padding: "0.125rem",
     transition: "all var(--transition-duration) var(--transition-timing)",
-    opacity: isDisabled ? "var(--opacity-disabled)" : 1,
-    cursor: isDisabled ? "not-allowed" : "default",
+    cursor: isDisabled ? "not-allowed" : "pointer",
     fontFamily: "var(--font-family-sans)",
   }),
-  option: (base, { isSelected, isFocused }) => ({
+  option: (base, { isSelected, isFocused, isDisabled }) => ({
     ...base,
-    backgroundColor: isSelected
-      ? "var(--colors-secondary-active)"
-      : isFocused
-      ? "var(--colors-bg-hover)"
-      : "transparent",
-    color: isSelected
-      ? "var(--colors-text-on-secondary)"
-      : "var(--colors-text-default)",
+    backgroundColor: isDisabled
+      ? "transparent"
+      : isSelected
+        ? "var(--colors-primary)"
+        : isFocused
+          ? "var(--colors-bg-hover)"
+          : "transparent",
+    color: isDisabled
+      ? "var(--colors-text-disabled)" // رنگ جدید برای حالت غیرفعال
+      : isSelected
+        ? "var(--colors-text-on-primary)"
+        : "var(--colors-text-default)",
     "&:active": {
-      backgroundColor: "var(--colors-bg-active)",
+      backgroundColor: !isDisabled
+        ? "var(--colors-primary-active)"
+        : "transparent",
     },
     "&:hover": {
-      backgroundColor: isSelected
-        ? "var(--colors-secondary-hover)"
-        : "var(--colors-bg-hover)",
+      backgroundColor: !isDisabled
+        ? (isSelected
+            ? "var(--colors-primary-hover)"
+            : "var(--colors-bg-hover)")
+        : "transparent",
+      color: !isDisabled && isSelected
+        ? "var(--colors-text-on-primary)"
+        : "var(--colors-text-default)",
     },
     transition: "all var(--transition-duration) var(--transition-timing)",
-    cursor: "pointer",
+    cursor: isDisabled ? "not-allowed" : "pointer",
+    opacity: isDisabled ? 1 : 1, // حذف opacity اضافی
   }),
   menu: (base) => ({
     ...base,
@@ -48,10 +67,12 @@ export const customSelectStyles: StylesConfig = {
     borderRadius: "0.5rem",
     boxShadow: "var(--shadow-md)",
     overflow: "hidden",
-    zIndex: 10,
+    zIndex: 20,
+    border: "1px solid var(--colors-border-default)",
   }),
   menuList: (base) => ({
     ...base,
+    backgroundColor: "var(--colors-bg-surface)",
     padding: 0,
     "&::-webkit-scrollbar": {
       width: "8px",
@@ -60,83 +81,108 @@ export const customSelectStyles: StylesConfig = {
       background: "var(--colors-bg-alt)",
     },
     "&::-webkit-scrollbar-thumb": {
-      background: "var(--colors-bg-interactive)",
+      background: "var(--colors-border-interactive)",
       borderRadius: "4px",
       "&:hover": {
         background: "var(--colors-bg-active)",
       },
     },
   }),
-  multiValue: (base) => ({
+  multiValue: (base, { isDisabled }) => ({
     ...base,
-    backgroundColor: "var(--colors-success)",
+    backgroundColor: isDisabled
+      ? "var(--colors-bg-disabled)"
+      : "var(--colors-primary)",
     borderRadius: "0.375rem",
     transition: "all var(--transition-duration) var(--transition-timing)",
     "&:hover": {
-      backgroundColor: "var(--colors-secondary-hover)",
+      backgroundColor: isDisabled
+        ? "var(--colors-bg-disabled)"
+        : "var(--colors-primary-hover)",
     },
   }),
-  multiValueLabel: (base) => ({
+  multiValueLabel: (base, { isDisabled }) => ({
     ...base,
-    color: "var(--colors-text-on-secondary)",
+    color: isDisabled
+      ? "var(--colors-text-disabled)"
+      : "var(--colors-text-on-primary)",
     padding: "2px 6px",
-    fontWeight: 500,
+    fontWeight: isDisabled ? 400 : 500,
   }),
-  multiValueRemove: (base) => ({
+  multiValueRemove: (base, { isDisabled }) => ({
     ...base,
-    color: "var(--colors-text-on-secondary)",
+    color: isDisabled
+      ? "var(--colors-text-disabled)"
+      : "var(--colors-text-on-primary)",
     borderRadius: "0 0.375rem 0.375rem 0",
     "&:hover": {
-      backgroundColor: "var(--colors-secondary-hover)",
-      color: "var(--colors-text-on-primary)",
+      backgroundColor: isDisabled
+        ? "transparent"
+        : "var(--colors-primary-active)",
+      color: isDisabled
+        ? "var(--colors-text-disabled)"
+        : "var(--colors-text-on-primary)",
     },
     transition: "all var(--transition-duration) var(--transition-timing)",
+    cursor: isDisabled ? "not-allowed" : "pointer",
   }),
-  input: (base) => ({
+  input: (base, { isDisabled }) => ({
     ...base,
-    color: "var(--colors-text-default)",
+    color: isDisabled
+      ? "var(--colors-text-disabled)"
+      : "var(--colors-text-default)",
     fontFamily: "var(--font-family-sans)",
+    opacity: isDisabled ? 1 : 1,
   }),
-  placeholder: (base) => ({
+  placeholder: (base, { isDisabled }) => ({
     ...base,
-    color: "var(--colors-text-placeholder)",
+    color: isDisabled
+      ? "var(--colors-text-disabled)"
+      : "var(--colors-text-placeholder)",
     fontSize: "0.875rem",
   }),
   singleValue: (base, { isDisabled }) => ({
     ...base,
     color: isDisabled
-      ? "var(--colors-text-muted)"
+      ? "var(--colors-text-disabled)" // استفاده از رنگ جدید
       : "var(--colors-text-default)",
+    fontWeight: isDisabled ? 500 : "normal", // وزن بیشتر برای خوانایی بهتر
     transition: "opacity var(--transition-duration) var(--transition-timing)",
-    opacity: isDisabled ? "var(--opacity-disabled)" : 1,
+    opacity: 1, // حذف opacity اضافی
   }),
   indicatorSeparator: (base, { isDisabled }) => ({
     ...base,
     backgroundColor: isDisabled
       ? "var(--colors-border-disabled)"
       : "var(--colors-border-default)",
-    opacity: isDisabled ? "var(--opacity-disabled)" : 1,
   }),
   dropdownIndicator: (base, { isFocused, isDisabled }) => ({
     ...base,
     color: isDisabled
-      ? "var(--colors-text-muted)"
+      ? "var(--colors-text-disabled)" // رنگ جدید برای آیکون غیرفعال
       : isFocused
       ? "var(--colors-text-default)"
       : "var(--colors-text-muted)",
     "&:hover": {
-      color: "var(--colors-text-default)",
+      color: isDisabled
+        ? "var(--colors-text-disabled)"
+        : "var(--colors-text-default)",
     },
     transition: "all var(--transition-duration) var(--transition-timing)",
     padding: "4px 8px",
   }),
-  clearIndicator: (base) => ({
+  clearIndicator: (base, isDisabled ) => ({
     ...base,
-    color: "var(--colors-text-muted)",
+    color: isDisabled
+      ? "var(--colors-text-disabled)"
+      : "var(--colors-text-muted)",
     "&:hover": {
-      color: "var(--colors-secondary-hover)",
+      color: isDisabled
+        ? "var(--colors-text-disabled)"
+        : "var(--colors-danger)",
     },
     transition: "all var(--transition-duration) var(--transition-timing)",
+    cursor: isDisabled ? "not-allowed" : "pointer",
   }),
   valueContainer: (base) => ({
     ...base,
