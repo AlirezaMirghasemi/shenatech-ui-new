@@ -105,3 +105,10 @@ export interface IDynamicSelectInputProps
   isSearchable?: boolean;
   loading?: boolean;
 }
+export interface IDynamicMultiTextInputProps extends CommonInputProps {
+  type: InputType.MULTI_TEXT_INPUT;
+  loading?: boolean;
+  value?: string[];
+  onChange: (value: string[]) => void;
+  onBlur: () => void;
+}

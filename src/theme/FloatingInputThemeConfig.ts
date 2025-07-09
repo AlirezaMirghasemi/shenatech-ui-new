@@ -1,6 +1,6 @@
 import { createTheme } from "flowbite-react";
 
-export const FloatingLabelThemeConfig = createTheme({
+export const FloatingInputThemeConfig = createTheme({
   input: {
     default: {
       filled: {

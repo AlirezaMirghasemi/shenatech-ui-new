@@ -1,6 +1,6 @@
 import { DataStatus } from "@/constants/data/DataStatus";
 import DynamicForm from "../dynamics/DynamicForm";
-import DynamicInputField from "../dynamics/DynamicInputField";
+import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { assignPermissionsToRoleInitial } from "@/validations/admin/role/assignPermissionsToRoleInitial";
 import { assignPermissionsToRoleSchema } from "@/validations/admin/role/assignPermissionsToRoleSchema";

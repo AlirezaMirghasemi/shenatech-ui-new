@@ -1,5 +1,5 @@
 import DynamicForm from "@/components/admin/dynamics/DynamicForm";
-import DynamicInputField from "@/components/admin/dynamics/DynamicInputField";
+import DynamicInputField from "@/components/admin/dynamics/DynamicFormInputs/DynamicInputField";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { InputType } from "@/constants/data/InputType";
 import { usePermission } from "@/hooks/usePermission";

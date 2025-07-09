@@ -1,7 +1,7 @@
 "use client";
 //import { useRouter } from "next/navigation";
 import DynamicForm from "../dynamics/DynamicForm";
-import DynamicInputField from "../dynamics/DynamicInputField";
+import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { FormikHelpers } from "formik";
 import { DataStatus } from "@/constants/data/DataStatus";

@@ -11,5 +11,5 @@ export enum InputType {
   FILE = "file",
   IMAGE = "image",
   HIDDEN = "hidden",
-  MULTI_INPUT = "multiInput",
+  MULTI_TEXT_INPUT = "multiTextInput",
 }

@@ -2,7 +2,7 @@ import { editUserStatusInitial } from "@/validations/admin/user/editUserStatusIn
 import DynamicForm from "../dynamics/DynamicForm";
 import { editUserStatusSchema } from "@/validations/admin/user/editUserStatusSchema";
 import { InputType } from "@/constants/data/InputType";
-import DynamicInputField from "../dynamics/DynamicInputField";
+import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
 import { UserStatus } from "@/constants/data/UserStatus";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { EditUserStatus, User } from "@/types/User";

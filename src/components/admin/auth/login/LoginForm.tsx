@@ -1,6 +1,6 @@
 "use client";
 import DynamicForm from "@/components/admin/dynamics/DynamicForm";
-import DynamicInputField from "@/components/admin/dynamics/DynamicInputField";
+import DynamicInputField from "@/components/admin/dynamics/DynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { LoginCredentials } from "@/types/Auth";
 import Image from "next/image";

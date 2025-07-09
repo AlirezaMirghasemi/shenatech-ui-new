@@ -3,7 +3,7 @@
 import DynamicForm from "../dynamics/DynamicForm";
 import { createRoleInitial } from "@/validations/admin/role/createRoleInitial";
 import { createRoleSchema } from "@/validations/admin/role/createRoleSchema";
-import DynamicInputField from "../dynamics/DynamicInputField";
+import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { FormikHelpers } from "formik";
 import { CreateRole } from "@/types/Role";

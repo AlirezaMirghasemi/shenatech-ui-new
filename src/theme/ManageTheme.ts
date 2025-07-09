@@ -16,7 +16,7 @@ import { BadgeThemeConfig } from "./BadgeThemeConfig";
 import { PopoverThemeConfig } from "./PopoverThemeConfig";
 import { TooltipThemeConfig } from "./TooltipThemeConfig";
 import { AvatarThemeConfig } from "./AvatarThemeConfig";
-import { FloatingLabelThemeConfig } from "./FloatingLabelThemeConfig";
+import { FloatingInputThemeConfig } from "./FloatingInputThemeConfig";
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -36,5 +36,5 @@ export const ManageTheme = createTheme({
   popover: { ...PopoverThemeConfig },
   tooltip: { ...TooltipThemeConfig },
   avatar: { ...AvatarThemeConfig },
-  floatingLabel: { ...FloatingLabelThemeConfig },
+  floatingLabel: { ...FloatingInputThemeConfig },
 });

@@ -1,6 +1,6 @@
 "use client";
 import DynamicForm from "../dynamics/DynamicForm";
-import DynamicInputField from "../dynamics/DynamicInputField";
+import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { FormikHelpers } from "formik";
 import { CreatePermission } from "@/types/Permission";
