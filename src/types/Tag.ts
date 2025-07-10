@@ -4,6 +4,6 @@ export interface Tag {
   created_at: string;
   updated_at: string;
 }
-export interface CreateTag {
-  title: string;
+export interface CreateTags {
+  titles: string[];
 }

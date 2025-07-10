@@ -8,6 +8,7 @@ import DynamicTable from "../dynamics/DynamicTable";
 //@ts-ignore
 import PersianDate from "persian-date";
 import { useTag } from "@/hooks/useTag";
+import CreateTagModal from "./CreateTagModal";
 export default function TagsViewTable({
   tag,
   setTag,
@@ -38,10 +39,10 @@ export default function TagsViewTable({
   function onOpenCreateTagModal() {
     setCreateTagModal(true);
   }
-  //   function onCloseCreateTagModal() {
-  //     setCreateTagModal(false);
-  //     setTag(null);
-  //   }
+  function onCloseCreateTagModal() {
+    setCreateTagModal(false);
+    setTag(null);
+  }
   function onOpenDeleteTagModal(row: Tag) {
     setTag(row);
     setDeleteTagModal(true);
@@ -144,10 +145,10 @@ export default function TagsViewTable({
   return (
     <>
       <DynamicTable dynamicTable={InitialTagsViewTable} setPage={setTagsPage} />
-      {/* <CreateTagModal
+      <CreateTagModal
         createTagModal={createTagModal}
         onCloseCreateTagModal={onCloseCreateTagModal}
-      /> */}
+      />
       {/* {tag && (
         <>
           <EditTagModal

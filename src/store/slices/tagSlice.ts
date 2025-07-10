@@ -15,7 +15,6 @@ const initialState: TagState = {
   loading: DataStatus.IDLE,
   error: null,
   uniqueLoading: DataStatus.IDLE,
-  isUnique: false,
 };
 const TagSlice = createSlice({
   name: "Tags",
@@ -55,14 +54,9 @@ const TagSlice = createSlice({
       .addCase(createTagsAsync.pending, (state) => {
         state.loading = DataStatus.PENDING;
       })
-      .addCase(createTagsAsync.fulfilled, (state, action) => {
+      .addCase(createTagsAsync.fulfilled, (state) => {
         state.loading = DataStatus.SUCCEEDED;
-        if (Array.isArray(action.payload)) {
-          state.data = [...state.data, ...action.payload];
-          state.error = null;
-        } else {
-          state.error = { message: "Invalid response format" };
-        }
+        state.error = null;
       })
       .addCase(createTagsAsync.rejected, (state, action) => {
         state.loading = DataStatus.FAILED;
@@ -74,15 +68,11 @@ const TagSlice = createSlice({
       })
       .addCase(isTagUniqueAsync.pending, (state) => {
         state.uniqueLoading = DataStatus.PENDING;
+        state.error = null;
       })
-      .addCase(isTagUniqueAsync.fulfilled, (state, action) => {
+      .addCase(isTagUniqueAsync.fulfilled, (state) => {
         state.uniqueLoading = DataStatus.SUCCEEDED;
-        if (typeof action.payload === "boolean") {
-          state.isUnique = action.payload;
-          state.error = null;
-        } else {
-          state.error = { message: "Invalid response format" };
-        }
+        state.error = null;
       })
       .addCase(isTagUniqueAsync.rejected, (state, action) => {
         state.uniqueLoading = DataStatus.FAILED;
@@ -98,4 +88,3 @@ const TagSlice = createSlice({
 });
 
 export default TagSlice.reducer;
-// Todo: add isUnique to another slice

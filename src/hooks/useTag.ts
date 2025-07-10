@@ -4,7 +4,7 @@ import {
   getTagsAsync,
   isTagUniqueAsync,
 } from "@/store/thunks/tagThunk";
-import { CreateTag } from "@/types/Tag";
+import { CreateTags } from "@/types/Tag";
 import { useCallback } from "react";
 
 export const useTag = () => {
@@ -28,9 +28,9 @@ export const useTag = () => {
     [dispatch]
   );
   const createTags = useCallback(
-    (tags: CreateTag[]) => {
+    (tags: CreateTags) => {
       try {
-        return dispatch(createTagsAsync({ tags })).unwrap();
+        return dispatch(createTagsAsync(tags)).unwrap();
       } catch (error) {
         console.error("Error creating tags:", error);
         return [];
@@ -39,16 +39,18 @@ export const useTag = () => {
     [dispatch]
   );
   const isTagUnique = useCallback(
-    (tagName: string) => {
+    async ({ title }: { title: string }): Promise<boolean> => {
       try {
-        return dispatch(isTagUniqueAsync(tagName)).unwrap();
+        const result = await dispatch(isTagUniqueAsync(title)).unwrap();
+        return result.isUnique as boolean;
       } catch (error) {
-        console.error("Error checking tag uniqueness:", error);
+        console.error("Error checking tag title uniqueness:", error);
         return false;
       }
     },
     [dispatch]
   );
+
   return {
     tags,
     meta,

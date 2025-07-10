@@ -13,6 +13,7 @@ import {
   TextInput,
 } from "flowbite-react";
 import { IconType } from "react-icons/lib";
+import { Schema } from "yup";
 
 type CommonInputProps = {
   id: string;
@@ -25,6 +26,7 @@ type CommonInputProps = {
   placeholder?: string;
   helperText?: string;
   color?: string | FloatingLabelColor;
+  validationSchema?: Schema;
 };
 type InputEventHandlers = {
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -111,4 +113,5 @@ export interface IDynamicMultiTextInputProps extends CommonInputProps {
   value?: string[];
   onChange: (value: string[]) => void;
   onBlur: () => void;
+  validateItem?: (value: string) => Promise<string | undefined>;
 }

@@ -4,7 +4,7 @@ import ValidatingError from "@/components/common/ValidatingError";
 import { InputType } from "@/constants/data/InputType";
 import { IDynamicInputField } from "@/interfaces/IDynamicInputField";
 import { Spinner } from "flowbite-react";
-import { ErrorMessage, useField } from "formik";
+import { ErrorMessage, useField, useFormikContext } from "formik";
 import { FaEnvelope } from "react-icons/fa6";
 import { useMemo } from "react";
 import DynamicLabel from "./DynamicLabel";
@@ -34,14 +34,37 @@ export default function DynamicInputField({
   labelHidden = false,
   isSearchable = false,
   autoComplete,
+  validationSchema,
 }: IDynamicInputField) {
   const [field, meta, helpers] = useField(id);
+    const formik = useFormikContext();
+ const validateItem = async (item: string) => {
+    try {
+      // استفاده از schema ارسال شده یا schema اصلی فرم
+      const schema = validationSchema || formik.validationSchema;
+
+      if (!schema) return undefined;
+
+      // دسترسی به schema اعتبارسنجی آیتم
+      const itemSchema = schema.fields[name]?.innerType;
+
+      if (itemSchema) {
+        await itemSchema.validate(item);
+      }
+
+      return undefined;
+    } catch (error) {
+      if (error instanceof Error) {
+        return error.message;
+      }
+      return "خطای اعتبارسنجی";
+    }
+  };
   const color = useMemo(() => {
     if (meta.error && meta.touched) return "error";
     if (!meta.error && meta.touched) return "success";
     return "default";
   }, [meta]);
-
   return (
     <>
       <div className="mb-4">
@@ -168,14 +191,15 @@ export default function DynamicInputField({
             disabled={disabled || loading}
             className={className}
             value={field.value || []}
-            onChange={(options) => helpers.setValue(options)}
+            onChange={async (options) => await helpers.setValue(options)}
             onBlur={() => field.onBlur}
             type={InputType.MULTI_TEXT_INPUT}
+            loading={loading}
+            validateItem={validateItem}
           />
         )}
         <ErrorMessage name={id}>
           {(message) => {
-            console.log(message);
             return <ValidatingError error={message} />;
           }}
         </ErrorMessage>
