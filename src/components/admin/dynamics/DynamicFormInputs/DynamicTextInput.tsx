@@ -1,4 +1,4 @@
-import { IDynamicTextInputProps } from "@/interfaces/IDynamicInputField";
+import { IDynamicFloatingLabelProps } from "@/interfaces/IDynamicInputField";
 import { FloatingLabel } from "flowbite-react";
 
 export default function DynamicTextInput({
@@ -16,7 +16,8 @@ export default function DynamicTextInput({
   autoComplete = "off",
   label,
   loading,
-}: IDynamicTextInputProps) {
+}: IDynamicFloatingLabelProps) {
+    console.log("label", label,"placeholder", placeholder,"type", type);
   return (
     <>
       <FloatingLabel

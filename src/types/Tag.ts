@@ -7,3 +7,6 @@ export interface Tag {
 export interface CreateTags {
   titles: string[];
 }
+export interface DeleteTags {
+  ids: number[];
+}

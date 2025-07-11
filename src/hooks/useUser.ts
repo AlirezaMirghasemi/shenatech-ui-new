@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   checkFieldIsUniqueAsync,
   createUserAsync,
+  deleteUserAsync,
   editUserAsync,
   editUserStatusAsync,
   fetchPermissionUsersAsync,
@@ -21,14 +22,27 @@ export const useUser = () => {
     loading,
     error,
     uniqueLoading,
-    unassignedRoleUsers
+    unassignedRoleUsers,
   } = useAppSelector((state) => state.users);
   const createUser = useCallback(
     async (user: CreateUser, profileImage?: File) => {
       try {
         return dispatch(createUserAsync({ user, profileImage })).unwrap();
       } catch (error) {
-        console.error("Error creating permission:", error);
+        console.error("Error creating user:", error);
+        throw error;
+      }
+    },
+    [dispatch]
+  );
+  const deleteUser = useCallback(
+    async (userId: number, removeProfilePicture: boolean) => {
+      try {
+        return dispatch(
+          deleteUserAsync({ userId, removeProfilePicture })
+        ).unwrap();
+      } catch (error) {
+        console.error("Error deleting user:", error);
         throw error;
       }
     },
@@ -124,12 +138,13 @@ export const useUser = () => {
     actions: {
       createUser,
       editUser,
+      deleteUser,
       fetchRoleUsers,
       fetchPermissionUsers,
       editUserStatus,
       fetchUsers,
       checkFieldIsUnique,
-      fetchUnAssignedRoleUsers
+      fetchUnAssignedRoleUsers,
     },
   };
 };

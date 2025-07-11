@@ -20,6 +20,7 @@ import UserProfileModal from "./UserProfileModal";
 import CreateUserModal from "./CreateUserModal";
 import ChangeUserStatusPopover from "./ChangeUserStatusPopover";
 import EditUserModal from "./EditUserModal";
+import DeleteUserModal from "./DeleteUserModal";
 export default function UsersViewTable({
   user,
   setUser,
@@ -36,13 +37,14 @@ export default function UsersViewTable({
     meta,
     actions: { fetchUsers },
   } = useUser();
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(
-    new Set<number>()
-  );
+  //   const [selectedIds, setSelectedIds] = useState<Set<number>>(
+  //     new Set<number>()
+  //   );
   const [usersPage, setUsersPage] = useState("1");
   const [userProfileModal, setUserProfileModal] = useState(false);
   const [createUserModal, setCreateUserModal] = useState(false);
   const [editUserModal, setEditUserModal] = useState(false);
+  const [deleteUserModal, setDeleteUserModal] = useState(false);
   useEffect(() => {
     const fetchUsersData = async () => {
       await fetchUsers(usersPage, "5");
@@ -76,11 +78,12 @@ export default function UsersViewTable({
   };
   const onOpenDeleteUserModal = (row: User) => {
     setUser(row);
-    //setDeleteUserModal(true);
+    setDeleteUserModal(true);
   };
-  //   const onCloseDeleteUserModal = () => {
-  //     setUser(null);
-  //   };
+  const onCloseDeleteUserModal = () => {
+    setDeleteUserModal(false);
+    setUser(null);
+  };
   const InitialUsersViewTable: IDynamicTable<User> = {
     header: {
       title: "کاربران",
@@ -158,7 +161,6 @@ export default function UsersViewTable({
         icon: <FaEye />,
         color: "info",
         className: "!rounded-l-none",
-
       },
       {
         name: "ChangeUserStatus",
@@ -167,7 +169,13 @@ export default function UsersViewTable({
         color: "primary",
         className: "!rounded-none",
         actionRenderer(row: User) {
-          return <ChangeUserStatusPopover user={row} buttonProps={this} disabled={selectedIds.size > 0} />;
+          return (
+            <ChangeUserStatusPopover
+              user={row}
+              buttonProps={this}
+              //disabled={selectedIds.size > 0}
+            />
+          );
         },
       },
       {
@@ -207,10 +215,10 @@ export default function UsersViewTable({
     pagination: meta,
     actionCellClassName: "text-center",
     className: (row) => (row === user ? "!bg-bg-active " : ""),
-    checkboxTable: {
-      selectedIds,
-      setSelectedIds,
-    },
+    // checkboxTable: {
+    //   selectedIds,
+    //   setSelectedIds,
+    // },
   };
   return (
     <>
@@ -232,6 +240,11 @@ export default function UsersViewTable({
           <EditUserModal
             editUserModal={editUserModal}
             onCloseEditUserModal={onCloseEditUserModal}
+            user={user}
+          />
+          <DeleteUserModal
+            deleteUserModal={deleteUserModal}
+            onCloseDeleteUserModal={onCloseDeleteUserModal}
             user={user}
           />
         </>

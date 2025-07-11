@@ -15,6 +15,8 @@ import DynamicFileInput from "./DynamicFileInput";
 import DynamicSelectInput from "./DynamicSelectInput";
 import DynamicImageInputFile from "./DynamicImageInputFile";
 import DynamicMultiTextInput from "./DynamicMultiTextInput";
+// import DynamicRadioInput from "./DynamicToggleSwitch";
+import DynamicToggleSwitch from "./DynamicToggleSwitch";
 export default function DynamicInputField({
   id,
   name,
@@ -27,18 +29,21 @@ export default function DynamicInputField({
   multiple = false,
   loading = false,
   readOnly = false,
-  textInputProps = {},
+  //textInputProps = {},
   textareaProps = {},
   fileInputProps = {},
+  toggleSwitchProps = {},
   hiddenInputProps = {},
+  floatingLabelProps = {},
+  checked,
   labelHidden = false,
   isSearchable = false,
   autoComplete,
   validationSchema,
 }: IDynamicInputField) {
   const [field, meta, helpers] = useField(id);
-    const formik = useFormikContext();
- const validateItem = async (item: string) => {
+  const formik = useFormikContext();
+  const validateItem = async (item: string) => {
     try {
       // استفاده از schema ارسال شده یا schema اصلی فرم
       const schema = validationSchema || formik.validationSchema;
@@ -72,7 +77,8 @@ export default function DynamicInputField({
           type === InputType.TEXT ||
           type === InputType.NUMBER ||
           type === InputType.EMAIL ||
-          type === InputType.PASSWORD
+          type === InputType.PASSWORD ||
+          type === InputType.TOGGLE_SWITCH
         ) &&
           labelHidden === false && (
             <DynamicLabel htmlFor={id} color={color} label={label ?? ""} />
@@ -83,7 +89,6 @@ export default function DynamicInputField({
             {...field}
             {...hiddenInputProps}
             id={id}
-            type={type}
             name={name}
             readOnly={readOnly}
           />
@@ -96,12 +101,12 @@ export default function DynamicInputField({
           type === InputType.PASSWORD) && (
           <DynamicTextInput
             {...field}
-            {...textInputProps}
-            //value={defaultValue ?? field.value}
+            {...floatingLabelProps}
             id={id}
             name={name}
             type={type}
             placeholder={placeholder}
+            label={label}
             disabled={disabled}
             color={color}
             className={`w-full ${className}`}
@@ -110,7 +115,6 @@ export default function DynamicInputField({
             readOnly={readOnly}
             loading={loading}
             autoComplete={autoComplete}
-            label={label ?? ""}
           />
         )}
 
@@ -119,7 +123,6 @@ export default function DynamicInputField({
           <DynamicTextarea
             {...field}
             {...textareaProps}
-            type={type}
             value={field.value}
             id={id}
             name={name}
@@ -136,7 +139,6 @@ export default function DynamicInputField({
         {type === InputType.FILE && (
           <DynamicFileInput
             {...fileInputProps}
-            type={type}
             id={id}
             name={name}
             disabled={disabled}
@@ -152,7 +154,6 @@ export default function DynamicInputField({
         {type === InputType.IMAGE && (
           <DynamicImageInputFile
             {...fileInputProps}
-            type={InputType.IMAGE}
             id={id}
             name={name}
             placeholder={placeholder}
@@ -170,7 +171,6 @@ export default function DynamicInputField({
         {type === InputType.SELECT && (
           <DynamicSelectInput
             {...field}
-            type={type}
             id={id}
             name={name}
             data={data ?? []}
@@ -193,11 +193,24 @@ export default function DynamicInputField({
             value={field.value || []}
             onChange={async (options) => await helpers.setValue(options)}
             onBlur={() => field.onBlur}
-            type={InputType.MULTI_TEXT_INPUT}
             loading={loading}
             validateItem={validateItem}
           />
         )}
+        {type === InputType.TOGGLE_SWITCH && (
+          <DynamicToggleSwitch
+            {...field}
+            {...toggleSwitchProps}
+            id={id}
+            name={name}
+            disabled={disabled}
+            className={className}
+            label={label}
+            checked={checked}
+            color={color}
+          />
+        )}
+
         <ErrorMessage name={id}>
           {(message) => {
             return <ValidatingError error={message} />;

@@ -12,4 +12,5 @@ export enum InputType {
   IMAGE = "image",
   HIDDEN = "hidden",
   MULTI_TEXT_INPUT = "multiTextInput",
+  TOGGLE_SWITCH = "toggleSwitch",
 }

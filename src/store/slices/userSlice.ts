@@ -6,6 +6,7 @@ import { UserState } from "@/constants/state/User";
 import {
   checkFieldIsUniqueAsync,
   createUserAsync,
+  deleteUserAsync,
   editUserAsync,
   editUserStatusAsync,
   fetchPermissionUsersAsync,
@@ -43,6 +44,23 @@ const UserSlice = createSlice({
           };
         } else {
           state.error = null;
+        }
+      })
+      .addCase(deleteUserAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+      })
+      .addCase(deleteUserAsync.fulfilled, (state) => {
+        state.loading = DataStatus.SUCCEEDED;
+        state.error = null;
+      })
+      .addCase(deleteUserAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        if (action.payload) {
+          state.error = {
+            message: (action.payload as { message: string }).message,
+          };
+        } else {
+          state.error = { message: "خطای حدف کاربر" };
         }
       })
       .addCase(fetchRoleUsersAsync.pending, (state) => {

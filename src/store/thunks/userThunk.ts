@@ -212,7 +212,32 @@ export const editUserAsync = createAsyncThunk(
     }
   }
 );
-
+export const deleteUserAsync = createAsyncThunk(
+  "user/deleteUser",
+  async (
+    {
+      userId,
+      removeProfilePicture,
+    }: { userId: number; removeProfilePicture: boolean },
+    { rejectWithValue }
+  ) => {
+    try {
+        console.log("removeProfilePicture", removeProfilePicture);
+      const response = await api.post(`/users/delete/${userId}`, {
+        removeProfilePicture: removeProfilePicture,
+      });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<ApiError>;
+      if (axiosError.response?.data) {
+        return rejectWithValue(axiosError.response.data);
+      }
+      return rejectWithValue({
+        message: axiosError.message || "خطای حذف کاربر",
+      });
+    }
+  }
+);
 export const fetchUnAssignedRoleUsersAsync = createAsyncThunk(
   "user/fetchUnAssignedRoleUsers",
   async ({ roleId }: { roleId: number }, { rejectWithValue }) => {
