@@ -56,3 +56,9 @@ export interface EditUser {
   status: UserStatus;
   profile_image: File | null;
 }
+
+export interface DeleteUser {
+  userId: number;
+  removeProfilePicture: boolean;
+  removeRoles: boolean;
+}

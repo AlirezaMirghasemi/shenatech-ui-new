@@ -30,16 +30,17 @@ export default function DynamicInputField({
   loading = false,
   readOnly = false,
   //textInputProps = {},
-  textareaProps = {},
-  fileInputProps = {},
-  toggleSwitchProps = {},
-  hiddenInputProps = {},
-  floatingLabelProps = {},
-  checked,
+  textareaProps,
+  fileInputProps,
+  toggleSwitchProps,
+  hiddenInputProps,
+  floatingLabelProps,
   labelHidden = false,
   isSearchable = false,
   autoComplete,
   validationSchema,
+  size,
+//   onChange,
 }: IDynamicInputField) {
   const [field, meta, helpers] = useField(id);
   const formik = useFormikContext();
@@ -115,6 +116,7 @@ export default function DynamicInputField({
             readOnly={readOnly}
             loading={loading}
             autoComplete={autoComplete}
+            onChange={field.onChange}
           />
         )}
 
@@ -132,6 +134,7 @@ export default function DynamicInputField({
             className={`w-full ${className}`}
             color={color}
             readOnly={readOnly}
+            onChange={field.onChange}
           />
         )}
 
@@ -206,8 +209,10 @@ export default function DynamicInputField({
             disabled={disabled}
             className={className}
             label={label}
-            checked={checked}
+            checked={!!field.value}
             color={color}
+            size={size as string}
+            onChange={field.onChange}
           />
         )}
 

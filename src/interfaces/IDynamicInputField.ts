@@ -1,19 +1,14 @@
 // interfaces/IDynamicInputField.ts
 import { InputType } from "@/constants/data/InputType";
-import {
-  ChangeEventHandler,
-  ComponentProps,
-  FocusEventHandler,
-  JSX,
-} from "react";
+import { JSX } from "react";
 import {
   FileInputProps,
-  FloatingLabel,
   FloatingLabelColor,
-  Radio,
-  Textarea,
-  TextInput,
-  ToggleSwitch,
+  FloatingLabelProps,
+  RadioProps,
+  TextareaProps,
+  TextInputProps,
+  ToggleSwitchProps,
 } from "flowbite-react";
 import { IconType } from "react-icons/lib";
 import { Schema } from "yup";
@@ -30,11 +25,16 @@ type CommonInputProps = {
   helperText?: string;
   color?: string | FloatingLabelColor;
   validationSchema?: Schema;
+  size?: string | number | undefined;
+  //   onChange?: (
+  //     e:
+  //       | React.ChangeEvent<
+  //           HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  //         >
+  //       | string[]
+  //   ) => void;
 };
-type InputEventHandlers = {
-  onChange?: ChangeEventHandler<HTMLInputElement>;
-  onBlur?: FocusEventHandler<HTMLInputElement>;
-};
+
 export interface IDynamicInputField extends CommonInputProps {
   data?: { value: number | string; label: string }[];
   multiple?: boolean;
@@ -43,34 +43,15 @@ export interface IDynamicInputField extends CommonInputProps {
   autoComplete?: string;
   checked?: boolean;
   type: InputType;
-  textInputProps?: Omit<
-    ComponentProps<typeof TextInput>,
-    "id" | "name" | "value" | "onChange" | "onBlur"
-  >;
-  textareaProps?: Omit<
-    ComponentProps<typeof Textarea>,
-    "id" | "name" | "value" | "onChange" | "onBlur"
-  >;
-  radioInputProps?: Omit<
-    ComponentProps<typeof Radio>,
-    "id" | "name" | "value" | "onChange" | "onBlur" | "defaultChecked"
-  >;
-
-  toggleSwitchProps?: Omit<
-    ComponentProps<typeof ToggleSwitch>,
-    "id" | "name" | "value" | "onChange" | "onBlur" | "checked"
-  >;
-  floatingLabelProps?: Omit<
-    ComponentProps<typeof FloatingLabel>,
-    "id" | "name" | "value" | "onChange" | "onBlur" | "label" | "variant"
-  >;
-
+  textInputProps?: TextInputProps;
+  textareaProps?: TextareaProps;
+  radioInputProps?: RadioProps;
+  toggleSwitchProps?: ToggleSwitchProps;
+  floatingLabelProps?: FloatingLabelProps;
   fileInputProps?: FileInputProps;
   hiddenInputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
-export interface IDynamicFloatingLabelProps
-  extends CommonInputProps,
-    InputEventHandlers {
+export interface IDynamicFloatingLabelProps extends CommonInputProps {
   type:
     | InputType.TEXT
     | InputType.EMAIL
@@ -81,6 +62,7 @@ export interface IDynamicFloatingLabelProps
   loading?: boolean;
   value?: string | number;
   autoComplete?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 export interface IDynamicTextareaProps extends CommonInputProps {
   value?: string;
@@ -88,55 +70,52 @@ export interface IDynamicTextareaProps extends CommonInputProps {
   cols?: number;
   loading?: boolean;
   placeholder?: string;
-  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
-  onBlur?: FocusEventHandler<HTMLTextAreaElement>;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
-export interface IDynamicFileInputProps
-  extends CommonInputProps,
-    InputEventHandlers {
+export interface IDynamicFileInputProps extends CommonInputProps {
   multiple?: boolean;
   value?: File | { path: string } | null;
   loading?: boolean;
   accept?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-export interface IDynamicImageInputProps
-  extends CommonInputProps,
-    InputEventHandlers {
+export interface IDynamicImageInputProps extends CommonInputProps {
   multiple?: boolean;
   value?: File | { path: string } | null;
   loading?: boolean;
   accept?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface IDynamicHiddenInputProps extends CommonInputProps {
   value?: string;
 }
-export interface IDynamicSelectInputProps
-  extends CommonInputProps,
-    InputEventHandlers {
+export interface IDynamicSelectInputProps extends CommonInputProps {
   data: { value: string | number; label: string }[];
   defaultValue?: string | number | Array<string | number>;
   multiple?: boolean;
   isSearchable?: boolean;
   loading?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+
 }
 export interface IDynamicMultiTextInputProps extends CommonInputProps {
   loading?: boolean;
   value?: string[];
-  onChange: (value: string[]) => void;
+  //onChange: (value: string[]) => void;
   onBlur: () => void;
   validateItem?: (value: string) => Promise<string | undefined>;
+    onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+
 }
-export interface IDynamicRadioInputProps
-  extends CommonInputProps,
-    InputEventHandlers {
+export interface IDynamicRadioInputProps extends CommonInputProps {
   value?: string | number;
   defaultChecked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-export interface IDynamicToggleSwitchProps
-  extends CommonInputProps,
-    InputEventHandlers {
+export interface IDynamicToggleSwitchProps extends CommonInputProps {
   checked?: boolean;
   size?: string;
   ref?: React.Ref<HTMLInputElement> | undefined;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

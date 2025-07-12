@@ -19,4 +19,12 @@ export default interface IDynamicForm<T extends object> {
   submitButtonColor?: string;
   submitButtonSize?: string;
   buttonClassName?: string;
+  cancelButton?: boolean;
+  cancelButtonOnClick?: () => void;
+  cancelButtonClassName?: string;
+  cancelButtonColor?: string;
+  cancelButtonSize?: string;
+  cancelButtonTitle?: string;
+  disabledCancelButton?: boolean;
 }
+//TODO: add interface for buttons

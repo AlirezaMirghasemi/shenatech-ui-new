@@ -11,7 +11,7 @@ import {
   fetchUnAssignedRoleUsersAsync,
   getUsersAsync,
 } from "@/store/thunks/userThunk";
-import { CreateUser, EditUser } from "@/types/User";
+import { CreateUser, DeleteUser, EditUser } from "@/types/User";
 import { useCallback } from "react";
 
 export const useUser = () => {
@@ -36,11 +36,9 @@ export const useUser = () => {
     [dispatch]
   );
   const deleteUser = useCallback(
-    async (userId: number, removeProfilePicture: boolean) => {
+    async ({deleteUserData}:{deleteUserData: DeleteUser}) => {
       try {
-        return dispatch(
-          deleteUserAsync({ userId, removeProfilePicture })
-        ).unwrap();
+        return dispatch(deleteUserAsync( {deleteUserData} )).unwrap();
       } catch (error) {
         console.error("Error deleting user:", error);
         throw error;

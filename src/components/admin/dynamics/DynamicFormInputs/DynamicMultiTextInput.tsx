@@ -14,7 +14,7 @@ export default function DynamicMultiTextInput({
   className,
   value = [],
   loading,
-  onChange,
+  onChange = () => {},
   onBlur,
   validateItem,
 }: IDynamicMultiTextInputProps) {

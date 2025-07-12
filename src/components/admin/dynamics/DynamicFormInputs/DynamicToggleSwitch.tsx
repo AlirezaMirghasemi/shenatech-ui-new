@@ -1,6 +1,5 @@
 import { IDynamicToggleSwitchProps } from "@/interfaces/IDynamicInputField";
 import { ToggleSwitch } from "flowbite-react";
-import { useState } from "react";
 
 export default function DynamicToggleSwitch({
   id,
@@ -11,9 +10,22 @@ export default function DynamicToggleSwitch({
   label,
   size = "md",
   color,
-  ref
+  ref,
+  onChange = () => {},
 }: IDynamicToggleSwitchProps) {
-  const [value, setValue] = useState(checked);
+  const handleChange = (isChecked: boolean) => {
+    // ایجاد یک رویداد شبیه‌سازی شده برای Formik
+    const fakeEvent = {
+      target: {
+        name: name || id,
+        value: isChecked,
+        type: "checkbox",
+        checked: isChecked,
+      },
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+    onChange?.(fakeEvent);
+  };
 
   return (
     <>
@@ -22,8 +34,8 @@ export default function DynamicToggleSwitch({
         name={name}
         disabled={disabled}
         className={className}
-        checked={value}
-        onChange={setValue}
+        checked={checked}
+        onChange={handleChange}
         label={label}
         sizing={size}
         color={color}

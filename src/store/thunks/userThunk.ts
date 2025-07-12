@@ -1,7 +1,7 @@
 import { UserStatus } from "@/constants/data/UserStatus";
 import { api } from "@/lib/axiosInstance";
 import { ApiError } from "@/types/Api";
-import { CreateUser, EditUser } from "@/types/User";
+import { CreateUser, DeleteUser, EditUser } from "@/types/User";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 export const getUsersAsync = createAsyncThunk(
@@ -215,17 +215,19 @@ export const editUserAsync = createAsyncThunk(
 export const deleteUserAsync = createAsyncThunk(
   "user/deleteUser",
   async (
-    {
-      userId,
-      removeProfilePicture,
-    }: { userId: number; removeProfilePicture: boolean },
+    { deleteUserData }: { deleteUserData: DeleteUser },
     { rejectWithValue }
   ) => {
     try {
-        console.log("removeProfilePicture", removeProfilePicture);
-      const response = await api.post(`/users/delete/${userId}`, {
-        removeProfilePicture: removeProfilePicture,
-      });
+      const response = await api.post(
+        `/users/delete/${deleteUserData.userId}`,
+        {
+          options: {
+            removeProfilePicture: deleteUserData.removeProfilePicture,
+            removeRoles: deleteUserData.removeRoles,
+          },
+        }
+      );
       return response.data.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
