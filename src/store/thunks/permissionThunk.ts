@@ -70,12 +70,13 @@ export const deletePermissionsAsync = createAsyncThunk(
 export const fetchPermissionsAsync = createAsyncThunk(
   "permission/fetchPermissions",
   async (
-    { perPage = "10", page = "1" }: { perPage?: string; page?: string },
+    { search="",perPage = "10", page = "1" }: { search?: string;perPage?: string; page?: string },
     { rejectWithValue }
   ) => {
     try {
       const response = await api.get("/permissions", {
         params: {
+          search: search,
           per_page: perPage,
           page: page,
         },

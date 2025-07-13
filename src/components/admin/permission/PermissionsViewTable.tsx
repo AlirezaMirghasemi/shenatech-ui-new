@@ -2,7 +2,7 @@
 import DynamicTable from "@/components/admin/dynamics/DynamicTable";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -39,14 +39,26 @@ export default function PermissionsViewTable({
   );
 
   const [permissionsPage, setPermissionsPage] = useState("1");
+  const [permissionsSearchedPage, setPermissionsSearchedPage] = useState("1");
+  const [searchValue, setSearchValue] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const fetchPermissionsData = async () => {
-      await fetchPermissions(permissionsPage, "5");
-      setPermissionRolesPage("1");
-      setPermissionUsersPage("1");
+      if (searchValue != "") {
+        await fetchPermissions(searchValue, permissionsSearchedPage, "5");
+        setPermissionRolesPage("1");
+        setPermissionUsersPage("1");
+        searchRef.current?.focus();
+        setPermissionsPage("1");
+      } else {
+        await fetchPermissions("", permissionsPage, "5");
+        setPermissionRolesPage("1");
+        setPermissionUsersPage("1");
+        setPermissionsSearchedPage("1");
+      }
     };
     fetchPermissionsData();
-  }, [permissionsPage]);
+  }, [permissionsPage, permissionsSearchedPage, searchValue]);
   const [assignPermissionsToRoleModal, setAssignPermissionsToRoleModal] =
     useState(false);
   const [createPermissionModal, setCreatePermissionModal] = useState(false);
@@ -109,7 +121,15 @@ export default function PermissionsViewTable({
         },
       ],
     },
-    data: permissions ?? [],
+
+    data: permissions || [],
+    searchableTable: {
+      searchable: true,
+      searchValue: searchValue,
+      setSearchValue: setSearchValue,
+      searchRef: searchRef,
+    },
+
     columns: [
       {
         header: "نام مجوز",
@@ -161,7 +181,6 @@ export default function PermissionsViewTable({
           onOpenAssignPermissionsToRoleModal(new Set([row.id]));
         },
       },
-
       {
         name: "Delete",
         caption: "حذف",
@@ -189,7 +208,10 @@ export default function PermissionsViewTable({
     <>
       <DynamicTable
         dynamicTable={InitialPermissionsViewTable}
-        setPage={setPermissionsPage}
+        setPage={(page) => {
+          setPermissionsPage(page);
+          setPermissionsSearchedPage(page);
+        }}
       />
 
       <CreatePermissionModal

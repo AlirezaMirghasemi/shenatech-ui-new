@@ -16,11 +16,13 @@ export default function DynamicTextInput({
   autoComplete = "off",
   label,
   loading,
+  onKeyDown,
+  ref
 }: IDynamicFloatingLabelProps) {
-    console.log("label", label,"placeholder", placeholder,"type", type);
   return (
     <>
       <FloatingLabel
+
         value={value}
         id={id}
         type={type}
@@ -42,6 +44,8 @@ export default function DynamicTextInput({
         onChange={onChange}
         onBlur={onBlur}
         autoComplete={autoComplete}
+        onKeyDown={onKeyDown}
+        ref={ref}
       />
     </>
   );

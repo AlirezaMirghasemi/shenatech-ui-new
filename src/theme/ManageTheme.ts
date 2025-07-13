@@ -17,6 +17,7 @@ import { PopoverThemeConfig } from "./PopoverThemeConfig";
 import { TooltipThemeConfig } from "./TooltipThemeConfig";
 import { AvatarThemeConfig } from "./AvatarThemeConfig";
 import { FloatingInputThemeConfig } from "./FloatingInputThemeConfig";
+import { ToggleSwitchThemeConfig } from "./ToggleSwitchThemeConfig";
 
 export const ManageTheme = createTheme({
   button: { ...ButtonThemeConfig },
@@ -37,4 +38,5 @@ export const ManageTheme = createTheme({
   tooltip: { ...TooltipThemeConfig },
   avatar: { ...AvatarThemeConfig },
   floatingLabel: { ...FloatingInputThemeConfig },
+  toggleSwitch: { ...ToggleSwitchThemeConfig },
 });

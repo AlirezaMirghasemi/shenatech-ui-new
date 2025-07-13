@@ -33,9 +33,9 @@ export const usePermission = () => {
     [dispatch]
   );
   const fetchPermissions = useCallback(
-    (page?: string, perPage?: string) => {
+    (search?:string , page?: string, perPage?: string) => {
       try {
-        return dispatch(fetchPermissionsAsync({ page, perPage })).unwrap();
+        return dispatch(fetchPermissionsAsync({ search,page, perPage })).unwrap();
       } catch (error) {
         console.error("Error fetching permissions:", error);
         throw error;
@@ -43,6 +43,8 @@ export const usePermission = () => {
     },
     [dispatch]
   );
+
+
   const fetchRolePermissions = useCallback(
     async (roleId: number, perPage?: string, page?: string) => {
       try {

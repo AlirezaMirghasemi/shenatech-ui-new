@@ -1,7 +1,7 @@
 import { DataStatus } from "@/constants/data/DataStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { Tag } from "@/types/Tag";
-import { useEffect, useState } from "react";
+import { ChangeEventHandler, EventHandler, useEffect, useState } from "react";
 import { FaEye, FaPen, FaTrashCan } from "react-icons/fa6";
 import DynamicTable from "../dynamics/DynamicTable";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -32,10 +32,19 @@ export default function TagsViewTable({
       await fetchTags(tagsPage, "5");
     };
     fetchTagsData();
-  }, [tagsPage]);
+  }, [ tagsPage]);
+  const [searchValue, setSearchValue] = useState<string>("");
+
   const [createTagModal, setCreateTagModal] = useState(false);
   const [editTagModal, setEditTagModal] = useState(false);
   const [deleteTagModal, setDeleteTagModal] = useState(false);
+  const filteredTags = searchValue
+    ? tags.filter(tag => tag.title.includes(searchValue))
+    : tags;
+const handleSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setSearchValue(e.target.value);
+  };
+
   function onOpenCreateTagModal() {
     setCreateTagModal(true);
   }
@@ -72,7 +81,7 @@ export default function TagsViewTable({
         },
       ],
     },
-    data: tags ?? [],
+    data: filteredTags,
     columns: [
       {
         header: "نام هشتگ",
@@ -141,6 +150,10 @@ export default function TagsViewTable({
     pagination: meta,
     actionCellClassName: "text-center",
     className: (row) => (row.id === tag?.id ? "!bg-bg-active " : ""),
+    searchable: true,
+    onSearch: (e) => {
+      handleSearch(e);
+    },
   };
   return (
     <>

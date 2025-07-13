@@ -1,5 +1,5 @@
 import { TextAlignment } from "@/constants/ui/TextAlignment";
-import { ReactNode } from "react";
+import {  ReactNode, Ref } from "react";
 import { PaginatedResponse } from "@/types/Api";
 
 export interface IDynamicTable<T extends object> {
@@ -11,13 +11,19 @@ export interface IDynamicTable<T extends object> {
   loading?: boolean;
   error?: string | null;
   onSort?: (column: keyof T, direction: "asc" | "desc") => void;
-  onSearch?: (query: string) => void;
   emptyState?: ReactNode;
   className?: (row: T) => string;
   ariaLabel?: string;
   rowKey: keyof T;
   actionCellClassName?: string;
   checkboxTable?: ICheckBoxTable;
+  searchableTable?: ISearchableTable;
+}
+export interface ISearchableTable {
+  searchable: boolean;
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+  searchRef: Ref<HTMLInputElement> | undefined ;
 }
 export interface ICheckBoxTable {
   selectedIds: Set<number>;

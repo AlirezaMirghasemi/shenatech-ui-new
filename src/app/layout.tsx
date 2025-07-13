@@ -43,6 +43,7 @@ export default function RootLayout({
               tooltip: "replace",
               avatar: "replace",
               floatingLabel: "replace",
+              toggleSwitch: "replace",
             }}
           >
             <Toaster />

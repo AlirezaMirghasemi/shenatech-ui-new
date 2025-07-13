@@ -1,6 +1,6 @@
 // interfaces/IDynamicInputField.ts
 import { InputType } from "@/constants/data/InputType";
-import { JSX } from "react";
+import { JSX, Ref } from "react";
 import {
   FileInputProps,
   FloatingLabelColor,
@@ -26,13 +26,8 @@ type CommonInputProps = {
   color?: string | FloatingLabelColor;
   validationSchema?: Schema;
   size?: string | number | undefined;
-  //   onChange?: (
-  //     e:
-  //       | React.ChangeEvent<
-  //           HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  //         >
-  //       | string[]
-  //   ) => void;
+  ref?: Ref<HTMLInputElement> | undefined ;
+
 };
 
 export interface IDynamicInputField extends CommonInputProps {
@@ -50,6 +45,7 @@ export interface IDynamicInputField extends CommonInputProps {
   floatingLabelProps?: FloatingLabelProps;
   fileInputProps?: FileInputProps;
   hiddenInputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  eventHandler?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 export interface IDynamicFloatingLabelProps extends CommonInputProps {
   type:
@@ -63,6 +59,10 @@ export interface IDynamicFloatingLabelProps extends CommonInputProps {
   value?: string | number;
   autoComplete?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+
+
 }
 export interface IDynamicTextareaProps extends CommonInputProps {
   value?: string;

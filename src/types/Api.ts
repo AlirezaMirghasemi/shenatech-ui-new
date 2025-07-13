@@ -3,10 +3,10 @@
 // ساختار پاسخ صفحه‌بندی شده از API
 export interface PaginatedResponse<T> {
     data: T[]; // آرایه‌ای از آیتم‌ها
-    current_page: string;
+    current_page: string ;
     first_page_url: string | null;
     from: number | null;
-    last_page: number;
+    last_page: number ;
     last_page_url: string | null;
     links: Array<{
       url: string | null;

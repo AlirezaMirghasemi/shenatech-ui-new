@@ -117,6 +117,7 @@ export default function DynamicInputField({
             loading={loading}
             autoComplete={autoComplete}
             onChange={field.onChange}
+            onBlur={field.onBlur}
           />
         )}
 
