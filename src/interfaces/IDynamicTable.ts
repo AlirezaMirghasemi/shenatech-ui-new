@@ -67,4 +67,5 @@ export interface IDynamicTableHeaderAction {
   className?: string;
   disabled?: boolean;
   color?: string;
+  hidden?:boolean;
 }

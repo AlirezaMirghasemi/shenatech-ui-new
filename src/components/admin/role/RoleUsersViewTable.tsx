@@ -61,6 +61,7 @@ export default function RoleUsersViewTable({
             onOpenDeleteUsersFromRoleModal();
           },
           disabled: selectedIds.size === 0,
+          hidden:selectedIds.size === 0,
           color: "danger",
         },
       ],
@@ -76,6 +77,7 @@ export default function RoleUsersViewTable({
           setSelectedIds(new Set([row.id]));
           onOpenDeleteUsersFromRoleModal();
         },
+        hidden:selectedIds.size > 0,
       },
     ],
     data: role && users ? users : [],

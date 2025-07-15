@@ -61,6 +61,7 @@ export default function PermissionRolesViewTable({
             onOpenDeletePermissionRolesModal();
           },
           disabled: selectedIds.size === 0,
+          hidden:selectedIds.size === 0,
           color: "danger",
         },
       ],

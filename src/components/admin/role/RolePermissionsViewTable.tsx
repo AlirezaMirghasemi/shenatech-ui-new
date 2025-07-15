@@ -8,7 +8,7 @@ import PersianDate from "persian-date";
 import { useEffect, useState } from "react";
 import { usePermission } from "@/hooks/usePermission";
 import { DataStatus } from "@/constants/data/DataStatus";
-import { FaTrash } from "react-icons/fa6";
+import { FaTrash, FaTrashCan } from "react-icons/fa6";
 import DeleteRolePermissionsModal from "@/components/admin/role/DeleteRolePermissionsModal";
 import { Role } from "@/types/Role";
 
@@ -62,6 +62,7 @@ export default function RolePermissionsViewTable({
             onOpenDeleteRolePermissionsModal();
           },
           disabled: selectedIds.size === 0,
+          hidden:selectedIds.size === 0,
           color: "danger",
         },
       ],
@@ -101,6 +102,18 @@ export default function RolePermissionsViewTable({
         },
       },
     ],
+    actions:[{
+            name: "Delete",
+            caption: "حذف",
+            icon: <FaTrashCan />,
+            color: "danger",
+            className: "!rounded-xl",
+            handler: (row) => {
+              setSelectedIds(new Set([row.id]));
+              onOpenDeleteRolePermissionsModal();
+            },
+            hidden:selectedIds.size > 0
+          }],
     rowKey: "id",
     error: error?.toString(),
     loading: loading === DataStatus.PENDING,

@@ -106,6 +106,7 @@ export default function AssignPermissionForm({
           }))}
           loading={loading === DataStatus.PENDING}
           isSearchable
+
         />
       </DynamicForm>
     </>

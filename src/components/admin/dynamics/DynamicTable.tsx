@@ -78,6 +78,7 @@ export default function DynamicTable<T extends object>({
                             onClick={action.handler}
                             disabled={action.disabled}
                             color={action.color ? action.color : "default"}
+                            hidden={action.hidden}
                           >
                             {action.icon ? action.icon : null}
                             {action.caption}

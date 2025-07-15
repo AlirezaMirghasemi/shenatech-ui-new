@@ -5,6 +5,7 @@ import { customSelectStyles } from "@/theme/SelectInputTheme";
 import { useField, useFormikContext } from "formik";
 import { useEffect, useMemo } from "react";
 import Select from "react-select";
+import makeAnimated from "react-select/animated";
 
 export default function DynamicSelectInput({
   id,
@@ -17,7 +18,6 @@ export default function DynamicSelectInput({
   defaultValue,
   loading = false,
   isSearchable = false,
-
 }: IDynamicSelectInputProps) {
   const [field] = useField(id);
   type SelectOption = { label: string; value: string | number };
@@ -30,7 +30,7 @@ export default function DynamicSelectInput({
     }
     return data?.find((option) => option.value === field.value) || null;
   }, [field.value, data, multiple]);
-  const handleSelectChange = (option: SelectOption | SelectOption[] | null) => {
+  const handleSelectChange = (option: unknown) => {
     if (multiple) {
       const values = Array.isArray(option)
         ? option.map((opt) => opt.value)
@@ -48,6 +48,7 @@ export default function DynamicSelectInput({
       setFieldValue(field.name, defaultValue);
     }
   }, [defaultValue, field.name, setFieldValue]);
+  const animatedComponents = makeAnimated();
 
   return (
     <>
@@ -69,6 +70,8 @@ export default function DynamicSelectInput({
         styles={customSelectStyles}
         classNamePrefix="react-select"
         className={className ?? ""}
+        components={multiple ? animatedComponents : undefined}
+        closeMenuOnSelect={multiple ? false : true}
       />
     </>
   );

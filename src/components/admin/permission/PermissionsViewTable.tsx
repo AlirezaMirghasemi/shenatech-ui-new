@@ -100,6 +100,7 @@ export default function PermissionsViewTable({
             onOpenDeletePermissionsModal(selectedIds);
           },
           disabled: selectedIds.size === 0,
+          hidden: selectedIds.size === 0,
           color: "danger",
         },
         {
@@ -110,6 +111,8 @@ export default function PermissionsViewTable({
             onOpenAssignPermissionsToRoleModal(selectedIds);
           },
           disabled: selectedIds.size === 0,
+          hidden: selectedIds.size === 0,
+
           color: "info",
         },
         {
