@@ -49,7 +49,8 @@ export interface IDynamicTableAction<T extends object> {
   color?: string;
   handler?: (row: T) => void;
   className?: string;
-  disabled?: boolean | ((row: T) => boolean);
+  disabled?: boolean|((row:T) => boolean);
+  hidden?: boolean|((row:T) => boolean);
   actionRenderer?: (row: T) => ReactNode;
 }
 

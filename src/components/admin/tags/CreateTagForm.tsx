@@ -26,7 +26,7 @@ export default function CreateTagForm({
   ) => {
     try {
       await createTags(values);
-      await fetchTags(meta?.current_page, meta?.per_page);
+      await fetchTags("", meta?.current_page, meta?.per_page);
       onCloseCreateTagModal();
       toast.success("هشتگ ها با موفقیت ایجاد شدند.");
     } catch (error) {
@@ -43,7 +43,7 @@ export default function CreateTagForm({
       validationSchema={createTagsSchema(isTagUnique)}
       buttonTitle="ایجاد هشتگ ها"
       onSubmit={onSubmit}
-      validateOnChange={false}
+      validateOnChange={true}
       validateOnBlur={true}
       disabledButton={
         loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
@@ -60,6 +60,7 @@ export default function CreateTagForm({
         }
         loading={uniqueLoading == DataStatus.PENDING}
         validationSchema={createTagsSchema(isTagUnique)}
+        spaceAllowed={false}
       />
     </DynamicForm>
   );

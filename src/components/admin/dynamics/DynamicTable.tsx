@@ -52,7 +52,6 @@ export default function DynamicTable<T extends object>({
 
   if (dynamicTable.loading) return <LoadingSkeleton />;
   if (dynamicTable.error) return <ValidatingError error={dynamicTable.error} />;
-
   return (
     <>
       <div className="flex flex-col px-5">
@@ -233,13 +232,19 @@ export default function DynamicTable<T extends object>({
                                         action.color ? action.color : "default"
                                       }
                                       className={
-                                        action.className ? action.className : ""
+                                        action.className
+                                          ? action.className
+                                          : "mx-1"
                                       }
                                       disabled={
-                                        dynamicTable.checkboxTable
-                                          ? dynamicTable.checkboxTable
-                                              .selectedIds.size > 0
-                                          : false
+                                        typeof action.disabled === "function"
+                                          ? action.disabled(row)
+                                          : action.disabled
+                                      }
+                                      hidden={
+                                        typeof action.hidden === "function"
+                                          ? action.hidden(row)
+                                          : action.hidden
                                       }
                                     >
                                       {action.icon}

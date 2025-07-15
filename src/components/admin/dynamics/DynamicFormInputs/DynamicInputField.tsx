@@ -29,7 +29,6 @@ export default function DynamicInputField({
   multiple = false,
   loading = false,
   readOnly = false,
-  //textInputProps = {},
   textareaProps,
   fileInputProps,
   toggleSwitchProps,
@@ -40,18 +39,17 @@ export default function DynamicInputField({
   autoComplete,
   validationSchema,
   size,
-//   onChange,
+  spaceAllowed
+  //   onChange,
 }: IDynamicInputField) {
   const [field, meta, helpers] = useField(id);
   const formik = useFormikContext();
   const validateItem = async (item: string) => {
     try {
-      // استفاده از schema ارسال شده یا schema اصلی فرم
       const schema = validationSchema || formik.validationSchema;
 
       if (!schema) return undefined;
 
-      // دسترسی به schema اعتبارسنجی آیتم
       const itemSchema = schema.fields[name]?.innerType;
 
       if (itemSchema) {
@@ -195,10 +193,13 @@ export default function DynamicInputField({
             disabled={disabled || loading}
             className={className}
             value={field.value || []}
-            onChange={async (options) => await helpers.setValue(options)}
-            onBlur={() => field.onBlur}
+            onChange={async (values) => {
+              await helpers.setValue(values);
+            }}
+            onBlur={() => helpers.setTouched(true)}
             loading={loading}
             validateItem={validateItem}
+            spaceAllowed={spaceAllowed}
           />
         )}
         {type === InputType.TOGGLE_SWITCH && (
@@ -216,12 +217,13 @@ export default function DynamicInputField({
             onChange={field.onChange}
           />
         )}
-
-        <ErrorMessage name={id}>
-          {(message) => {
-            return <ValidatingError error={message} />;
-          }}
-        </ErrorMessage>
+        {meta.touched && meta.error && (
+          <ErrorMessage name={id}>
+            {(message) => {
+              return <ValidatingError error={message} />;
+            }}
+          </ErrorMessage>
+        )}
       </div>
     </>
   );

@@ -17,6 +17,7 @@ export default function DynamicSelectInput({
   defaultValue,
   loading = false,
   isSearchable = false,
+
 }: IDynamicSelectInputProps) {
   const [field] = useField(id);
   type SelectOption = { label: string; value: string | number };

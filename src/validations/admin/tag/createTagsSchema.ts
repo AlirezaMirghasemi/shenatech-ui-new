@@ -24,11 +24,6 @@ export const createTagsSchema = (
     titles: Yup.array()
       .required(validationMessages.required("عنوان هشتگ"))
       .min(1, validationMessages.required("عنوان هشتگ"))
-      .test(
-        "unique-tags",
-        "هشتگ‌ها نباید تکراری باشند",
-        (values) => new Set(values).size === values?.length
-      )
       .of(tagSchema),
   });
 };

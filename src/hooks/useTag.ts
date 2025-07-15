@@ -17,9 +17,9 @@ export const useTag = () => {
     uniqueLoading,
   } = useAppSelector((state) => state.tags);
   const fetchTags = useCallback(
-    (page?: string, perPage?: string) => {
+    (search?: string, page?: string, perPage?: string) => {
       try {
-        return dispatch(getTagsAsync({ page, perPage })).unwrap();
+        return dispatch(getTagsAsync({ page, perPage, search })).unwrap();
       } catch (error) {
         console.error("Error fetching tags:", error);
         return [];

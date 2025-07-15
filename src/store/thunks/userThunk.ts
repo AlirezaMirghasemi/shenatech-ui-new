@@ -8,9 +8,11 @@ export const getUsersAsync = createAsyncThunk(
   "user/getUsers",
   async (
     {
+      search = "",
       page = "1",
       perPage = "10",
     }: {
+      search?: string;
       page?: string;
       perPage?: string;
     },
@@ -19,6 +21,7 @@ export const getUsersAsync = createAsyncThunk(
     try {
       const response = await api.get("/users", {
         params: {
+          search: search,
           page: page,
           per_page: perPage,
         },

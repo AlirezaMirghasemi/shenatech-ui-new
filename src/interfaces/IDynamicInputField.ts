@@ -12,6 +12,7 @@ import {
 } from "flowbite-react";
 import { IconType } from "react-icons/lib";
 import { Schema } from "yup";
+import { MultiValue } from "react-select";
 
 type CommonInputProps = {
   id: string;
@@ -26,8 +27,8 @@ type CommonInputProps = {
   color?: string | FloatingLabelColor;
   validationSchema?: Schema;
   size?: string | number | undefined;
-  ref?: Ref<HTMLInputElement> | undefined ;
-
+  ref?: Ref<HTMLInputElement> | undefined;
+  spaceAllowed?:boolean;
 };
 
 export interface IDynamicInputField extends CommonInputProps {
@@ -61,8 +62,6 @@ export interface IDynamicFloatingLabelProps extends CommonInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-
-
 }
 export interface IDynamicTextareaProps extends CommonInputProps {
   value?: string;
@@ -96,17 +95,16 @@ export interface IDynamicSelectInputProps extends CommonInputProps {
   multiple?: boolean;
   isSearchable?: boolean;
   loading?: boolean;
-    onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
+
 export interface IDynamicMultiTextInputProps extends CommonInputProps {
   loading?: boolean;
   value?: string[];
-  //onChange: (value: string[]) => void;
   onBlur: () => void;
   validateItem?: (value: string) => Promise<string | undefined>;
-    onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-
+  onChange?: (values: MultiValue<string>) => void;
+  spaceAllowed?: boolean;
 }
 export interface IDynamicRadioInputProps extends CommonInputProps {
   value?: string | number;

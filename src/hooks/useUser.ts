@@ -47,9 +47,9 @@ export const useUser = () => {
     [dispatch]
   );
   const fetchUsers = useCallback(
-    (page?: string, perPage?: string) => {
+    (search?: string, page?: string, perPage?: string) => {
       try {
-        return dispatch(getUsersAsync({ page, perPage })).unwrap();
+        return dispatch(getUsersAsync({   page:page,perPage: perPage,search:search })).unwrap();
       } catch (error) {
         console.error("Error fetching users:", error);
         return [];

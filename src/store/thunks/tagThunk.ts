@@ -10,9 +10,11 @@ export const getTagsAsync = createAsyncThunk(
     {
       page = "1",
       perPage = "10",
+      search = "",
     }: {
       page?: string;
       perPage?: string;
+      search?: string;
     },
     { rejectWithValue }
   ) => {
@@ -21,6 +23,7 @@ export const getTagsAsync = createAsyncThunk(
         params: {
           page: page,
           per_page: perPage,
+          search: search,
         },
       });
       return {

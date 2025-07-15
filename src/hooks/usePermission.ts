@@ -44,7 +44,6 @@ export const usePermission = () => {
     [dispatch]
   );
 
-
   const fetchRolePermissions = useCallback(
     async (roleId: number, perPage?: string, page?: string) => {
       try {
@@ -58,7 +57,7 @@ export const usePermission = () => {
     },
     [dispatch]
   );
- const deletePermissionRoles = useCallback(
+  const deletePermissionRoles = useCallback(
     (permissionId: number, roleIds: Set<number>) => {
       try {
         return dispatch(
@@ -127,7 +126,7 @@ export const usePermission = () => {
       fetchRoleNotPermissions,
       permissionNameIsUnique,
       deletePermission,
-      deletePermissionRoles
+      deletePermissionRoles,
     },
   };
 };
