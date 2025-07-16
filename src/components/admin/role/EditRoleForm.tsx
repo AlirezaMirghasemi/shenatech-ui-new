@@ -1,7 +1,7 @@
 "use client";
 //import { useRouter } from "next/navigation";
 import DynamicForm from "../dynamics/DynamicForm";
-import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
+import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { EditRole, Role } from "@/types/Role";
 import { useRole } from "@/hooks/useRole";

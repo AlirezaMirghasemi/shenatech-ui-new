@@ -7,7 +7,7 @@ import { InputType } from "@/constants/data/InputType";
 import { Badge } from "flowbite-react";
 import { FormikHelpers } from "formik";
 import { useUser } from "@/hooks/useUser";
-import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
+import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { useRole } from "@/hooks/useRole";
 import { useEffect, useState } from "react";
 import { User } from "@/types/User";

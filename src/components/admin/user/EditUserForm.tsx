@@ -1,7 +1,7 @@
 import { EditUser, User } from "@/types/User";
 import DynamicForm from "../dynamics/DynamicForm";
 import { DataStatus } from "@/constants/data/DataStatus";
-import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
+import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { Gender } from "@/constants/data/Gender";
 import { UserStatus } from "@/constants/data/UserStatus";

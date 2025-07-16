@@ -1,5 +1,5 @@
 "use client";
-import DynamicTable from "@/components/admin/dynamics/DynamicTable";
+import DynamicTable from "@/components/admin/dynamics/dynamicTable/DynamicTable";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { useEffect, useRef, useState } from "react";

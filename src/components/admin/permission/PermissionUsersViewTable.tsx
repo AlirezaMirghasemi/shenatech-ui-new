@@ -1,4 +1,4 @@
-import DynamicTable from "@/components/admin/dynamics/DynamicTable";
+import DynamicTable from "@/components/admin/dynamics/dynamicTable/DynamicTable";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { useUser } from "@/hooks/useUser";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";

@@ -3,7 +3,7 @@ import { useUser } from "@/hooks/useUser";
 import { DeleteUser } from "@/types/User";
 import { FormikHelpers } from "formik";
 import { toast } from "sonner";
-import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
+import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import DynamicForm from "../dynamics/DynamicForm";
 import { deleteUserInitial } from "@/validations/admin/user/deleteUserInitial";

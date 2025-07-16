@@ -1,9 +1,9 @@
 import { Tag } from "@/types/Tag";
 import { useEffect, useRef, useState } from "react";
-import DynamicTable from "../dynamics/DynamicTable";
 import { useTag } from "@/hooks/useTag";
 import CreateTagModal from "./CreateTagModal";
 import TagsViewTableInitials from "./Initials/TagsViewTableInitials";
+import DynamicTable from "../dynamics/dynamicTable/DynamicTable";
 export default function TagsViewTable({
   tag,
   setTag,

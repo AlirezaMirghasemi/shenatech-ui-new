@@ -1,5 +1,5 @@
 "use client";
-import DynamicTable from "@/components/admin/dynamics/DynamicTable";
+import DynamicTable from "@/components/admin/dynamics/dynamicTable/DynamicTable";
 import { DataStatus } from "@/constants/data/DataStatus";
 import { useRole } from "@/hooks/useRole";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";

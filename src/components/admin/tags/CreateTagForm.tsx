@@ -4,7 +4,7 @@ import { FormikHelpers } from "formik";
 import { toast } from "sonner";
 import DynamicForm from "../dynamics/DynamicForm";
 import { DataStatus } from "@/constants/data/DataStatus";
-import DynamicInputField from "../dynamics/DynamicFormInputs/DynamicInputField";
+import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { createTagsInitial } from "@/validations/admin/tag/createTagsInitial";
 import { createTagsSchema } from "@/validations/admin/tag/createTagsSchema";

@@ -1,5 +1,5 @@
 "use client";
-import DynamicTable from "@/components/admin/dynamics/DynamicTable";
+import DynamicTable from "@/components/admin/dynamics/dynamicTable/DynamicTable";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
