@@ -1,5 +1,5 @@
 import { TextAlignment } from "@/constants/ui/TextAlignment";
-import {  ReactNode, Ref } from "react";
+import {  JSX, ReactNode, Ref } from "react";
 import { PaginatedResponse } from "@/types/Api";
 
 export interface IDynamicTable<T extends object> {
@@ -16,7 +16,7 @@ export interface IDynamicTable<T extends object> {
   ariaLabel?: string;
   rowKey: keyof T;
   actionCellClassName?: string;
-  checkboxTable?: ICheckBoxTable;
+  checkboxTable?: ICheckBoxTable<T>;
   searchableTable?: ISearchableTable;
 }
 export interface ISearchableTable {
@@ -25,9 +25,10 @@ export interface ISearchableTable {
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   searchRef: Ref<HTMLInputElement> | undefined ;
 }
-export interface ICheckBoxTable {
+export interface ICheckBoxTable<T extends object> {
   selectedIds: Set<number>;
   setSelectedIds: React.Dispatch<React.SetStateAction<Set<number>>>;
+  setSelectedRows:React.Dispatch<React.SetStateAction<T[]>>;
 }
 export interface IDynamicTableColumn<T extends object> {
   header: string;
@@ -40,14 +41,16 @@ export interface IDynamicTableColumn<T extends object> {
   filterable?: boolean;
   ariaLabel?: string;
   className?: string;
+  roles?: string[];
+  permissions?: string[];
 }
 
 export interface IDynamicTableAction<T extends object> {
   name: string;
   caption: string;
-  icon: ReactNode;
+  icon?: JSX.Element;
   color?: string;
-  handler?: (row: T) => void;
+  handler: (row: T) => void;
   className?: string;
   disabled?: boolean|((row:T) => boolean);
   hidden?: boolean|((row:T) => boolean);
@@ -65,7 +68,8 @@ export interface IDynamicTableHeaderAction {
   icon?: ReactNode;
   handler: () => void;
   className?: string;
-  disabled?: boolean;
+  disabled?: boolean | (() => boolean);
   color?: string;
-  hidden?:boolean;
+  hidden?:boolean| (() => boolean);
+  actionRenderer?: () => ReactNode;
 }

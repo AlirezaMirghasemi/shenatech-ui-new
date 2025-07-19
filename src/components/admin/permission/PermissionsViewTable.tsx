@@ -45,13 +45,21 @@ export default function PermissionsViewTable({
   useEffect(() => {
     const fetchPermissionsData = async () => {
       if (searchValue != "") {
-        await fetchPermissions(searchValue, permissionsSearchedPage, "5");
+        await fetchPermissions({
+          search: searchValue,
+          page: permissionsSearchedPage,
+          perPage: "5",
+        });
         setPermissionRolesPage("1");
         setPermissionUsersPage("1");
         searchRef.current?.focus();
         setPermissionsPage("1");
       } else {
-        await fetchPermissions("", permissionsPage, "5");
+        await fetchPermissions({
+          search: "",
+          page: permissionsPage,
+          perPage: "5",
+        });
         setPermissionRolesPage("1");
         setPermissionUsersPage("1");
         setPermissionsSearchedPage("1");
@@ -155,9 +163,11 @@ export default function PermissionsViewTable({
         accessor: "updated_at",
         className: "text-center",
         cellRenderer: (row) => {
-          const date = new PersianDate(new Date(row.updated_at)).format(
-            "HH:mm:ss - YYYY/MM/DD"
-          );
+          const date = row.updated_at
+            ? new PersianDate(new Date(row.updated_at)).format(
+                "HH:mm:ss - YYYY/MM/DD"
+              )
+            : "-";
           return date;
         },
       },

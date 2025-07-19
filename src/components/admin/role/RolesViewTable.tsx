@@ -132,9 +132,11 @@ export default function RolesViewTable({
         accessor: "updated_at",
         className: "text-center",
         cellRenderer: (row) => {
-          const date = new PersianDate(new Date(row.updated_at)).format(
-            "HH:mm:ss - YYYY/MM/DD"
-          );
+          const date = row.updated_at
+            ? new PersianDate(new Date(row.updated_at)).format(
+                "HH:mm:ss - YYYY/MM/DD"
+              )
+            : "-";
           return date;
         },
       },

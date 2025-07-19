@@ -11,13 +11,22 @@ export interface Event {
   status: Status;
   user: User;
   slug: Slug;
+  image: {
+    id: number;
+    path: string;
+    type: ImageType.CONTENT;
+  }
   poster: {
     id: number;
     path: string;
     type: ImageType.POSTER;
   } | null;
   tags: Tag[];
-    created_at: string;
-    updated_at: string;
-    deleted_at: string | null;
+  created_at: string;
+  updated_at: string| null;
+  deleted_at: string | null;
+  created_by: User;
+  edited_by: User | null;
+  deleted_by: User | null;
+  restored_by: User | null;
 }

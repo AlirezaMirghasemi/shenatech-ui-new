@@ -28,8 +28,12 @@ export default function DeleteUserForm({
       { setSubmitting }: FormikHelpers<DeleteUser>
     ) => {
       try {
-        await deleteUser({deleteUserData:values});
-        await fetchUsers(meta?.current_page, meta?.per_page);
+        await deleteUser({ deleteUserData: values });
+        await fetchUsers({
+          search: "",
+          page: meta?.current_page,
+          perPage: meta?.per_page,
+        });
         onCloseDeleteUserModal();
         toast.success("کاربر با موفقیت حدف شد.");
       } catch (error) {

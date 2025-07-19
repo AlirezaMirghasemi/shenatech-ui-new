@@ -1,10 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   createTagsAsync,
+  deleteTagsAsync,
   getTagsAsync,
   isTagUniqueAsync,
 } from "@/store/thunks/tagThunk";
-import { CreateTags } from "@/types/Tag";
+import { CreateTags, DeleteTags } from "@/types/Tag";
 import { useCallback } from "react";
 
 export const useTag = () => {
@@ -17,9 +18,19 @@ export const useTag = () => {
     uniqueLoading,
   } = useAppSelector((state) => state.tags);
   const fetchTags = useCallback(
-    (search?: string, page?: string, perPage?: string) => {
+    ({
+      search,
+      page,
+      perPage,
+    }: {
+      search?: string;
+      page?: string;
+      perPage?: string;
+    }) => {
       try {
-        return dispatch(getTagsAsync({ page, perPage, search })).unwrap();
+        return dispatch(
+          getTagsAsync({ page: page, perPage: perPage, search: search })
+        ).unwrap();
       } catch (error) {
         console.error("Error fetching tags:", error);
         return [];
@@ -38,7 +49,17 @@ export const useTag = () => {
     },
     [dispatch]
   );
-  const isTagUnique = useCallback(
+const deleteTags = useCallback(
+    async (tagIds: DeleteTags) => {
+      try {
+        return await dispatch(deleteTagsAsync(tagIds)).unwrap();
+      } catch (error) {
+        console.error("Error deleting tags:", error);
+        throw error;
+      }
+    },
+    [dispatch]
+  );  const isTagUnique = useCallback(
     async ({ title }: { title: string }): Promise<boolean> => {
       try {
         const result = await dispatch(isTagUniqueAsync(title)).unwrap();
@@ -61,6 +82,7 @@ export const useTag = () => {
       fetchTags,
       createTags,
       isTagUnique,
+      deleteTags
     },
   };
 };

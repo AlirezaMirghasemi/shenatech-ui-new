@@ -36,9 +36,9 @@ export const useUser = () => {
     [dispatch]
   );
   const deleteUser = useCallback(
-    async ({deleteUserData}:{deleteUserData: DeleteUser}) => {
+    async ({ deleteUserData }: { deleteUserData: DeleteUser }) => {
       try {
-        return dispatch(deleteUserAsync( {deleteUserData} )).unwrap();
+        return dispatch(deleteUserAsync({ deleteUserData })).unwrap();
       } catch (error) {
         console.error("Error deleting user:", error);
         throw error;
@@ -47,9 +47,19 @@ export const useUser = () => {
     [dispatch]
   );
   const fetchUsers = useCallback(
-    (search?: string, page?: string, perPage?: string) => {
+    ({
+      search,
+      page,
+      perPage,
+    }: {
+      search?: string;
+      page?: string;
+      perPage?: string;
+    }) => {
       try {
-        return dispatch(getUsersAsync({   page:page,perPage: perPage,search:search })).unwrap();
+        return dispatch(
+          getUsersAsync({ page: page, perPage: perPage, search: search })
+        ).unwrap();
       } catch (error) {
         console.error("Error fetching users:", error);
         return [];

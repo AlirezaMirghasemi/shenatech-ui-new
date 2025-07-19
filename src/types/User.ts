@@ -1,8 +1,6 @@
 import { Gender } from "@/constants/data/Gender";
-import { Permission } from "./Permission";
 import { Image } from "./Image";
 import { UserStatus } from "@/constants/data/UserStatus";
-import { Role } from "./Role";
 
 export interface User {
   id: number;
@@ -18,11 +16,15 @@ export interface User {
   mobile_verified_at: string | "";
   status: UserStatus;
   profile_image: Image | File | "";
-  roles: Role[] | "";
-  permissions: Permission[] | "";
+  role_names: string[] | [];
+  permission_names: string[] | [];
   created_at: string;
-  updated_at: string;
-  deleted_at: string | "";
+  updated_at: string | null;
+  deleted_at: string | null;
+  created_by: User;
+  edited_by: User | null;
+  deleted_by: User | null;
+  restored_by: User | null;
 }
 export interface CreateUser {
   username: string;
@@ -35,11 +37,8 @@ export interface CreateUser {
   bio: string | null;
   gender: Gender | null;
   mobile: string | null;
-  //mobile_verified_at: string | "";
   status: UserStatus;
   profile_image: File | null;
-  //roles: Role[]|"";
-  //permissions: Permission[]|"";
 }
 export interface EditUserStatus {
   status: UserStatus;

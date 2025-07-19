@@ -34,11 +34,11 @@ export default function UsersViewTable({
   useEffect(() => {
     const fetchUsersData = async () => {
       if (searchValue != "") {
-        await fetchUsers(searchValue, usersSearchedPage, "5");
+        await fetchUsers({search:searchValue, page:usersSearchedPage,perPage: "5"});
         searchRef.current?.focus();
         setUsersPage("1");
       } else {
-        await fetchUsers("", usersPage, "5");
+        await fetchUsers({search:"", page:usersPage,perPage: "5"});
         setUsersSearchedPage("1");
       }
     };

@@ -6,7 +6,7 @@ export enum UserStatus {
   DELETED = "deleted",
 }
 export class UserStatusTitles {
-  static getTitle(status: UserStatus): string {
+  static getUserStatusTitle(status: UserStatus): string {
     switch (status) {
       case UserStatus.ACTIVE:
         return "فعال";

@@ -1,24 +1,40 @@
-import { Button, ButtonGroup, Checkbox, TableBody, TableCell, TableRow, Tooltip } from "flowbite-react";
+import {
+  Button,
+  ButtonGroup,
+  Checkbox,
+  TableBody,
+  TableCell,
+  TableRow,
+  Tooltip,
+} from "flowbite-react";
 import { toggleRow } from "@/helpers/TableWithCheckBox";
-import { ICheckBoxTable, IDynamicTableAction, IDynamicTableColumn } from "@/interfaces/IDynamicTable";
+import {
+  ICheckBoxTable,
+  IDynamicTableAction,
+  IDynamicTableColumn,
+} from "@/interfaces/IDynamicTable";
+import { useAuth } from "@/hooks/useAuth";
 
-export default function DynamicTableBody<T extends object>({
-    dynamicTableData,
-    dynamicTableRowKey,
-    dynamicTableClassName,
-    dynamicTableCheckbox,
-    DynamicTableColumns,
-    dynamicTableActions,
-    actionCellClassName,
+export default function DynamicTableBody<T extends { id: number }>({
+  dynamicTableData,
+  dynamicTableRowKey,
+  dynamicTableClassName,
+  dynamicTableCheckbox,
+  DynamicTableColumns,
+  dynamicTableActions,
+  actionCellClassName,
 }: {
-dynamicTableData:T[];
-    dynamicTableRowKey:keyof T;
-    dynamicTableClassName ?:(row: T) => string;
-    dynamicTableCheckbox?:ICheckBoxTable;
-    DynamicTableColumns:IDynamicTableColumn<T>[];
-    dynamicTableActions?:IDynamicTableAction<T>[];
-    actionCellClassName?:string;
+  dynamicTableData: T[];
+  dynamicTableRowKey: keyof T;
+  dynamicTableClassName?: (row: T) => string;
+  dynamicTableCheckbox?: ICheckBoxTable<T>;
+  DynamicTableColumns: IDynamicTableColumn<T>[];
+  dynamicTableActions?: IDynamicTableAction<T>[];
+  actionCellClassName?: string;
 }) {
+  const { user } = useAuth();
+
+  const userRolesName = (user && user.role_names) ?? [];
   return (
     <>
       <TableBody>
@@ -28,26 +44,32 @@ dynamicTableData:T[];
             className={`
     ${dynamicTableClassName?.(row) ?? ""}
     ${
-      dynamicTableCheckbox
-        ? dynamicTableCheckbox.selectedIds?.has(
+      dynamicTableCheckbox &&
+         dynamicTableCheckbox.selectedIds.has(
             row[dynamicTableRowKey] as number
           )
           ? "!bg-accent/25"
           : ""
-        : ""
+
     }
   `}
           >
-            {DynamicTableColumns.map((column) => (
-              <TableCell
-                key={column.accessor.toString()}
-                className={column.className ? column.className : ""}
-              >
-                {column.cellRenderer
-                  ? column.cellRenderer(row)
-                  : String(row[column.accessor])}
-              </TableCell>
-            ))}
+            {DynamicTableColumns.map(
+              (column) =>
+                (column.roles == null ||
+                  userRolesName.some((role) =>
+                    column.roles?.includes(role)
+                  )) && (
+                  <TableCell
+                    key={column.accessor.toString()}
+                    className={column.className ? column.className : ""}
+                  >
+                    {column.cellRenderer
+                      ? column.cellRenderer(row)
+                      : String(row[column.accessor])}
+                  </TableCell>
+                )
+            )}
             {dynamicTableActions && (
               <TableCell className={actionCellClassName ?? ""}>
                 <ButtonGroup>
@@ -103,10 +125,12 @@ dynamicTableData:T[];
                       dynamicTableCheckbox &&
                       dynamicTableCheckbox.setSelectedIds
                     ) {
-                      toggleRow(
-                        row[dynamicTableRowKey] as number,
-                        dynamicTableCheckbox.setSelectedIds
-                      );
+                      toggleRow({
+                        id: row[dynamicTableRowKey] as number,
+                        setSelectedIds: dynamicTableCheckbox.setSelectedIds,
+                        setSelectedRows: dynamicTableCheckbox.setSelectedRows,
+                        row: row,
+                      });
                     }
                   }}
                   aria-label={`Select row ${row[dynamicTableRowKey]}`}

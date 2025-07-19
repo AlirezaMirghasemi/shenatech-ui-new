@@ -26,9 +26,17 @@ export default function DynamicTableHeader({
                     className={action.className ? action.className : ""}
                     key={action.name}
                     onClick={action.handler}
-                    disabled={action.disabled}
+                    disabled={
+                      typeof action.disabled === "function"
+                        ? action.disabled()
+                        : action.disabled
+                    }
                     color={action.color ? action.color : "default"}
-                    hidden={action.hidden}
+                    hidden={
+                      typeof action.hidden === "function"
+                        ? action.hidden()
+                        : action.hidden
+                    }
                   >
                     {action.icon ? action.icon : null}
                     {action.caption}

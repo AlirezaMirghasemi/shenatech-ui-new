@@ -22,7 +22,6 @@ export default function DynamicTextInput({
   return (
     <>
       <FloatingLabel
-
         value={value}
         id={id}
         type={type}

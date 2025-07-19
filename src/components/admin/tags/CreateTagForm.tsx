@@ -26,7 +26,11 @@ export default function CreateTagForm({
   ) => {
     try {
       await createTags(values);
-      await fetchTags("", meta?.current_page, meta?.per_page);
+      await fetchTags({
+        search: "",
+        page: meta?.current_page,
+        perPage: meta?.per_page,
+      });
       onCloseCreateTagModal();
       toast.success("هشتگ ها با موفقیت ایجاد شدند.");
     } catch (error) {

@@ -55,7 +55,11 @@ export default function AssignPermissionsToRoleForm({
         await assignRolePermissions(values.roleId, selectedIds);
         onCloseAssignPermissionsToRoleModal();
         toast.success("مجوز ها با موفقیت تخصیص داده شدند.");
-        return await fetchPermissions(meta?.current_page, meta?.per_page);
+        return await fetchPermissions({
+          search: "",
+          page: meta?.current_page,
+          perPage: meta?.per_page,
+        });
       } catch (error) {
         console.error("Error creating permission:", error);
         toast.error("خطا در تخصیص مجوز ها.");
@@ -96,9 +100,9 @@ export default function AssignPermissionsToRoleForm({
           loading === DataStatus.PENDING || roleLoading === DataStatus.PENDING
         }
         loading={roleLoading === DataStatus.PENDING}
-        data={roleOptions.map(role => ({
+        data={roleOptions.map((role) => ({
           value: role.id,
-          label: role.name
+          label: role.name,
         }))}
       />
     </DynamicForm>

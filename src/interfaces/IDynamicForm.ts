@@ -27,4 +27,3 @@ export default interface IDynamicForm<T extends object> {
   cancelButtonTitle?: string;
   disabledCancelButton?: boolean;
 }
-//TODO: add interface for buttons

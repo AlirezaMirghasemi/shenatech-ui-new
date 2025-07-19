@@ -60,9 +60,9 @@ export const createTagsAsync = createAsyncThunk(
 );
 export const deleteTagsAsync = createAsyncThunk(
   "tag/deleteTags",
-  async (tags: DeleteTags, { rejectWithValue }) => {
+  async (tagIds: DeleteTags, { rejectWithValue }) => {
     try {
-      const response = await api.post("/tags/destroy", tags);
+      const response = await api.delete("/tags/", { data: { tagIds: tagIds },});
       return response.data.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;

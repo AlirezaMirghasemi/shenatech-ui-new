@@ -1,23 +1,37 @@
+"use client";
 import EmptyState from "@/components/common/EmptyState";
 import LoadingSkeleton from "@/components/common/LoadingSkeleton";
 import ValidatingError from "@/components/common/ValidatingError";
-import { IDynamicTable } from "@/interfaces/IDynamicTable";
+import {
+  ICheckBoxTable,
+  IDynamicTable,
+  IDynamicTableAction,
+  IDynamicTableColumn,
+} from "@/interfaces/IDynamicTable";
 import { Table } from "flowbite-react";
 import DynamicTableHeader from "./DyanamicTableHeader";
 import DynamicTableSearchable from "./DynamicTableSearchable";
 import DynamicTableHead from "./DynamicTableHead";
 import DynamicTableBody from "./DynamicTableBody";
 import DynamicTablePagination from "./DynamicTablePagination";
-
-export default function DynamicTable<T extends object>({
+import { useEffect } from "react";
+//TODO: change all table views on all model if use checkboxTable look like tags page
+export default function DynamicTable<T extends { id: number }>({
   dynamicTable,
   setPage,
 }: {
   dynamicTable: IDynamicTable<T>;
   setPage?: (page: string) => void;
 }) {
+  useEffect(() => {
+    if (dynamicTable.checkboxTable) {
+      dynamicTable.checkboxTable.setSelectedIds(new Set());
+      dynamicTable.checkboxTable.setSelectedRows([]);
+    }
+  }, [dynamicTable.data]);
   if (dynamicTable.loading) return <LoadingSkeleton />;
   if (dynamicTable.error) return <ValidatingError error={dynamicTable.error} />;
+
   return (
     <>
       <div className="flex flex-col px-5">
@@ -47,11 +61,22 @@ export default function DynamicTable<T extends object>({
               {dynamicTable?.data.length > 0 && (
                 <Table hoverable>
                   <DynamicTableHead
-                    dynamicTableColumns={dynamicTable.columns}
-                    dynamicTableActions={dynamicTable.actions ?? []}
-                    dynamicTableCheckbox={dynamicTable.checkboxTable}
-                    dynamicTableData={dynamicTable.data}
-                    dynamicTableRowKey={dynamicTable.rowKey}
+                    dynamicTableColumns={
+                      dynamicTable.columns as IDynamicTableColumn<{
+                        id: number;
+                      }>[]
+                    }
+                    dynamicTableActions={
+                      (dynamicTable.actions as IDynamicTableAction<{
+                        id: number;
+                      }>[]) ?? []
+                    }
+                    dynamicTableCheckbox={
+                      dynamicTable.checkboxTable as unknown as ICheckBoxTable<{
+                        id: number;
+                      }>
+                    }
+                    dynamicTableData={dynamicTable.data as { id: number }[]}
                   />
                   <DynamicTableBody
                     dynamicTableData={dynamicTable.data}

@@ -1,16 +1,16 @@
 import { EditUser, User } from "@/types/User";
 import DynamicForm from "../dynamics/DynamicForm";
-import { DataStatus } from "@/constants/data/DataStatus";
 import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
-import { Gender } from "@/constants/data/Gender";
-import { UserStatus } from "@/constants/data/UserStatus";
+import { Gender, GenderTitles } from "@/constants/data/Gender";
+import { UserStatus, UserStatusTitles } from "@/constants/data/UserStatus";
 import FullNameSync from "./FullNameSync";
 import { useUser } from "@/hooks/useUser";
 import { toast } from "sonner";
 import { FormikHelpers } from "formik";
 import { editUserInitial } from "@/validations/admin/user/editUserInitial";
 import { editUserSchema } from "@/validations/admin/user/editUserSchema";
+import { DataStatus } from "@/constants/data/DataStatus";
 
 export default function EditUserForm({
   onCloseEditUserModal,
@@ -31,7 +31,11 @@ export default function EditUserForm({
   ) => {
     try {
       await editUser(user.id, values, values.profile_image as File | undefined);
-      await fetchUsers(meta?.current_page, meta?.per_page);
+      await fetchUsers({
+        search: "",
+        page: meta?.current_page,
+        perPage: meta?.per_page,
+      });
       onCloseEditUserModal();
       toast.success("کاربر با موفقیت ویرایش شد.");
     } catch (error) {
@@ -158,9 +162,18 @@ export default function EditUserForm({
                   type={InputType.SELECT}
                   className="block w-full"
                   data={[
-                    { value: Gender.Male, label: "مرد" },
-                    { value: Gender.Female, label: "زن" },
-                    { value: Gender.NotSpecified, label: "نامشخص" },
+                    {
+                      value: Gender.Male,
+                      label: GenderTitles.getGenderTitle(Gender.Male),
+                    },
+                    {
+                      value: Gender.Female,
+                      label: GenderTitles.getGenderTitle(Gender.Female),
+                    },
+                    {
+                      value: Gender.NotSpecified,
+                      label: GenderTitles.getGenderTitle(Gender.NotSpecified),
+                    },
                   ]}
                   disabled={
                     loading == DataStatus.PENDING // || uniqueLoading == DataStatus.PENDING
@@ -210,11 +223,23 @@ export default function EditUserForm({
                   className="block w-full"
                   type={InputType.SELECT}
                   data={[
-                    { value: UserStatus.PENDING, label: "در انتظار تایید" },
-                    { value: UserStatus.ACTIVE, label: "فعال" },
-                    { value: UserStatus.DEACTIVATED, label: "غیرفعال" },
-                    { value: UserStatus.SUSPENDED, label: "معلق" },
-                  ]}
+              {
+                value: UserStatus.PENDING,
+                label: UserStatusTitles.getUserStatusTitle(UserStatus.PENDING),
+              },
+              {
+                value: UserStatus.ACTIVE,
+                label: UserStatusTitles.getUserStatusTitle(UserStatus.ACTIVE),
+              },
+              {
+                value: UserStatus.DEACTIVATED,
+                label: UserStatusTitles.getUserStatusTitle(UserStatus.DEACTIVATED),
+              },
+              {
+                value: UserStatus.SUSPENDED,
+                label: UserStatusTitles.getUserStatusTitle(UserStatus.SUSPENDED),
+              },
+            ]}
                   disabled={
                     loading == DataStatus.PENDING ||
                     uniqueLoading == DataStatus.PENDING

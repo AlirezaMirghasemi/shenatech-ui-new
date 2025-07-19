@@ -13,7 +13,7 @@ export interface Article {
   image: {
     id: number;
     path: string;
-    type: ImageType.ARTICLE;
+    type: ImageType.CONTENT;
   } | null;
   slug: Slug;
   poster: {
@@ -23,6 +23,10 @@ export interface Article {
   } | null;
   tags: Tag[];
   created_at: string;
-  updated_at: string;
+  updated_at: string | null;
   deleted_at: string | null;
+  created_by: User;
+  edited_by: User | null;
+  deleted_by: User | null;
+  restored_by: User | null;
 }

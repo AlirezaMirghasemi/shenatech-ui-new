@@ -1,32 +1,32 @@
 import { DataStatus } from "@/constants/data/DataStatus";
-import { usePermission } from "@/hooks/usePermission";
+import { useTag } from "@/hooks/useTag";
 import { ApiError } from "@/types/Api";
 import { AxiosError } from "axios";
 import { Button, Modal, ModalBody, ModalHeader, Spinner } from "flowbite-react";
 import { FaSkullCrossbones } from "react-icons/fa6";
 import { toast } from "sonner";
 
-export default function DeletePermissionsModal({
-  deletePermissionsModal,
+export default function DeleteTagsModal({
+  deleteTagsModal,
   selectedIds,
-  onCloseDeletePermissionsModal,
+  onCloseDeleteTagsModal,
 }: {
-  deletePermissionsModal: boolean;
+  deleteTagsModal: boolean;
   selectedIds: Set<number>;
-  onCloseDeletePermissionsModal: () => void;
+  onCloseDeleteTagsModal: () => void;
 }) {
   const {
-    actions: { deletePermission, fetchPermissions },
+    actions: { deleteTags, fetchTags },
     meta,
     loading,
-  } = usePermission();
-  const deletePermissionsAction = async (selectedIds: Set<number>) => {
+  } = useTag();
+  const deleteTagsAction = async (selectedIds: Set<number>) => {
     if (selectedIds && selectedIds.size > 0) {
       try {
-        await deletePermission(Array.from(selectedIds));
-        onCloseDeletePermissionsModal();
-        toast.success("مجوز با موفقیت حذف شد!");
-        return await fetchPermissions({
+        await deleteTags({ids:Array.from(selectedIds)});
+        onCloseDeleteTagsModal();
+        toast.success("هشتگ با موفقیت حذف شد!");
+        return await fetchTags({
           search: "",
           page: meta?.current_page,
           perPage: meta?.per_page,
@@ -35,8 +35,8 @@ export default function DeletePermissionsModal({
         const axiosError = err as AxiosError<ApiError>;
         toast.error(axiosError.message);
       } finally {
-        onCloseDeletePermissionsModal();
-        return await fetchPermissions({
+        onCloseDeleteTagsModal();
+        return await fetchTags({
           search: "",
           page: meta?.current_page,
           perPage: meta?.per_page,
@@ -47,9 +47,9 @@ export default function DeletePermissionsModal({
   return (
     <>
       <Modal
-        show={deletePermissionsModal}
+        show={deleteTagsModal}
         size="md"
-        onClose={onCloseDeletePermissionsModal}
+        onClose={onCloseDeleteTagsModal}
         popup
       >
         <ModalHeader />
@@ -57,24 +57,24 @@ export default function DeletePermissionsModal({
           <div className="text-center ">
             <FaSkullCrossbones className="mx-auto mb-4 h-14 w-14  text-status-danger-text" />
             <h3 className="mb-5 text-lg font-normal">
-              آیا از حذف {selectedIds.size > 1 ? "مجوز های انتخاب شده" : "مجوز"}{" "}
+              آیا از حذف {selectedIds.size > 1 ? "هشتگ های انتخاب شده" : "هشتگ"}{" "}
               اطمینان دارید؟
             </h3>
             <div className="flex justify-center gap-4">
               <Button
                 color="danger"
-                onClick={() => deletePermissionsAction(selectedIds)}
+                onClick={() => deleteTagsAction(selectedIds)}
                 disabled={loading === DataStatus.PENDING}
               >
                 {loading === DataStatus.PENDING ? (
                   <>
-                    <Spinner aria-label="loading delete permission" size="sm" />
+                    <Spinner aria-label="loading delete tags" size="sm" />
                   </>
                 ) : (
                   "بله مطمئن هستم"
                 )}
               </Button>
-              <Button color="info" onClick={onCloseDeletePermissionsModal}>
+              <Button color="info" onClick={onCloseDeleteTagsModal}>
                 {"خیر، منصرف شدم"}
               </Button>
             </div>

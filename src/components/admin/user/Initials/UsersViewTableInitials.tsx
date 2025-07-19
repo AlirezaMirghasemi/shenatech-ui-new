@@ -91,7 +91,7 @@ export default function UsersViewTableInitials({
         accessor: "status",
         className: "text-center",
         cellRenderer(row) {
-          const status = UserStatusTitles.getTitle(row.status);
+          const status = UserStatusTitles.getUserStatusTitle(row.status);
           switch (row.status) {
             case UserStatus.ACTIVE:
               return <span className="text-success">{status}</span>;

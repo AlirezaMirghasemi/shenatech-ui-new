@@ -10,8 +10,8 @@ import { useUser } from "@/hooks/useUser";
 import { CreateUser } from "@/types/User";
 import { createUserInitial } from "@/validations/admin/user/createUserInitial";
 import { createUserSchema } from "@/validations/admin/user/createUserSchema";
-import { Gender } from "@/constants/data/Gender";
-import { UserStatus } from "@/constants/data/UserStatus";
+import { Gender, GenderTitles } from "@/constants/data/Gender";
+import { UserStatus, UserStatusTitles } from "@/constants/data/UserStatus";
 import FullNameSync from "./FullNameSync";
 import React from "react";
 
@@ -34,7 +34,11 @@ export default function CreateUserForm({
       const profileImage =
         values.profile_image instanceof File ? values.profile_image : undefined;
       await createUser(values, profileImage);
-      await fetchUsers(meta?.current_page, meta?.per_page);
+      await fetchUsers({
+        search: "",
+        page: meta?.current_page,
+        perPage: meta?.per_page,
+      });
       onCloseCreateUserModal();
       toast.success("کاربر با موفقیت ایجاد شد.");
     } catch (error) {
@@ -160,9 +164,18 @@ export default function CreateUserForm({
                   type={InputType.SELECT}
                   className="block w-full"
                   data={[
-                    { value: Gender.Male, label: "مرد" },
-                    { value: Gender.Female, label: "زن" },
-                    { value: Gender.NotSpecified, label: "نامشخص" },
+                    {
+                      value: Gender.Male,
+                      label: GenderTitles.getGenderTitle(Gender.Male),
+                    },
+                    {
+                      value: Gender.Female,
+                      label: GenderTitles.getGenderTitle(Gender.Female),
+                    },
+                    {
+                      value: Gender.NotSpecified,
+                      label: GenderTitles.getGenderTitle(Gender.NotSpecified),
+                    },
                   ]}
                   disabled={
                     loading == DataStatus.PENDING // || uniqueLoading == DataStatus.PENDING
@@ -241,9 +254,30 @@ export default function CreateUserForm({
                   className="block w-full"
                   type={InputType.SELECT}
                   data={[
-                    { value: UserStatus.PENDING, label: "در انتظار تایید" },
-                    { value: UserStatus.ACTIVE, label: "فعال" },
-                    { value: UserStatus.DEACTIVATED, label: "غیرفعال" },
+                    {
+                      value: UserStatus.PENDING,
+                      label: UserStatusTitles.getUserStatusTitle(
+                        UserStatus.PENDING
+                      ),
+                    },
+                    {
+                      value: UserStatus.ACTIVE,
+                      label: UserStatusTitles.getUserStatusTitle(
+                        UserStatus.ACTIVE
+                      ),
+                    },
+                    {
+                      value: UserStatus.DEACTIVATED,
+                      label: UserStatusTitles.getUserStatusTitle(
+                        UserStatus.DEACTIVATED
+                      ),
+                    },
+                    {
+                      value: UserStatus.SUSPENDED,
+                      label: UserStatusTitles.getUserStatusTitle(
+                        UserStatus.SUSPENDED
+                      ),
+                    },
                   ]}
                   disabled={
                     loading == DataStatus.PENDING ||

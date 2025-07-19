@@ -39,7 +39,7 @@ export default function CreatePermissionForm({
       await createPermission(values.permissionName);
       toast.success("مجوز با موفقیت ایجاد شد.");
       onCloseCreatePermissionModal();
-      return await fetchPermissions(meta?.current_page, meta?.per_page);
+      return await fetchPermissions({search:"",page:meta?.current_page,perPage: meta?.per_page});
     } catch (error) {
       console.error("Error creating permission:", error);
       toast.error("خطا در ایجاد نقش.");

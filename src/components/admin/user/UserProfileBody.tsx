@@ -1,6 +1,6 @@
-import { Gender } from "@/constants/data/Gender";
+import { Gender, GenderTitles } from "@/constants/data/Gender";
 import { Image as ImageType } from "@/types/Image";
-import { UserStatus } from "@/constants/data/UserStatus";
+import { UserStatus, UserStatusTitles } from "@/constants/data/UserStatus";
 import { User } from "@/types/User";
 import { Alert, Badge } from "flowbite-react";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import { FaUser } from "react-icons/fa6";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import PersianDate from "persian-date";
-export default function UserProfileBody({user}:{user:User}) {
+export default function UserProfileBody({ user }: { user: User }) {
   return (
     <>
       <div className="py-4 md:py-8">
@@ -32,25 +32,31 @@ export default function UserProfileBody({user}:{user:User}) {
                     case UserStatus.ACTIVE:
                       return (
                         <Badge color="success" size="xs">
-                          فعال
+                          {UserStatusTitles.getUserStatusTitle(user?.status)}
                         </Badge>
                       );
                     case UserStatus.DEACTIVATED:
                       return (
                         <Badge color="danger" size="xs">
-                          غیرفعال
+                          {UserStatusTitles.getUserStatusTitle(user?.status)}
                         </Badge>
                       );
                     case UserStatus.SUSPENDED:
                       return (
                         <Badge color="warning" size="xs">
-                          معلق
+                          {UserStatusTitles.getUserStatusTitle(user?.status)}
                         </Badge>
                       );
                     case UserStatus.PENDING:
                       return (
                         <Badge color="info" size="xs">
-                          در حال بررسی
+                          {UserStatusTitles.getUserStatusTitle(user?.status)}
+                        </Badge>
+                      );
+                    case UserStatus.DELETED:
+                      return (
+                        <Badge color="danger" size="xs">
+                          {UserStatusTitles.getUserStatusTitle(user?.status)}
                         </Badge>
                       );
                     default:
@@ -85,10 +91,10 @@ export default function UserProfileBody({user}:{user:User}) {
               <dt>نقش ها</dt>
               <dd className="flex items-center gap-1">
                 <Alert color="info">
-                  {user?.roles &&
-                    user?.roles.map((role) => (
-                      <Badge key={role.id} size="xs" color="success">
-                        {role.name}
+                  {user?.role_names &&
+                    user?.role_names.map((role) => (
+                      <Badge key={role} size="xs" color="success">
+                        {role}
                       </Badge>
                     ))}
                 </Alert>
@@ -132,10 +138,10 @@ export default function UserProfileBody({user}:{user:User}) {
               <dt>جنسیت</dt>
               <dd>
                 {user?.gender == Gender.Male
-                  ? "مرد"
+                  ? GenderTitles.getGenderTitle(user?.gender)
                   : user?.gender == Gender.Female
-                    ? "زن"
-                    : "نامشخص"}
+                    ? GenderTitles.getGenderTitle(user?.gender)
+                    : GenderTitles.getGenderTitle(Gender.NotSpecified)}
               </dd>
             </dl>
             <dl>

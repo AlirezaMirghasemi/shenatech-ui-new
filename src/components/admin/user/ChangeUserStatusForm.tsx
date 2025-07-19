@@ -21,9 +21,12 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
     { setSubmitting }: FormikHelpers<EditUserStatus>
   ) => {
     try {
-      console.log(values);
       await editUserStatus(user.id, values.status);
-      await fetchUsers(meta?.current_page, meta?.per_page);
+      await fetchUsers({
+        search: "",
+        page: meta?.current_page,
+        perPage: meta?.per_page,
+      });
       toast.success("وضعیت کاربر با موفقیت ویرایش شد.");
     } catch (error) {
       console.error("Error creating user:", error);
@@ -57,19 +60,23 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
             data={[
               {
                 value: UserStatus.PENDING,
-                label: UserStatusTitles.getTitle(UserStatus.PENDING),
+                label: UserStatusTitles.getUserStatusTitle(UserStatus.PENDING),
               },
               {
                 value: UserStatus.ACTIVE,
-                label: UserStatusTitles.getTitle(UserStatus.ACTIVE),
+                label: UserStatusTitles.getUserStatusTitle(UserStatus.ACTIVE),
               },
               {
                 value: UserStatus.DEACTIVATED,
-                label: UserStatusTitles.getTitle(UserStatus.DEACTIVATED),
+                label: UserStatusTitles.getUserStatusTitle(
+                  UserStatus.DEACTIVATED
+                ),
               },
               {
                 value: UserStatus.SUSPENDED,
-                label: UserStatusTitles.getTitle(UserStatus.SUSPENDED),
+                label: UserStatusTitles.getUserStatusTitle(
+                  UserStatus.SUSPENDED
+                ),
               },
             ]}
             disabled={loading == DataStatus.PENDING}
