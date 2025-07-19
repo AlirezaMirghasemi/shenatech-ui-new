@@ -12,6 +12,7 @@ import {
   CommonStatus,
   CommonStatusTitles,
 } from "@/constants/data/CommonStatus";
+import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
 
 export default function TagsViewTableInitials({
   tag,
@@ -109,10 +110,7 @@ export default function TagsViewTableInitials({
         accessor: "created_at",
         className: "text-center",
         cellRenderer: (row) => {
-          const date = new PersianDate(new Date(row.created_at)).format(
-            "HH:mm:ss - YYYY/MM/DD"
-          );
-          return date;
+          return ConvertDateToShamsi({ date: row.created_at });
         },
       },
       {
@@ -130,12 +128,19 @@ export default function TagsViewTableInitials({
         accessor: "updated_at",
         className: "text-center",
         cellRenderer: (row) => {
-          const date = row.updated_at
-            ? new PersianDate(new Date(row.updated_at)).format(
-                "HH:mm:ss - YYYY/MM/DD"
-              )
+          return row.updated_at
+            ? ConvertDateToShamsi({ date: row.updated_at })
             : "-";
-          return date;
+        },
+      },
+      {
+        header: "تاریخ حذف",
+        accessor: "deleted_at",
+        className: "text-center",
+        cellRenderer: (row) => {
+          return row.deleted_at
+            ? ConvertDateToShamsi({ date: row.deleted_at })
+            : "-";
         },
       },
     ],
