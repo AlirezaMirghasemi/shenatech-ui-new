@@ -24,8 +24,8 @@ export default function DynamicTableHead<T extends { id: number }>({
   //TODO: چک کردن اینکه کاربر دسترسی دارد یا نه
   return (
     <>
-      <TableHead>
-        <TableRow>
+      <TableHead className="sticky top-0  z-10 max-md:hidden">
+        <TableRow className="border-b">
           {dynamicTableColumns.map(
             (column) =>
               (column.roles == null ||
@@ -33,7 +33,7 @@ export default function DynamicTableHead<T extends { id: number }>({
                 <TableHeadCell
                   key={column.accessor.toString()}
                   className={
-                    column.HeadCellClassName ? column.HeadCellClassName : ""
+                    column.HeadCellClassName ? `${column.HeadCellClassName} py-3 px-4 font-semibold whitespace-nowrap` : "py-3 px-4 font-semibold whitespace-nowrap"
                   }
                   aria-label={column.ariaLabel || column.header.toString()}
                 >
@@ -41,9 +41,9 @@ export default function DynamicTableHead<T extends { id: number }>({
                 </TableHeadCell>
               )
           )}
-          {dynamicTableActions && <TableHeadCell>عملیات</TableHeadCell>}
+          {dynamicTableActions && <TableHeadCell className="py-3 px-4 w-32">عملیات</TableHeadCell>}
           {dynamicTableCheckbox && (
-            <TableHeadCell className={dynamicTableColumns[0].className ?? ""}>
+            <TableHeadCell className={dynamicTableColumns[0].className ?`py-3 px-4 w-12 ${dynamicTableColumns[0].className} ` : "py-3 px-4 w-12" }>
               <Checkbox
                 checked={
                   (dynamicTableCheckbox.selectedIds.size > 0) &&

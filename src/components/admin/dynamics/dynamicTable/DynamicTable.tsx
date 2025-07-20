@@ -15,8 +15,11 @@ import DynamicTableHead from "./DynamicTableHead";
 import DynamicTableBody from "./DynamicTableBody";
 import DynamicTablePagination from "./DynamicTablePagination";
 import { useEffect } from "react";
+import { CommonStatus } from "@/constants/data/CommonStatus";
 //TODO: change all table views on all model if use checkboxTable look like tags page
-export default function DynamicTable<T extends { id: number }>({
+export default function DynamicTable<
+  T extends { id: number; status: string | CommonStatus },
+>({
   dynamicTable,
   setPage,
 }: {
@@ -34,17 +37,23 @@ export default function DynamicTable<T extends { id: number }>({
 
   return (
     <>
-      <div className="flex flex-col px-5">
-        <div className="-m-1.5 overflow-x-auto">
-          <div className=" min-w-full inline-block align-middle">
-            <div className=" border  rounded-xl shadow-2xs overflow-hidden ">
+      <div className="flex flex-col w-full">
+        <div className="overflow-x-auto">
+          <div className="min-w-full inline-block align-middle">
+            <div className="border border-border-default rounded-xl shadow-xs overflow-hidden ">
+              {" "}
               {dynamicTable.header && (
-                <DynamicTableHeader dynamicTableHeader={dynamicTable.header} />
+                <DynamicTableHeader
+                  dynamicTableHeader={dynamicTable.header}
+                  CheckboxTable={dynamicTable.checkboxTable}
+                />
               )}
               {dynamicTable?.data.length < 1 &&
                 !dynamicTable.searchableTable && (
                   <>
-                    <EmptyState />
+                    <div className="py-12">
+                      <EmptyState />
+                    </div>
                   </>
                 )}
               {dynamicTable.searchableTable && (
@@ -55,48 +64,54 @@ export default function DynamicTable<T extends { id: number }>({
               {dynamicTable?.data.length < 1 &&
                 dynamicTable.searchableTable && (
                   <>
-                    <EmptyState />
+                    <div className="overflow-x-auto">
+                      <EmptyState />
+                    </div>
                   </>
                 )}
               {dynamicTable?.data.length > 0 && (
-                <Table hoverable>
-                  <DynamicTableHead
-                    dynamicTableColumns={
-                      dynamicTable.columns as IDynamicTableColumn<{
-                        id: number;
-                      }>[]
-                    }
-                    dynamicTableActions={
-                      (dynamicTable.actions as IDynamicTableAction<{
-                        id: number;
-                      }>[]) ?? []
-                    }
-                    dynamicTableCheckbox={
-                      dynamicTable.checkboxTable as unknown as ICheckBoxTable<{
-                        id: number;
-                      }>
-                    }
-                    dynamicTableData={dynamicTable.data as { id: number }[]}
-                  />
-                  <DynamicTableBody
-                    dynamicTableData={dynamicTable.data}
-                    dynamicTableRowKey={dynamicTable.rowKey}
-                    dynamicTableClassName={dynamicTable.className}
-                    dynamicTableCheckbox={dynamicTable.checkboxTable}
-                    DynamicTableColumns={dynamicTable.columns}
-                    dynamicTableActions={dynamicTable.actions}
-                    actionCellClassName={dynamicTable.actionCellClassName}
-                  />
-                </Table>
+                <div className="overflow-x-auto">
+                  <Table hoverable className="min-w-full divide-y ">
+                    <DynamicTableHead
+                      dynamicTableColumns={
+                        dynamicTable.columns as IDynamicTableColumn<{
+                          id: number;
+                        }>[]
+                      }
+                      dynamicTableActions={
+                        (dynamicTable.actions as IDynamicTableAction<{
+                          id: number;
+                        }>[]) ?? []
+                      }
+                      dynamicTableCheckbox={
+                        dynamicTable.checkboxTable as unknown as ICheckBoxTable<{
+                          id: number;
+                        }>
+                      }
+                      dynamicTableData={dynamicTable.data as { id: number }[]}
+                    />
+                    <DynamicTableBody
+                      dynamicTableData={dynamicTable.data}
+                      dynamicTableRowKey={dynamicTable.rowKey}
+                      dynamicTableClassName={dynamicTable.className}
+                      dynamicTableCheckbox={dynamicTable.checkboxTable}
+                      DynamicTableColumns={dynamicTable.columns}
+                      dynamicTableActions={dynamicTable.actions}
+                      actionCellClassName={dynamicTable.actionCellClassName}
+                    />
+                  </Table>
+                </div>
               )}
               {dynamicTable.pagination &&
                 setPage &&
                 dynamicTable.data.length > 0 &&
                 dynamicTable.pagination.last_page > 1 && (
-                  <DynamicTablePagination
-                    dynamicTablePagination={dynamicTable.pagination}
-                    setPage={setPage}
-                  />
+                  <div className="border-t ">
+                    <DynamicTablePagination
+                      dynamicTablePagination={dynamicTable.pagination}
+                      setPage={setPage}
+                    />
+                  </div>
                 )}
             </div>
           </div>

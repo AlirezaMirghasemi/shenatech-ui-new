@@ -1,16 +1,18 @@
+
 export enum ActionType {
   CREATE = "create",
-  UPDATE = "update",
   EDIT = "edit",
+  EDITS = "edits",
   RESTORE = "restore",
+  RESTORES = "restores",
+  DETAIL = "detail",
+
   DETAILS = "details",
   ASSIGN = "assign",
+  ASSIGNS = "assigns",
   UNASSIGN = "unassign",
   INFO = "info",
   SEARCH = "search",
   DELETE = "delete",
-}
-export enum ActionPos {
-  HEADER = "header",
-  ROW = "row",
+  DELETES = "deletes",
 }

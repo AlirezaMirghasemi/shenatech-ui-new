@@ -2,10 +2,6 @@
 import { DataStatus } from "@/constants/data/DataStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { Tag } from "@/types/Tag";
-import { FaEye, FaPen, FaRecycle, FaTrashCan } from "react-icons/fa6";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-import PersianDate from "persian-date";
 import { useTag } from "@/hooks/useTag";
 import { Dispatch, SetStateAction } from "react";
 import {
@@ -13,6 +9,8 @@ import {
   CommonStatusTitles,
 } from "@/constants/data/CommonStatus";
 import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
+import { ActionType } from "@/constants/data/ActionsButton";
+import { ActionsButtonCommonProps } from "@/components/common/ActionsButtonCommonProps";
 
 export default function TagsViewTableInitials({
   tag,
@@ -66,27 +64,32 @@ export default function TagsViewTableInitials({
       title: "هشتگ ها",
       actions: [
         {
-          name: "Create",
           caption: "ایجاد هشتگ",
-          color: "success",
+          name: ActionsButtonCommonProps.getActionButtonProps(ActionType.CREATE)
+            .name,
+          color: ActionsButtonCommonProps.getActionButtonProps(
+            ActionType.CREATE
+          ).color,
           handler: onOpenCreateTagModal,
         },
         //TODO: edit dynamic actions correctly
         {
-          name: "Delete",
+          name: ActionsButtonCommonProps.getActionButtonProps(
+            ActionType.DELETES
+          ).name,
           caption: "حذف",
-          color: "danger",
+          color: ActionsButtonCommonProps.getActionButtonProps(
+            ActionType.DELETES
+          ).color,
           handler: () => {
             onOpenDeleteTagsModal(new Set(selectedIds));
           },
-          hidden: () =>
-            selectedIds.size === 0 ||
-            selectedRows.filter((row) => row.status === CommonStatus.DELETED)
-              .length > 0,
-          disabled: () =>
-            selectedIds.size === 0 ||
-            selectedRows.filter((row) => row.status === CommonStatus.DELETED)
-              .length > 0,
+          visibility: {
+            hiddenOnDeleteStatus: true,
+            hiddenOnNoSelection: true,
+            disableOnDeleteStatus: true,
+            disableOnNoSelection: true,
+          },
         },
       ],
     },
@@ -146,46 +149,73 @@ export default function TagsViewTableInitials({
     ],
     actions: [
       {
-        name: "ShowTagDetails",
+        name: ActionsButtonCommonProps.getActionButtonProps(ActionType.DETAIL)
+          .name,
         caption: "مشاهده ی جزییات",
         handler: (row: Tag) => {
           ShowTagDetails(row);
         },
-        icon: <FaEye />,
-        color: "info",
-      },
+        icon: ActionsButtonCommonProps.getActionButtonProps(ActionType.DETAIL)
+          .icon,
+        color: ActionsButtonCommonProps.getActionButtonProps(ActionType.DETAIL)
+          .color,
 
+        visibility: {
+          hiddenOnMultipleSelection: true,
+          disableOnMultipleSelection: true,
+        },
+      },
       {
-        name: "Edit",
+        name: ActionsButtonCommonProps.getActionButtonProps(ActionType.EDIT)
+          .name,
         caption: "ویرایش",
-        icon: <FaPen />,
-        color: "warning",
+        icon: ActionsButtonCommonProps.getActionButtonProps(ActionType.EDIT)
+          .icon,
+        color: ActionsButtonCommonProps.getActionButtonProps(ActionType.EDIT)
+          .color,
         handler: (row) => {
           onOpenEditTagModal(row);
         },
-        hidden: (row) => row.status === CommonStatus.DELETED,
-        disabled: (row) => row.status === CommonStatus.DELETED,
+        visibility: {
+          hiddenOnMultipleSelection: true,
+          disableOnMultipleSelection: true,
+          hiddenOnDeleteStatus: true,
+          disableOnDeleteStatus: true,
+        },
       },
       {
-        name: "Delete",
+        name: ActionsButtonCommonProps.getActionButtonProps(ActionType.DELETE)
+          .name,
         caption: "حذف",
-        icon: <FaTrashCan />,
+        icon: ActionsButtonCommonProps.getActionButtonProps(ActionType.DELETE)
+          .icon,
         color: "danger",
         handler: (row) => {
           setTag(row);
           onOpenDeleteTagsModal(new Set([row.id]));
         },
-        hidden: (row) => row.status === CommonStatus.DELETED,
-        disabled: (row) => row.status === CommonStatus.DELETED,
+        visibility: {
+          hiddenOnMultipleSelection: true,
+          disableOnMultipleSelection: true,
+          hiddenOnDeleteStatus: true,
+          disableOnDeleteStatus: true,
+        },
       },
       {
-        name: "Restore",
+        name: ActionsButtonCommonProps.getActionButtonProps(ActionType.RESTORE)
+          .name,
         caption: "بازیابی",
-        icon: <FaRecycle />,
-        color: "warning",
+        icon: ActionsButtonCommonProps.getActionButtonProps(ActionType.RESTORE)
+          .icon,
+        color: ActionsButtonCommonProps.getActionButtonProps(ActionType.RESTORE)
+          .color,
         handler: (row) => {
           setTag(row);
           //onOpenRestoreTagModal(row.id);
+        },
+        visibility: {
+          hiddenOnMultipleSelection: true,
+          disableOnMultipleSelection: true,
         },
         hidden: (row) => row.status !== CommonStatus.DELETED,
         disabled: (row) => row.status !== CommonStatus.DELETED,
@@ -196,7 +226,6 @@ export default function TagsViewTableInitials({
     loading: loading === DataStatus.PENDING,
     pagination: meta,
     actionCellClassName: "text-center",
-    className: (row) => (row.id === tag?.id ? "!bg-bg-active " : ""),
     searchableTable: {
       searchable: true,
       searchValue: searchValue,
@@ -207,6 +236,7 @@ export default function TagsViewTableInitials({
       selectedIds: selectedIds,
       setSelectedIds: setSelectedIds,
       setSelectedRows: setSelectedRows,
+      selectedRows: selectedRows,
     },
   };
   return InitialTagsViewTable;

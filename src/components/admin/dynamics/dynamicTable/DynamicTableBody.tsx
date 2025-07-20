@@ -14,8 +14,11 @@ import {
   IDynamicTableColumn,
 } from "@/interfaces/IDynamicTable";
 import { useAuth } from "@/hooks/useAuth";
+import { CommonStatus } from "@/constants/data/CommonStatus";
 
-export default function DynamicTableBody<T extends { id: number }>({
+export default function DynamicTableBody<
+  T extends { id: number; status: string | CommonStatus },
+>({
   dynamicTableData,
   dynamicTableRowKey,
   dynamicTableClassName,
@@ -35,9 +38,10 @@ export default function DynamicTableBody<T extends { id: number }>({
   const { user } = useAuth();
 
   const userRolesName = (user && user.role_names) ?? [];
+  const selectedIdsSize: number = dynamicTableCheckbox?.selectedIds.size ?? 0;
   return (
     <>
-      <TableBody>
+      <TableBody className="divide-y ">
         {dynamicTableData.map((row) => (
           <TableRow
             key={String(row[dynamicTableRowKey])}
@@ -45,12 +49,9 @@ export default function DynamicTableBody<T extends { id: number }>({
     ${dynamicTableClassName?.(row) ?? ""}
     ${
       dynamicTableCheckbox &&
-         dynamicTableCheckbox.selectedIds.has(
-            row[dynamicTableRowKey] as number
-          )
-          ? "!bg-accent/25"
-          : ""
-
+      dynamicTableCheckbox.selectedIds.has(row[dynamicTableRowKey] as number)
+        ? "!bg-accent/25"
+        : ""
     }
   `}
           >
@@ -61,8 +62,9 @@ export default function DynamicTableBody<T extends { id: number }>({
                     column.roles?.includes(role)
                   )) && (
                   <TableCell
+                    data-label={column.header}
                     key={column.accessor.toString()}
-                    className={column.className ? column.className : ""}
+                    className={column.className ? `${column.className} py-3 px-4 whitespace-nowrap max-md:grid max-md:grid-cols-3 max-md:gap-2 max-md:items-center max-md:before:content-[attr(data-label)] max-md:before:font-semibold ` : "py-3 px-4 whitespace-nowrap max-md:grid max-md:grid-cols-3 max-md:gap-2 max-md:items-center max-md:before:content-[attr(data-label)] max-md:before:font-semibold "}
                   >
                     {column.cellRenderer
                       ? column.cellRenderer(row)
@@ -71,7 +73,8 @@ export default function DynamicTableBody<T extends { id: number }>({
                 )
             )}
             {dynamicTableActions && (
-              <TableCell className={actionCellClassName ?? ""}>
+              <TableCell className={actionCellClassName ? `${actionCellClassName} py-3 px-4 max-md:grid max-md:grid-cols-3 max-md:gap-2 max-md:items-center max-md:before:content-['عملیات'] max-md:before:font-semibold `: "py-3 px-4 max-md:grid max-md:grid-cols-3 max-md:gap-2 max-md:items-center max-md:before:content-['عملیات'] max-md:before:font-semibold "}>
+                <div className="flex flex-wrap gap-1">
                 <ButtonGroup>
                   {dynamicTableActions.map((action) =>
                     action.actionRenderer ? (
@@ -93,29 +96,45 @@ export default function DynamicTableBody<T extends { id: number }>({
                           onClick={() => action.handler?.(row)}
                           color={action.color ? action.color : "default"}
                           className={
-                            action.className ? action.className : "mx-1"
+                            action.className ? `${action.className} transition-colors` : "transition-colors"
                           }
                           disabled={
-                            typeof action.disabled === "function"
+                            (typeof action.disabled === "function"
                               ? action.disabled(row)
-                              : action.disabled
+                              : action.disabled) ||
+                            (action.visibility?.disableOnDeleteStatus &&
+                              row.status === CommonStatus.DELETED) ||
+                            (action.visibility?.disableOnMultipleSelection &&
+                              selectedIdsSize > 0) ||
+                            (action.visibility?.disableOnNoSelection &&
+                              selectedIdsSize === 0)
                           }
                           hidden={
-                            typeof action.hidden === "function"
+                            (typeof action.hidden === "function"
                               ? action.hidden(row)
-                              : action.hidden
+                              : action.hidden) ||
+                                (action.visibility?.hiddenOnDeleteStatus &&
+                                  row.status === CommonStatus.DELETED) ||
+                                (action.visibility?.hiddenOnMultipleSelection &&
+                                  selectedIdsSize > 0) ||
+                                (action.visibility?.hiddenOnNoSelection &&
+                                  selectedIdsSize === 0)
                           }
                         >
                           {action.icon}
                         </Button>
+
                       </Tooltip>
+
                     )
                   )}
                 </ButtonGroup>
+                </div>
               </TableCell>
             )}
             {dynamicTableCheckbox && (
-              <TableCell className="w-4 text-center">
+              <TableCell className="py-3 px-4 w-12 text-center max-md:grid max-md:grid-cols-3 max-md:gap-2 max-md:items-center  max-md:before:font-semibold ">
+                <div className="md:contents">
                 <Checkbox
                   checked={dynamicTableCheckbox.selectedIds.has(
                     row[dynamicTableRowKey] as number
@@ -136,6 +155,7 @@ export default function DynamicTableBody<T extends { id: number }>({
                   aria-label={`Select row ${row[dynamicTableRowKey]}`}
                   className="mx-auto"
                 />
+                </div>
               </TableCell>
             )}
           </TableRow>

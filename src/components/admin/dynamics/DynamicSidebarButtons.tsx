@@ -30,21 +30,25 @@ export default function DynamicSidebarButtons({
 
   return (
     <>
+    <div className="w-full">
       {!sidebarButtons.children && (
+
         <SidebarItem
-          className="transition-all transition-discrete duration-700 cursor-pointer"
+          className="transition-all transition-discrete duration-700 cursor-pointer flex  w-full px-4 py-3 rounded-lg"
           href={sidebarButtons.href}
           icon={sidebarButtons.icon}
           active={sidebarButtons.href === pathName}
 
         >
-          {sidebarButtons.title}
+         <div className="flex items-center w-full whitespace-nowrap">
+            {sidebarButtons.title}
+          </div>
         </SidebarItem>
       )}
       {sidebarButtons.children && (
-        <SidebarItemGroup>
+        <SidebarItemGroup className="w-full">
           <SidebarCollapse
-            className="transition-all transition-discrete duration-700 cursor-pointer"
+            className=" flex items-center justify-between transition-all transition-discrete duration-700 cursor-pointer w-full px-4 py-3 hover:bg-bg-hover rounded-lg "
             icon={sidebarButtons.icon}
             label={sidebarButtons.title}
             open={isOpen}
@@ -55,13 +59,14 @@ export default function DynamicSidebarButtons({
                 <IconComponent
                   aria-hidden
                   className={twMerge(
-                    theme.label.icon.open[open ? "on" : "off"]
+                    theme.label.icon.open[open ? "on" : "off"],
+                    "ml-2"
                   )}
                 />
               );
             }}
           >
-            <SidebarItemGroup>
+            <SidebarItemGroup className="pl-4 border-l  ml-3">
               {sidebarButtons.children.map((child) => (
                 <DynamicSidebarButtons
                   key={child.name}
@@ -72,6 +77,7 @@ export default function DynamicSidebarButtons({
           </SidebarCollapse>
         </SidebarItemGroup>
       )}
+      </div>
     </>
   );
 }

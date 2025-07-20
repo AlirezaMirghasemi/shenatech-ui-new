@@ -14,31 +14,41 @@ export function SidebarPanel({
 }) {
   return (
     <Drawer
-      className={`overflow-y-auto  h-full  p-0 m-0 transition-all transition-discrete  duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
+      className={`fixed top-0 right-0 h-full z-30 transition-all duration-300 transform ${
+        isOpen ? "translate-x-0" : "translate-x-full"
+      }`}
       open={isOpen}
       onClose={handleOpen}
       position="right"
       backdrop={false}
+      style={{ width: 'fit-content' }}
     >
-      <div className="flex items-center justify-center p-5 bg-bg-default border-b-2 border-accent/50 mb-5">
-        <FaX
-          className="rounded-lg hover:text-secondary-hover hover:bg-primary/20 absolute top-5 left-5 text-text-default/50 cursor-pointer p-2 w-8 h-8"
-          onClick={handleOpen}
-        />
-        <Image
-          src="/shenatech_logo.png"
-          alt="Shenatech Logo"
-          width={100}
-          height={125}
-        />
+      <div className="flex flex-col min-w-64 w-full ">
+        <div className="flex items-center justify-center p-5  border-b  relative">
+          <FaX
+            className="absolute top-5 left-5 cursor-pointer p-2 w-8 h-8 transition-colors"
+            onClick={handleOpen}
+            aria-label="بستن منو"
+          />
+          <Image
+            src="/shenatech_logo.png"
+            alt="Shenatech Logo"
+            width={100}
+            height={125}
+            className="dark:invert"
+          />
+        </div>
+        <DrawerItems className="overflow-y-auto  w-full p-4">
+          <Sidebar className="w-full">
+            <SidebarItems className="w-full space-y-1">
+              <DynamicSidebarButtons
+                key={Math.random()}
+                sidebarButtons={SidebarButtons}
+              />
+            </SidebarItems>
+          </Sidebar>
+        </DrawerItems>
       </div>
-      <DrawerItems>
-        <Sidebar>
-          <SidebarItems >
-            <DynamicSidebarButtons key={Math.random()}  sidebarButtons={SidebarButtons} />
-          </SidebarItems>
-        </Sidebar>
-      </DrawerItems>
     </Drawer>
   );
 }
