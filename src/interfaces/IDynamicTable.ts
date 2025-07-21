@@ -16,7 +16,7 @@ export interface IDynamicTable<T extends object> {
   ariaLabel?: string;
   rowKey: keyof T;
   actionCellClassName?: string;
-  checkboxTable?: ICheckBoxTable<T>;
+  checkboxTable?: boolean;
   searchableTable?: ISearchableTable;
 }
 export interface ISearchableTable {
@@ -25,12 +25,12 @@ export interface ISearchableTable {
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   searchRef: Ref<HTMLInputElement> | undefined;
 }
-export interface ICheckBoxTable<T extends object> {
-  selectedIds: Set<number>;
-  setSelectedIds: React.Dispatch<React.SetStateAction<Set<number>>>;
-  setSelectedRows: React.Dispatch<React.SetStateAction<T[]>>;
-  selectedRows: T[];
-}
+// export interface ICheckBoxTable<T extends object> {
+//   selectedIds: Set<number>;
+//   setSelectedIds: React.Dispatch<React.SetStateAction<Set<number>>>;
+//   setSelectedRows: React.Dispatch<React.SetStateAction<T[]>>;
+//   selectedRows: T[];
+// }
 export interface IDynamicTableColumn<T extends object> {
   header: string;
   HeadCellClassName?: string;

@@ -1,6 +1,6 @@
 import { CommonStatus } from "@/constants/data/CommonStatus";
+import useTable from "@/hooks/useTable";
 import {
-  ICheckBoxTable,
   IDynamicTableHeader,
 } from "@/interfaces/IDynamicTable";
 import { Button } from "flowbite-react";
@@ -9,12 +9,13 @@ export default function DynamicTableHeader<
   T extends { id: number; status: string | CommonStatus },
 >({
   dynamicTableHeader,
-  CheckboxTable,
+  handleTable
 }: {
   dynamicTableHeader: IDynamicTableHeader;
-  CheckboxTable?: ICheckBoxTable<T>;
+  CheckboxTable?: boolean;
+  handleTable:ReturnType<typeof useTable<T>>
 }) {
-  const selectedIdsSize = CheckboxTable?.selectedIds.size || 0;
+  const selectedIdsSize = handleTable.handleSelect.selectedIds.size || 0;
   return (
     <>
       {dynamicTableHeader && (
@@ -50,7 +51,7 @@ export default function DynamicTableHeader<
                         ? selectedIdsSize === 0
                         : false) ||
                       (action.visibility?.disableOnDeleteStatus
-                        ? CheckboxTable?.selectedRows.some(
+                        ? handleTable.handleSelect.selectedRows.some(
                             (row) => row.status === CommonStatus.DELETED
                           )
                         : false)
@@ -67,7 +68,7 @@ export default function DynamicTableHeader<
                         ? selectedIdsSize === 0
                         : false) ||
                       (action.visibility?.hiddenOnDeleteStatus
-                        ? CheckboxTable?.selectedRows.some(
+                        ? handleTable.handleSelect.selectedRows.some(
                             (row) => row.status === CommonStatus.DELETED
                           )
                         : false)

@@ -35,7 +35,7 @@ export function Header({ handleOpen }: { handleOpen: () => void }) {
       <Navbar
         fluid
         rounded
-        className="py-3 px-4 border-b border-border-default bg-bg-alt dark:bg-bg-alt w-full "
+        className="py-7 px-4 border-b-3 border-border-default bg-bg-alt dark:bg-bg-alt w-full "
       >
         <div className="flex justify-between w-full items-center">
           <div className="flex items-center">

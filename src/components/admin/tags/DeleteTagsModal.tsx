@@ -21,6 +21,7 @@ export default function DeleteTagsModal({
     loading,
   } = useTag();
   const deleteTagsAction = async (selectedIds: Set<number>) => {
+    console.log(loading);
     if (selectedIds && selectedIds.size > 0) {
       try {
         await deleteTags({ids:Array.from(selectedIds)});

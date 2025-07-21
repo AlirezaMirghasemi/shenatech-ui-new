@@ -5,6 +5,7 @@ import CreateTagModal from "./CreateTagModal";
 import TagsViewTableInitials from "./Initials/TagsViewTableInitials";
 import DynamicTable from "../dynamics/dynamicTable/DynamicTable";
 import DeleteTagsModal from "./DeleteTagsModal";
+import useTable from "@/hooks/useTable";
 export default function TagsViewTable({
   tag,
   setTag,
@@ -17,11 +18,10 @@ export default function TagsViewTable({
   const {
     actions: { fetchTags },
   } = useTag();
+  const handleTable=useTable<Tag>();
   const [tagsPage, setTagsPage] = useState("1");
   const [tagsSearchedPage, setTagsSearchedPage] = useState("1");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set([]));
-  const [selectedRows, setSelectedRows] = useState<Tag[]>([]);
 
   const searchRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -56,8 +56,7 @@ export default function TagsViewTable({
   //   }
   function onCloseDeleteTagsModal() {
     setDeleteTagsModal(false);
-    setSelectedIds(new Set([]));
-    console.log(selectedRows);
+    handleTable.handleSelect.setSelectedIds(new Set([]));
   }
 
   return (
@@ -73,12 +72,10 @@ export default function TagsViewTable({
           setCreateTagModal,
           setSearchValue,
           searchRef,
-          selectedIds,
-          setSelectedIds,
-          selectedRows,
-          setSelectedRows,
+          handleTable
         })}
         setPage={setTagsPage}
+        handleTable={handleTable}
       />
       <CreateTagModal
         createTagModal={createTagModal}
@@ -93,7 +90,7 @@ export default function TagsViewTable({
           /> */}
           <DeleteTagsModal
             deleteTagsModal={deleteTagsModal}
-            selectedIds={selectedIds}
+            selectedIds={handleTable.handleSelect.selectedIds}
             onCloseDeleteTagsModal={onCloseDeleteTagsModal}
           />
         </>

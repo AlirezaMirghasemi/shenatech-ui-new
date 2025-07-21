@@ -1,22 +1,25 @@
-import { toggleAll } from "@/helpers/TableWithCheckBox";
 import { useAuth } from "@/hooks/useAuth";
+import useTable from "@/hooks/useTable";
 import {
-  ICheckBoxTable,
   IDynamicTableAction,
   IDynamicTableColumn,
 } from "@/interfaces/IDynamicTable";
 import { Checkbox, TableHead, TableHeadCell, TableRow } from "flowbite-react";
 
-export default function DynamicTableHead<T extends { id: number }>({
+export default function DynamicTableHead<
+  T extends { id: number; status: string },
+>({
   dynamicTableColumns,
   dynamicTableActions,
   dynamicTableCheckbox,
   dynamicTableData,
+  handleTable,
 }: {
   dynamicTableColumns: IDynamicTableColumn<T>[];
   dynamicTableActions: IDynamicTableAction<T>[];
-  dynamicTableCheckbox?: ICheckBoxTable<T>;
+  dynamicTableCheckbox?: boolean;
   dynamicTableData: T[];
+  handleTable: ReturnType<typeof useTable<T>>;
 }) {
   const { user } = useAuth();
 
@@ -33,7 +36,9 @@ export default function DynamicTableHead<T extends { id: number }>({
                 <TableHeadCell
                   key={column.accessor.toString()}
                   className={
-                    column.HeadCellClassName ? `${column.HeadCellClassName} py-3 px-4 font-semibold whitespace-nowrap` : "py-3 px-4 font-semibold whitespace-nowrap"
+                    column.HeadCellClassName
+                      ? `${column.HeadCellClassName} py-3 px-4 font-semibold whitespace-nowrap`
+                      : "py-3 px-4 font-semibold whitespace-nowrap"
                   }
                   aria-label={column.ariaLabel || column.header.toString()}
                 >
@@ -41,31 +46,36 @@ export default function DynamicTableHead<T extends { id: number }>({
                 </TableHeadCell>
               )
           )}
-          {dynamicTableActions && <TableHeadCell className="py-3 px-4 w-32">عملیات</TableHeadCell>}
+          {dynamicTableActions && (
+            <TableHeadCell className="py-3 px-4 w-32">عملیات</TableHeadCell>
+          )}
           {dynamicTableCheckbox && (
-            <TableHeadCell className={dynamicTableColumns[0].className ?`py-3 px-4 w-12 ${dynamicTableColumns[0].className} ` : "py-3 px-4 w-12" }>
+            <TableHeadCell
+              className={
+                dynamicTableColumns[0].className
+                  ? `py-3 px-4 w-12 ${dynamicTableColumns[0].className} `
+                  : "py-3 px-4 w-12"
+              }
+            >
               <Checkbox
                 checked={
-                  (dynamicTableCheckbox.selectedIds.size > 0) &&
-                  (dynamicTableCheckbox.selectedIds.size ===
-                    dynamicTableData.length)
+                  handleTable.handleSelect.selectedIds.size > 0 &&
+                  handleTable.handleSelect.selectedIds.size ===
+                    dynamicTableData.length
                 }
                 indeterminate={
-                  dynamicTableCheckbox.selectedIds.size > 0 &&
-                  dynamicTableCheckbox.selectedIds.size <
+                  handleTable.handleSelect.selectedIds.size > 0 &&
+                  handleTable.handleSelect.selectedIds.size <
                     dynamicTableData.length
                 }
                 onChange={(e) => {
                   if (dynamicTableData.length === 0) return;
 
                   if (dynamicTableCheckbox) {
-                    toggleAll({
-                      checked: e.target.checked,
-                      setSelectedIds: dynamicTableCheckbox.setSelectedIds,
-                      rows: dynamicTableData,
-                      setSelectedRows: dynamicTableCheckbox.setSelectedRows,
-
-                    });
+                    handleTable.handleSelect.toggleAll(
+                      dynamicTableData,
+                      e.target.checked
+                    );
                   }
                 }}
                 aria-label="Select all"

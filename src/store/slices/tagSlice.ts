@@ -4,6 +4,7 @@ import { Tag } from "@/types/Tag";
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createTagsAsync,
+  deleteTagsAsync,
   getTagsAsync,
   isTagUniqueAsync,
 } from "../thunks/tagThunk";
@@ -62,6 +63,25 @@ const TagSlice = createSlice({
         state.loading = DataStatus.FAILED;
         if (typeof action.payload === "string") {
           state.error = action.payload || { message: "Failed to create Tags" };
+        } else {
+          state.error = null;
+        }
+      })
+      .addCase(deleteTagsAsync.pending, (state) => {
+        state.loading = DataStatus.PENDING;
+        state.error = null;
+      })
+      .addCase(deleteTagsAsync.fulfilled, (state) => {
+        state.loading = DataStatus.SUCCEEDED;
+        state.error = null;
+      })
+      .addCase(deleteTagsAsync.rejected, (state, action) => {
+        state.loading = DataStatus.FAILED;
+        state.data = [];
+        if (typeof action.payload === "string") {
+          state.error = action.payload || {
+            message: "Failed to delete permission",
+          };
         } else {
           state.error = null;
         }

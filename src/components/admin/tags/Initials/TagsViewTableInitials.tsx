@@ -11,6 +11,7 @@ import {
 import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
 import { ActionType } from "@/constants/data/ActionsButton";
 import { ActionsButtonCommonProps } from "@/components/common/ActionsButtonCommonProps";
+import useTable from "@/hooks/useTable";
 
 export default function TagsViewTableInitials({
   tag,
@@ -22,10 +23,7 @@ export default function TagsViewTableInitials({
   setCreateTagModal,
   setSearchValue,
   searchRef,
-  selectedIds,
-  setSelectedIds,
-  selectedRows,
-  setSelectedRows,
+  handleTable,
 }: {
   tag: Tag | null;
   searchValue: string;
@@ -36,10 +34,7 @@ export default function TagsViewTableInitials({
   setCreateTagModal: (row: boolean) => void;
   setSearchValue: Dispatch<SetStateAction<string>>;
   searchRef: React.RefObject<HTMLInputElement | null>;
-  selectedIds: Set<number>;
-  setSelectedIds: React.Dispatch<React.SetStateAction<Set<number>>>;
-  selectedRows: Tag[];
-  setSelectedRows: React.Dispatch<React.SetStateAction<Tag[]>>;
+  handleTable: ReturnType<typeof useTable<Tag>>;
 }) {
   const { loading, error, meta, tags } = useTag();
 
@@ -52,7 +47,7 @@ export default function TagsViewTableInitials({
 
   function onOpenDeleteTagsModal(rows: Set<number>): void {
     setDeleteTagsModal(true);
-    setSelectedIds(rows);
+    handleTable.handleSelect.setSelectedIds(rows);
   }
 
   function onOpenEditTagModal(row: Tag) {
@@ -82,7 +77,8 @@ export default function TagsViewTableInitials({
             ActionType.DELETES
           ).color,
           handler: () => {
-            onOpenDeleteTagsModal(new Set(selectedIds));
+            console.log(handleTable.handleSelect.selectedIds);
+            onOpenDeleteTagsModal(new Set(handleTable.handleSelect.selectedIds));
           },
           visibility: {
             hiddenOnDeleteStatus: true,
@@ -232,12 +228,7 @@ export default function TagsViewTableInitials({
       setSearchValue: setSearchValue,
       searchRef: searchRef,
     },
-    checkboxTable: {
-      selectedIds: selectedIds,
-      setSelectedIds: setSelectedIds,
-      setSelectedRows: setSelectedRows,
-      selectedRows: selectedRows,
-    },
+    checkboxTable: true,
   };
   return InitialTagsViewTable;
 }

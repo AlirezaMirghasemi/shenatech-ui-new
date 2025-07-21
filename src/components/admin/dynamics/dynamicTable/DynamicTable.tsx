@@ -3,7 +3,6 @@ import EmptyState from "@/components/common/EmptyState";
 import LoadingSkeleton from "@/components/common/LoadingSkeleton";
 import ValidatingError from "@/components/common/ValidatingError";
 import {
-  ICheckBoxTable,
   IDynamicTable,
   IDynamicTableAction,
   IDynamicTableColumn,
@@ -15,21 +14,20 @@ import DynamicTableHead from "./DynamicTableHead";
 import DynamicTableBody from "./DynamicTableBody";
 import DynamicTablePagination from "./DynamicTablePagination";
 import { useEffect } from "react";
-import { CommonStatus } from "@/constants/data/CommonStatus";
+import useTable from "@/hooks/useTable";
 //TODO: change all table views on all model if use checkboxTable look like tags page
-export default function DynamicTable<
-  T extends { id: number; status: string | CommonStatus },
->({
+export default function DynamicTable<T extends { id: number; status: string }>({
   dynamicTable,
   setPage,
+  handleTable,
 }: {
   dynamicTable: IDynamicTable<T>;
   setPage?: (page: string) => void;
+  handleTable: ReturnType<typeof useTable<T>>;
 }) {
   useEffect(() => {
     if (dynamicTable.checkboxTable) {
-      dynamicTable.checkboxTable.setSelectedIds(new Set());
-      dynamicTable.checkboxTable.setSelectedRows([]);
+      handleTable.handleSelect.clearSelection();
     }
   }, [dynamicTable.data]);
   if (dynamicTable.loading) return <LoadingSkeleton />;
@@ -45,7 +43,7 @@ export default function DynamicTable<
               {dynamicTable.header && (
                 <DynamicTableHeader
                   dynamicTableHeader={dynamicTable.header}
-                  CheckboxTable={dynamicTable.checkboxTable}
+                  handleTable={handleTable}
                 />
               )}
               {dynamicTable?.data.length < 1 &&
@@ -76,19 +74,22 @@ export default function DynamicTable<
                       dynamicTableColumns={
                         dynamicTable.columns as IDynamicTableColumn<{
                           id: number;
+                          status: string;
                         }>[]
+                      }
+                      handleTable={
+                        handleTable as unknown as ReturnType<typeof useTable<{ id: number; status: string; }>>
                       }
                       dynamicTableActions={
                         (dynamicTable.actions as IDynamicTableAction<{
                           id: number;
+                          status: string;
                         }>[]) ?? []
                       }
-                      dynamicTableCheckbox={
-                        dynamicTable.checkboxTable as unknown as ICheckBoxTable<{
-                          id: number;
-                        }>
+                      dynamicTableCheckbox={dynamicTable.checkboxTable}
+                      dynamicTableData={
+                        dynamicTable.data as { id: number; status: string }[]
                       }
-                      dynamicTableData={dynamicTable.data as { id: number }[]}
                     />
                     <DynamicTableBody
                       dynamicTableData={dynamicTable.data}
@@ -98,6 +99,7 @@ export default function DynamicTable<
                       DynamicTableColumns={dynamicTable.columns}
                       dynamicTableActions={dynamicTable.actions}
                       actionCellClassName={dynamicTable.actionCellClassName}
+                      handleTable={handleTable}
                     />
                   </Table>
                 </div>
