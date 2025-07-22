@@ -6,6 +6,7 @@ import TagsViewTableInitials from "./Initials/TagsViewTableInitials";
 import DynamicTable from "../dynamics/dynamicTable/DynamicTable";
 import DeleteTagsModal from "./DeleteTagsModal";
 import useTable from "@/hooks/useTable";
+
 export default function TagsViewTable({
   tag,
   setTag,
@@ -17,30 +18,29 @@ export default function TagsViewTable({
 }) {
   const {
     actions: { fetchTags },
-  } = useTag();
-  const handleTable=useTable<Tag>();
-  const [tagsPage, setTagsPage] = useState("1");
-  const [tagsSearchedPage, setTagsSearchedPage] = useState("1");
-  const [searchValue, setSearchValue] = useState<string>("");
+    tags,
+    meta,
+    loading,
+    error,
 
+  } = useTag();
+
+  const handleTable = useTable<Tag>();
+ const [currentPage, setCurrentPage] = useState("1");
+  const [searchValue, setSearchValue] = useState<string>("");
   const searchRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
+
+
+   useEffect(() => {
     const fetchTagsData = async () => {
-      if (searchValue != "") {
-        await fetchTags({
-          search: searchValue,
-          page: tagsSearchedPage,
-          perPage: "5",
-        });
-        searchRef.current?.focus();
-        setTagsPage("1");
-      } else {
-        await fetchTags({ search: "", page: tagsPage, perPage: "5" });
-        setTagsSearchedPage("1");
-      }
+      await fetchTags({
+        search: searchValue,
+        page: currentPage,
+        perPage: "5",
+      });
     };
     fetchTagsData();
-  }, [tagsPage, tagsSearchedPage, searchValue]);
+  }, [currentPage, searchValue]);
 
   const [createTagModal, setCreateTagModal] = useState(false);
   const [editTagModal, setEditTagModal] = useState(false);
@@ -51,9 +51,6 @@ export default function TagsViewTable({
     setTag(null);
   }
 
-  //   function onCloseEditTagModal() {
-  //     setEditTagModal(false);
-  //   }
   function onCloseDeleteTagsModal() {
     setDeleteTagsModal(false);
     handleTable.handleSelect.setSelectedIds(new Set([]));
@@ -72,28 +69,24 @@ export default function TagsViewTable({
           setCreateTagModal,
           setSearchValue,
           searchRef,
-          handleTable
+          handleTable,
+          tags,
+          meta,
+          loading,
+          error,
         })}
-        setPage={setTagsPage}
+        setPage={setCurrentPage}
         handleTable={handleTable}
       />
       <CreateTagModal
         createTagModal={createTagModal}
         onCloseCreateTagModal={onCloseCreateTagModal}
       />
-
-        <>
-          {/* <EditTagModal
-            editTagModal={editTagModal}
-            onCloseEditTagModal={onCloseEditTagModal}
-            tag={tag}
-          /> */}
-          <DeleteTagsModal
-            deleteTagsModal={deleteTagsModal}
-            selectedIds={handleTable.handleSelect.selectedIds}
-            onCloseDeleteTagsModal={onCloseDeleteTagsModal}
-          />
-        </>
+      <DeleteTagsModal
+        deleteTagsModal={deleteTagsModal}
+        selectedIds={handleTable.handleSelect.selectedIds}
+        onCloseDeleteTagsModal={onCloseDeleteTagsModal}
+      />
     </>
   );
 }

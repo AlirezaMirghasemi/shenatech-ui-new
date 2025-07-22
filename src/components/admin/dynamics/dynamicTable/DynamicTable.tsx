@@ -16,6 +16,7 @@ import DynamicTablePagination from "./DynamicTablePagination";
 import { useEffect } from "react";
 import useTable from "@/hooks/useTable";
 //TODO: change all table views on all model if use checkboxTable look like tags page
+//TODO: change all table views on all model with useTable()
 export default function DynamicTable<T extends { id: number; status: string }>({
   dynamicTable,
   setPage,
@@ -25,11 +26,14 @@ export default function DynamicTable<T extends { id: number; status: string }>({
   setPage?: (page: string) => void;
   handleTable: ReturnType<typeof useTable<T>>;
 }) {
+
   useEffect(() => {
     if (dynamicTable.checkboxTable) {
       handleTable.handleSelect.clearSelection();
     }
-  }, [dynamicTable.data]);
+  }, [setPage]);
+
+
   if (dynamicTable.loading) return <LoadingSkeleton />;
   if (dynamicTable.error) return <ValidatingError error={dynamicTable.error} />;
 
@@ -78,7 +82,9 @@ export default function DynamicTable<T extends { id: number; status: string }>({
                         }>[]
                       }
                       handleTable={
-                        handleTable as unknown as ReturnType<typeof useTable<{ id: number; status: string; }>>
+                        handleTable as unknown as ReturnType<
+                          typeof useTable<{ id: number; status: string }>
+                        >
                       }
                       dynamicTableActions={
                         (dynamicTable.actions as IDynamicTableAction<{
@@ -104,10 +110,12 @@ export default function DynamicTable<T extends { id: number; status: string }>({
                   </Table>
                 </div>
               )}
+
               {dynamicTable.pagination &&
                 setPage &&
                 dynamicTable.data.length > 0 &&
-                dynamicTable.pagination.last_page > 1 && (
+                dynamicTable.pagination.meta.last_page   > 1 &&
+                 (
                   <div className="border-t ">
                     <DynamicTablePagination
                       dynamicTablePagination={dynamicTable.pagination}

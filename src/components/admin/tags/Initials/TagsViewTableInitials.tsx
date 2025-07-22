@@ -2,7 +2,6 @@
 import { DataStatus } from "@/constants/data/DataStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { Tag } from "@/types/Tag";
-import { useTag } from "@/hooks/useTag";
 import { Dispatch, SetStateAction } from "react";
 import {
   CommonStatus,
@@ -12,6 +11,7 @@ import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
 import { ActionType } from "@/constants/data/ActionsButton";
 import { ActionsButtonCommonProps } from "@/components/common/ActionsButtonCommonProps";
 import useTable from "@/hooks/useTable";
+import { PaginatedResponse } from "@/types/Api";
 
 export default function TagsViewTableInitials({
   tag,
@@ -24,6 +24,10 @@ export default function TagsViewTableInitials({
   setSearchValue,
   searchRef,
   handleTable,
+  tags,
+  meta,
+  loading,
+  error,
 }: {
   tag: Tag | null;
   searchValue: string;
@@ -35,9 +39,13 @@ export default function TagsViewTableInitials({
   setSearchValue: Dispatch<SetStateAction<string>>;
   searchRef: React.RefObject<HTMLInputElement | null>;
   handleTable: ReturnType<typeof useTable<Tag>>;
+  tags: Tag[];
+  meta: PaginatedResponse<Tag>;
+  error: {
+    message: string;
+  } | null;
+  loading: DataStatus;
 }) {
-  const { loading, error, meta, tags } = useTag();
-
   const filteredTags = searchValue
     ? tags.filter((tag) => tag.title.includes(searchValue))
     : tags;
@@ -78,7 +86,9 @@ export default function TagsViewTableInitials({
           ).color,
           handler: () => {
             console.log(handleTable.handleSelect.selectedIds);
-            onOpenDeleteTagsModal(new Set(handleTable.handleSelect.selectedIds));
+            onOpenDeleteTagsModal(
+              new Set(handleTable.handleSelect.selectedIds)
+            );
           },
           visibility: {
             hiddenOnDeleteStatus: true,

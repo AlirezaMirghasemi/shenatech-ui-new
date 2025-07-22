@@ -80,7 +80,7 @@ export const isTagUniqueAsync = createAsyncThunk(
   async (title: string, { rejectWithValue }) => {
     try {
       const response = await api.get(`/tags/tag-name-is-unique/${title}`);
-      return { isUnique: response.data };
+      return { isUnique: response };
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
       if (axiosError.response?.data) {

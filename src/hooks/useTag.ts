@@ -1,88 +1,110 @@
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  createTagsAsync,
-  deleteTagsAsync,
-  getTagsAsync,
-  isTagUniqueAsync,
-} from "@/store/thunks/tagThunk";
-import { CreateTags, DeleteTags } from "@/types/Tag";
-import { useCallback } from "react";
+import useSWR, { mutate, SWRResponse } from "swr";
+import { fetcher, mutator, swrConfig } from "@/lib/swrConfig";
+import { PaginatedResponse, ApiError } from "@/types/Api";
+import { Tag, CreateTags, DeleteTags } from "@/types/Tag";
+import { DataStatus } from "@/constants/data/DataStatus";
+import { useCallback, useState } from "react";
 
 export const useTag = () => {
-  const dispatch = useAppDispatch();
+  const [params, setParams] = useState({
+    page: "1",
+    perPage: "5",
+    search: "",
+  });
+
+  const getTagsKey = useCallback(() => {
+    const query = new URLSearchParams();
+    if (params.page) query.set("page", params.page);
+    if (params.perPage) query.set("per_page", params.perPage);
+    if (params.search) query.set("search", params.search);
+    return `/tags?${query.toString()}`;
+  }, [params]);
+
   const {
-    data: tags,
-    meta: meta,
-    loading,
-    error,
-    uniqueLoading,
-  } = useAppSelector((state) => state.tags);
-  const fetchTags = useCallback(
-    ({
-      search,
-      page,
-      perPage,
-    }: {
-      search?: string;
-      page?: string;
-      perPage?: string;
-    }) => {
-      try {
-        return dispatch(
-          getTagsAsync({ page: page, perPage: perPage, search: search })
-        ).unwrap();
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-        return [];
-      }
-    },
-    [dispatch]
+    data: tagsResponse,
+    error: tagsError,
+    isLoading: isTagsLoading,
+    mutate: mutateTags,
+  }: SWRResponse<PaginatedResponse<Tag>, ApiError> = useSWR(
+    getTagsKey(),
+    fetcher,
+    {
+      ...swrConfig,
+      keepPreviousData: true,
+    }
   );
   const createTags = useCallback(
-    (tags: CreateTags) => {
+    async (tags: CreateTags) => {
       try {
-        return dispatch(createTagsAsync(tags)).unwrap();
-      } catch (error) {
-        console.error("Error creating tags:", error);
-        return [];
+        const newTag = await mutator("/tags/store", "POST", tags);
+        mutate((key: string) => key.startsWith("/tags"), undefined, {
+          revalidate: true,
+        });
+        return newTag;
+      } catch (err) {
+        console.error("خطا در ایجاد تگ‌ها:", err);
+        throw err as ApiError;
       }
     },
-    [dispatch]
+    [mutate]
   );
-const deleteTags = useCallback(
+
+  const deleteTags = useCallback(
     async (tagIds: DeleteTags) => {
       try {
-        return await dispatch(deleteTagsAsync(tagIds)).unwrap();
-      } catch (error) {
-        console.error("Error deleting tags:", error);
-        throw error;
+        await mutator("/tags/", "DELETE", { tagIds });
+        mutateTags((currentData) => {
+          if (!currentData) return currentData;
+          const newData = currentData.data.filter(
+            (tag) => !tagIds.ids.includes(tag.id)
+          );
+          return {
+            ...currentData,
+            data: newData,
+            total: currentData.meta.total - tagIds.ids.length,
+          };
+        }, true);
+      } catch (err) {
+        console.error("خطا در حذف تگ‌ها:", err);
+        throw err as ApiError;
       }
     },
-    [dispatch]
-  );  const isTagUnique = useCallback(
-    async ({ title }: { title: string }): Promise<boolean> => {
-      try {
-        const result = await dispatch(isTagUniqueAsync(title)).unwrap();
-        return result.isUnique as boolean;
-      } catch (error) {
-        console.error("Error checking tag title uniqueness:", error);
-        return false;
-      }
+    [mutateTags]
+  );
+
+  const isTagUnique = useCallback(async (title: string): Promise<boolean> => {
+    try {
+      const response = await fetcher(`/tags/tag-name-is-unique/${title}`);
+      return response.isUnique;
+    } catch (err) {
+      console.error("خطا در بررسی یکتا بودن تگ:", err);
+      return false;
+    }
+  }, []);
+
+  const fetchTags = useCallback(
+    async (newParams: { search?: string; page?: string; perPage?: string }) => {
+      setParams((prev) => ({ ...prev, ...newParams }));
+      await mutateTags();
     },
-    [dispatch]
+    [mutateTags, setParams]
   );
 
   return {
-    tags,
-    meta,
-    error,
-    loading,
-    uniqueLoading,
+    tags: tagsResponse?.data || [],
+    meta: tagsResponse || ({} as PaginatedResponse<Tag>),
+    error:
+      tagsError && typeof tagsError === "object"
+        ? { message: tagsError.message }
+        : null,
+    loading: isTagsLoading ? DataStatus.PENDING : DataStatus.SUCCEEDED,
+    uniqueLoading: DataStatus.IDLE,
     actions: {
       fetchTags,
       createTags,
+      deleteTags,
       isTagUnique,
-      deleteTags
     },
+    mutate: mutateTags, // افزودن mutate به خروجی
   };
 };

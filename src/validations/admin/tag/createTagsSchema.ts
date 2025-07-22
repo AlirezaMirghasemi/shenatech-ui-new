@@ -2,7 +2,7 @@ import { validationMessages } from "@/utils/ValidationMessages";
 import * as Yup from "yup";
 
 export const createTagsSchema = (
-  checkTagTitleIsUnique: ({ title }: { title: string }) => Promise<boolean>
+  checkTagTitleIsUnique: (title: string) => Promise<boolean>
 ) => {
   const tagSchema = Yup.string()
     .required(validationMessages.required("عنوان هشتگ"))
@@ -11,19 +11,24 @@ export const createTagsSchema = (
     .test(
       "check-tag-title-unique",
       validationMessages.unique("عنوان هشتگ"),
-      async (title) => {
-        if (title) {
-          const isUnique = await checkTagTitleIsUnique({ title });
-          return isUnique;
+     async (title, context) => {
+        if (!title || title.length < 2) return true;
+
+        try {
+          return await checkTagTitleIsUnique(title);
+        } catch  {
+          // Use form context to create custom error
+          return context.createError({
+            message: "خطا در ارتباط با سرور برای بررسی یکتایی"
+          });
         }
-        return false;
       }
     );
 
   return Yup.object().shape({
     titles: Yup.array()
-      .required(validationMessages.required("عنوان هشتگ"))
-      .min(1, validationMessages.required("عنوان هشتگ"))
-      .of(tagSchema),
+      .of(tagSchema)
+      .min(1, "حداقل یک عنوان وارد کنید")
+      .required("وارد کردن عنوان الزامی است"),
   });
 };
