@@ -1,5 +1,4 @@
 "use client";
-import { DataStatus } from "@/constants/data/DataStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { Tag } from "@/types/Tag";
 import { Dispatch, SetStateAction } from "react";
@@ -44,11 +43,9 @@ export default function TagsViewTableInitials({
   error: {
     message: string;
   } | null;
-  loading: DataStatus;
+  loading: boolean;
 }) {
-  const filteredTags = searchValue
-    ? tags.filter((tag) => tag.title.includes(searchValue))
-    : tags;
+
   function onOpenCreateTagModal(): void {
     setCreateTagModal(true);
   }
@@ -99,7 +96,7 @@ export default function TagsViewTableInitials({
         },
       ],
     },
-    data: filteredTags,
+    data: tags,
     columns: [
       {
         header: "نام هشتگ",
@@ -229,7 +226,7 @@ export default function TagsViewTableInitials({
     ],
     rowKey: "id",
     error: error?.toString(),
-    loading: loading === DataStatus.PENDING,
+    loading: loading,
     pagination: meta,
     actionCellClassName: "text-center",
     searchableTable: {

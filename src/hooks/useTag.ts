@@ -2,7 +2,6 @@ import useSWR, { mutate, SWRResponse } from "swr";
 import { fetcher, mutator, swrConfig } from "@/lib/swrConfig";
 import { PaginatedResponse, ApiError } from "@/types/Api";
 import { Tag, CreateTags, DeleteTags } from "@/types/Tag";
-import { DataStatus } from "@/constants/data/DataStatus";
 import { useCallback, useState } from "react";
 
 export const useTag = () => {
@@ -11,7 +10,11 @@ export const useTag = () => {
     perPage: "5",
     search: "",
   });
-
+  // وضعیت‌های بارگذاری برای عملیات مختلف
+  const [isCreating, setIsCreating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isCheckingUniqueness, setIsCheckingUniqueness] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const getTagsKey = useCallback(() => {
     const query = new URLSearchParams();
     if (params.page) query.set("page", params.page);
@@ -21,9 +24,9 @@ export const useTag = () => {
   }, [params]);
 
   const {
-    data: tagsResponse,
+    data: tags,
     error: tagsError,
-    isLoading: isTagsLoading,
+    isLoading: loading,
     mutate: mutateTags,
   }: SWRResponse<PaginatedResponse<Tag>, ApiError> = useSWR(
     getTagsKey(),
@@ -35,6 +38,7 @@ export const useTag = () => {
   );
   const createTags = useCallback(
     async (tags: CreateTags) => {
+      setIsCreating(true);
       try {
         const newTag = await mutator("/tags/store", "POST", tags);
         mutate((key: string) => key.startsWith("/tags"), undefined, {
@@ -44,6 +48,8 @@ export const useTag = () => {
       } catch (err) {
         console.error("خطا در ایجاد تگ‌ها:", err);
         throw err as ApiError;
+      } finally {
+        setIsCreating(false);
       }
     },
     [mutate]
@@ -51,6 +57,7 @@ export const useTag = () => {
 
   const deleteTags = useCallback(
     async (tagIds: DeleteTags) => {
+      setIsDeleting(true);
       try {
         await mutator("/tags/", "DELETE", { tagIds });
         mutateTags((currentData) => {
@@ -67,43 +74,67 @@ export const useTag = () => {
       } catch (err) {
         console.error("خطا در حذف تگ‌ها:", err);
         throw err as ApiError;
+      } finally {
+        setIsDeleting(false);
       }
     },
     [mutateTags]
   );
 
   const isTagUnique = useCallback(async (title: string): Promise<boolean> => {
+    setIsCheckingUniqueness(true);
     try {
       const response = await fetcher(`/tags/tag-name-is-unique/${title}`);
       return response.isUnique;
     } catch (err) {
       console.error("خطا در بررسی یکتا بودن تگ:", err);
       return false;
+    } finally {
+      setIsCheckingUniqueness(false);
     }
   }, []);
 
   const fetchTags = useCallback(
     async (newParams: { search?: string; page?: string; perPage?: string }) => {
-      setParams((prev) => ({ ...prev, ...newParams }));
-      await mutateTags();
+      setIsFetching(true); // شروع دریافت داده‌ها
+      try {
+        const shouldResetPage =
+          newParams.search !== undefined && newParams.search !== params.search;
+
+        setParams((prev) => ({
+          ...prev,
+          ...newParams,
+          page: shouldResetPage ? "1" : newParams.page || prev.page,
+        }));
+        await mutateTags();
+      } catch (error) {
+        console.error("خطا در دریافت تگ‌ها:", error);
+      } finally {
+        setIsFetching(false); // پایان دریافت داده‌ها
+      }
     },
-    [mutateTags, setParams]
+    [mutateTags, setParams, params.search]
   );
 
   return {
-    tags: tagsResponse?.data || [],
-    meta: tagsResponse || ({} as PaginatedResponse<Tag>),
+    tags: tags?.data || [],
+    meta: tags || ({} as PaginatedResponse<Tag>),
     error:
       tagsError && typeof tagsError === "object"
         ? { message: tagsError.message }
         : null,
-    loading: isTagsLoading ? DataStatus.PENDING : DataStatus.SUCCEEDED,
-    uniqueLoading: DataStatus.IDLE,
+    loading: loading || isFetching,
     actions: {
       fetchTags,
       createTags,
       deleteTags,
       isTagUnique,
+    },
+    statuses: {
+      isCreating,
+      isDeleting,
+      isCheckingUniqueness,
+      isFetching,
     },
     mutate: mutateTags, // افزودن mutate به خروجی
   };

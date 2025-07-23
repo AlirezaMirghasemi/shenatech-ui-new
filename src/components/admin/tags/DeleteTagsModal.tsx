@@ -1,4 +1,3 @@
-import { DataStatus } from "@/constants/data/DataStatus";
 import { useTag } from "@/hooks/useTag";
 import { ApiError } from "@/types/Api";
 import { AxiosError } from "axios";
@@ -16,32 +15,20 @@ export default function DeleteTagsModal({
   onCloseDeleteTagsModal: () => void;
 }) {
   const {
-    actions: { deleteTags, fetchTags },
-    meta,
-    loading,
+    actions: { deleteTags },
+    statuses: { isDeleting },
   } = useTag();
   const deleteTagsAction = async (selectedIds: Set<number>) => {
-    console.log(loading);
     if (selectedIds && selectedIds.size > 0) {
       try {
-        await deleteTags({ids:Array.from(selectedIds)});
+        await deleteTags({ ids: Array.from(selectedIds) });
         onCloseDeleteTagsModal();
         toast.success("هشتگ با موفقیت حذف شد!");
-        return await fetchTags({
-          search: "",
-          page: meta?.current_page,
-          perPage: meta?.per_page,
-        });
       } catch (err: unknown) {
         const axiosError = err as AxiosError<ApiError>;
         toast.error(axiosError.message);
       } finally {
         onCloseDeleteTagsModal();
-        return await fetchTags({
-          search: "",
-          page: meta?.current_page,
-          perPage: meta?.per_page,
-        });
       }
     }
   };
@@ -65,9 +52,9 @@ export default function DeleteTagsModal({
               <Button
                 color="danger"
                 onClick={() => deleteTagsAction(selectedIds)}
-                disabled={loading === DataStatus.PENDING}
+                disabled={isDeleting}
               >
-                {loading === DataStatus.PENDING ? (
+                {isDeleting ? (
                   <>
                     <Spinner aria-label="loading delete tags" size="sm" />
                   </>
