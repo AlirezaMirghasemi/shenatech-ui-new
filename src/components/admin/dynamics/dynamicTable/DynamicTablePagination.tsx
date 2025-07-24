@@ -8,7 +8,7 @@ export default function DynamicTablePagination<T extends object>({
   dynamicTablePagination: PaginatedResponse<T>;
   setPage: (page: string) => void;
 }) {
-  console.log("dynamicTablePagination", dynamicTablePagination);
+
   return (
     <>
       <div className="flex overflow-x-auto sm:justify-center" dir="ltr">

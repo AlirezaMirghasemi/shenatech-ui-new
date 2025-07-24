@@ -1,91 +1,83 @@
+import { useState, useEffect, useRef } from "react";
 import { Tag } from "@/types/Tag";
-import { useEffect, useRef, useState } from "react";
-import { useTag } from "@/hooks/useTag";
 import CreateTagModal from "./CreateTagModal";
+import DeleteTagsModal from "./DeleteTagsModal";
+import { useTag } from "@/hooks/useTag";
+import { useTableState } from "@/hooks/useTableState";
+import useTable from "@/hooks/useTable";
 import TagsViewTableInitials from "./Initials/TagsViewTableInitials";
 import DynamicTable from "../dynamics/dynamicTable/DynamicTable";
-import DeleteTagsModal from "./DeleteTagsModal";
-import useTable from "@/hooks/useTable";
+import { ModalData, ModalType } from "@/constants/data/ModalType";
 
-export default function TagsViewTable({
-  tag,
-  setTag,
-  ShowTagDetails,
-}: {
-  tag: Tag | null;
-  setTag: (tag: Tag | null) => void;
-  ShowTagDetails: (tag: Tag) => void;
-}) {
+export default function TagsViewTable() {
   const {
     actions: { fetchTags },
     tags,
     meta,
     loading,
     error,
-
   } = useTag();
-
   const handleTable = useTable<Tag>();
- const [currentPage, setCurrentPage] = useState("1");
-  const [searchValue, setSearchValue] = useState<string>("");
+  const { modals, modalData, openModal, closeModal } = useTableState();
+  const [currentPage, setCurrentPage] = useState("1");
+  const [searchValue, setSearchValue] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
+  //   const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
 
-
-   useEffect(() => {
-    const fetchTagsData = async () => {
-      await fetchTags({
-        search: searchValue,
-        page: currentPage,
-        perPage: "5",
-      });
-    };
-    fetchTagsData();
+  useEffect(() => {
+    fetchTags({ search: searchValue, page: currentPage, perPage: "10" });
   }, [currentPage, searchValue]);
 
-  const [createTagModal, setCreateTagModal] = useState(false);
-  const [editTagModal, setEditTagModal] = useState(false);
-  const [deleteTagsModal, setDeleteTagsModal] = useState(false);
+  useEffect(() => {
+    handleTable.handleSelect.clearSelection();
+  }, [currentPage, searchValue]);
 
-  function onCloseCreateTagModal() {
-    setCreateTagModal(false);
-    setTag(null);
-  }
+  const actionContext = {
+    setSelectedIds: handleTable.handleSelect.setSelectedIds,
+    setSelectedRows: handleTable.handleSelect.setSelectedRows,
+    selectedIds: handleTable.handleSelect.selectedIds,
+    selectedRows: handleTable.handleSelect.selectedRows,
+    openModal: (modal: ModalType, data: ModalData<Tag>) => {
+      openModal(modal, data);
+    },
+  };
 
-  function onCloseDeleteTagsModal() {
-    setDeleteTagsModal(false);
-    handleTable.handleSelect.setSelectedIds(new Set([]));
-  }
+  const tableConfig = TagsViewTableInitials({
+    searchValue,
+    setSearchValue,
+    searchRef,
+    tags,
+    meta,
+    loading,
+    error,
+    actionContext,
+  });
 
   return (
     <>
       <DynamicTable
-        dynamicTable={TagsViewTableInitials({
-          tag,
-          searchValue,
-          ShowTagDetails,
-          setTag,
-          setEditTagModal,
-          setDeleteTagsModal,
-          setCreateTagModal,
-          setSearchValue,
-          searchRef,
-          handleTable,
-          tags,
-          meta,
-          loading,
-          error,
-        })}
+        dynamicTable={tableConfig}
         setPage={setCurrentPage}
         handleTable={handleTable}
+        actionContext={actionContext}
       />
+
       <CreateTagModal
-        createTagModal={createTagModal}
-        onCloseCreateTagModal={onCloseCreateTagModal}
+        createTagModal={modals.create}
+        onCloseCreateTagModal={() => closeModal("create")}
       />
+
       <DeleteTagsModal
-        deleteTagsModal={deleteTagsModal}
-        selectedIds={handleTable.handleSelect.selectedIds}
-        onCloseDeleteTagsModal={onCloseDeleteTagsModal}
+        deleteTagsModal={modals.delete}
+        selectedIds={
+          (modalData as { selectedIds?: Set<number> })?.selectedIds ||
+          new Set<number>()
+        }
+        onCloseDeleteTagsModal={() => {
+          closeModal("delete");
+          actionContext.setSelectedIds(new Set<number>());
+        }}
+        selectedTags={handleTable.handleSelect.selectedRows}
       />
     </>
   );

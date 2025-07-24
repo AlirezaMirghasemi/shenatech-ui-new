@@ -1,4 +1,3 @@
-// hooks/useTableSelection.ts
 import { CommonStatus } from "@/constants/data/CommonStatus";
 import { SortDirection } from "@/constants/data/SortDirection";
 import { useCallback, useState } from "react";
@@ -12,65 +11,55 @@ export default function useTable<
   const [sortDirection, setSortDirection] = useState<SortDirection>(
     SortDirection.ASC
   );
-  const toggleRow = (id: number, row: T) => {
+
+  const toggleRow = useCallback((id: number, row: T) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      console.log(next);
-      return next;
+      const result = next.has(id) ? next.delete(id) : next.add(id);
+      return result ? next : prev;
     });
+
     setSelectedRows((prev) => {
-      let next = [...prev];
-      if (next.includes(row)) {
-        next = next.filter((r) => r.id !== row.id);
-      } else {
-        next.push(row);
-      }
-      return next;
+      const exists = prev.some((r) => r.id === id);
+      return exists ? prev.filter((r) => r.id !== id) : [...prev, row];
     });
-  };
+  }, []);
 
-  const toggleAll = (rows: T[], checked: boolean) => {
-  if (checked) {
-    // انتخاب همه
-    const newIds = new Set(rows.map(row => row.id));
-    setSelectedIds(newIds);
-    setSelectedRows([...rows]);
-  } else {
-    // لغو انتخاب همه
+  const toggleAll = useCallback((rows: T[], checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(rows.map((row) => row.id)));
+      setSelectedRows([...rows]);
+    } else {
+      setSelectedIds(new Set());
+      setSelectedRows([]);
+    }
+  }, []);
+
+  const clearSelection = useCallback(() => {
     setSelectedIds(new Set());
     setSelectedRows([]);
-  }
-};
+  }, []);
 
-  const clearSelection = () => {
-    setSelectedIds(new Set());
-    setSelectedRows([]);
-  };
   const handleSort = useCallback(
     (column: keyof T) => {
-      setSortColumn(column);
-      setSortDirection((prev) =>
-        prev === SortDirection.ASC && sortColumn === column
+      const newDirection =
+        sortColumn === column && sortDirection === SortDirection.ASC
           ? SortDirection.DESC
-          : SortDirection.ASC
-      );
+          : SortDirection.ASC;
+
+      setSortColumn(column);
+      setSortDirection(newDirection);
     },
-    [sortColumn]
+    [sortColumn, sortDirection]
   );
+
   const isRowDeleted = useCallback((status: CommonStatus | string) => {
-    return status === (CommonStatus.DELETED as string);
+    return status === CommonStatus.DELETED;
   }, []);
 
   const dataHasDeleted = useCallback(
-    (status: CommonStatus | string, data: T[]) => {
-      return data.filter((row) => isRowDeleted(row.status)).length > 0;
-    },
-    []
+    (data: T[]) => data.some((row) => isRowDeleted(row.status)),
+    [isRowDeleted]
   );
 
   return {
@@ -83,9 +72,9 @@ export default function useTable<
       toggleRow,
       toggleAll,
       clearSelection,
+      setSelectedIds,
       selectedIds,
       selectedRows,
-      setSelectedIds,
       setSelectedRows,
     },
     handleDeletedStatus: {

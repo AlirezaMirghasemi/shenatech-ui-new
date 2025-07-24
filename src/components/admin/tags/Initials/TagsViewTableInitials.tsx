@@ -1,100 +1,47 @@
-"use client";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { Tag } from "@/types/Tag";
-import { Dispatch, SetStateAction } from "react";
-import {
-  CommonStatus,
-  CommonStatusTitles,
-} from "@/constants/data/CommonStatus";
 import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
+import { CommonStatusTitles } from "@/constants/data/CommonStatus";
+import { ActionConfig, ActionContext } from "@/utils/ActionRegistry";
 import { ActionType } from "@/constants/data/ActionsButton";
-import { ActionsButtonCommonProps } from "@/components/common/ActionsButtonCommonProps";
-import useTable from "@/hooks/useTable";
 import { PaginatedResponse } from "@/types/Api";
+import { SetStateAction, useMemo } from "react";
+import { tagActions } from "./TagsViewTableActions";
+
+interface Props {
+  searchValue: string;
+  setSearchValue: (value: SetStateAction<string>) => void;
+  searchRef: React.RefObject<HTMLInputElement | null>;
+  tags: Tag[];
+  meta: PaginatedResponse<Tag>;
+  loading: boolean;
+  error: { message: string } | null;
+  actionContext: ActionContext<Tag>;
+}
 
 export default function TagsViewTableInitials({
-  tag,
   searchValue,
-  ShowTagDetails,
-  setTag,
-  setEditTagModal,
-  setDeleteTagsModal,
-  setCreateTagModal,
   setSearchValue,
   searchRef,
-  handleTable,
   tags,
   meta,
   loading,
   error,
-}: {
-  tag: Tag | null;
-  searchValue: string;
-  ShowTagDetails: (row: Tag) => void;
-  setTag: (row: Tag) => void;
-  setEditTagModal: (row: boolean) => void;
-  setDeleteTagsModal: (row: boolean) => void;
-  setCreateTagModal: (row: boolean) => void;
-  setSearchValue: Dispatch<SetStateAction<string>>;
-  searchRef: React.RefObject<HTMLInputElement | null>;
-  handleTable: ReturnType<typeof useTable<Tag>>;
-  tags: Tag[];
-  meta: PaginatedResponse<Tag>;
-  error: {
-    message: string;
-  } | null;
-  loading: boolean;
-}) {
+  actionContext,
+}: Props): IDynamicTable<Tag> {
+  const headerActions = useMemo(() => {
+    return [
+      tagActions.getAction(ActionType.CREATE),
+      tagActions.getAction(ActionType.DELETES),
+      tagActions.getAction(ActionType.RESTORES),
+    ].filter(Boolean) as ActionConfig<Tag>[];
+  }, []);
 
-  function onOpenCreateTagModal(): void {
-    setCreateTagModal(true);
-  }
-
-  function onOpenDeleteTagsModal(rows: Set<number>): void {
-    setDeleteTagsModal(true);
-    handleTable.handleSelect.setSelectedIds(rows);
-  }
-
-  function onOpenEditTagModal(row: Tag) {
-    setTag(row);
-    setEditTagModal(true);
-  }
-  const InitialTagsViewTable: IDynamicTable<Tag> = {
+  return {
     header: {
       title: "هشتگ ها",
-      actions: [
-        {
-          caption: "ایجاد هشتگ",
-          name: ActionsButtonCommonProps.getActionButtonProps(ActionType.CREATE)
-            .name,
-          color: ActionsButtonCommonProps.getActionButtonProps(
-            ActionType.CREATE
-          ).color,
-          handler: onOpenCreateTagModal,
-        },
-        //TODO: edit dynamic actions correctly
-        {
-          name: ActionsButtonCommonProps.getActionButtonProps(
-            ActionType.DELETES
-          ).name,
-          caption: "حذف",
-          color: ActionsButtonCommonProps.getActionButtonProps(
-            ActionType.DELETES
-          ).color,
-          handler: () => {
-            console.log(handleTable.handleSelect.selectedIds);
-            onOpenDeleteTagsModal(
-              new Set(handleTable.handleSelect.selectedIds)
-            );
-          },
-          visibility: {
-            hiddenOnDeleteStatus: true,
-            hiddenOnNoSelection: true,
-            disableOnDeleteStatus: true,
-            disableOnNoSelection: true,
-          },
-        },
-      ],
+      description: "مدیریت هشتگ ها",
+      actions: headerActions,
     },
     data: tags,
     columns: [
@@ -104,138 +51,53 @@ export default function TagsViewTableInitials({
         className: "text-center",
       },
       {
-        header: "وضعیت هشتگ",
+        header: "وضعیت",
         accessor: "status",
         className: "text-center",
-        cellRenderer: (row) => {
-          return CommonStatusTitles.getCommonStatusTitle(row.status);
-        },
+        cellRenderer: (row) =>
+          CommonStatusTitles.getCommonStatusTitle(row.status),
       },
       {
         header: "تاریخ ایجاد",
         accessor: "created_at",
         className: "text-center",
-        cellRenderer: (row) => {
-          return ConvertDateToShamsi({ date: row.created_at });
-        },
+        cellRenderer: (row) => ConvertDateToShamsi({ date: row.created_at }),
       },
       {
         header: "حذف شده توسط",
         accessor: "deleted_by",
         className: "text-center",
         roles: ["Admin"],
-        permissions: [],
-        cellRenderer: (row) => {
-          return row.deleted_by?.username ?? "-";
-        },
+        cellRenderer: (row) => row.deleted_by?.username ?? "-",
       },
       {
         header: "تاریخ ویرایش",
         accessor: "updated_at",
         className: "text-center",
-        cellRenderer: (row) => {
-          return row.updated_at
-            ? ConvertDateToShamsi({ date: row.updated_at })
-            : "-";
-        },
+        cellRenderer: (row) =>
+          row.updated_at ? ConvertDateToShamsi({ date: row.updated_at }) : "-",
       },
       {
         header: "تاریخ حذف",
         accessor: "deleted_at",
         className: "text-center",
-        cellRenderer: (row) => {
-          return row.deleted_at
-            ? ConvertDateToShamsi({ date: row.deleted_at })
-            : "-";
-        },
+        cellRenderer: (row) =>
+          row.deleted_at ? ConvertDateToShamsi({ date: row.deleted_at }) : "-",
       },
     ],
-    actions: [
-      {
-        name: ActionsButtonCommonProps.getActionButtonProps(ActionType.DETAIL)
-          .name,
-        caption: "مشاهده ی جزییات",
-        handler: (row: Tag) => {
-          ShowTagDetails(row);
-        },
-        icon: ActionsButtonCommonProps.getActionButtonProps(ActionType.DETAIL)
-          .icon,
-        color: ActionsButtonCommonProps.getActionButtonProps(ActionType.DETAIL)
-          .color,
-
-        visibility: {
-          hiddenOnMultipleSelection: true,
-          disableOnMultipleSelection: true,
-        },
-      },
-      {
-        name: ActionsButtonCommonProps.getActionButtonProps(ActionType.EDIT)
-          .name,
-        caption: "ویرایش",
-        icon: ActionsButtonCommonProps.getActionButtonProps(ActionType.EDIT)
-          .icon,
-        color: ActionsButtonCommonProps.getActionButtonProps(ActionType.EDIT)
-          .color,
-        handler: (row) => {
-          onOpenEditTagModal(row);
-        },
-        visibility: {
-          hiddenOnMultipleSelection: true,
-          disableOnMultipleSelection: true,
-          hiddenOnDeleteStatus: true,
-          disableOnDeleteStatus: true,
-        },
-      },
-      {
-        name: ActionsButtonCommonProps.getActionButtonProps(ActionType.DELETE)
-          .name,
-        caption: "حذف",
-        icon: ActionsButtonCommonProps.getActionButtonProps(ActionType.DELETE)
-          .icon,
-        color: "danger",
-        handler: (row) => {
-          setTag(row);
-          onOpenDeleteTagsModal(new Set([row.id]));
-        },
-        visibility: {
-          hiddenOnMultipleSelection: true,
-          disableOnMultipleSelection: true,
-          hiddenOnDeleteStatus: true,
-          disableOnDeleteStatus: true,
-        },
-      },
-      {
-        name: ActionsButtonCommonProps.getActionButtonProps(ActionType.RESTORE)
-          .name,
-        caption: "بازیابی",
-        icon: ActionsButtonCommonProps.getActionButtonProps(ActionType.RESTORE)
-          .icon,
-        color: ActionsButtonCommonProps.getActionButtonProps(ActionType.RESTORE)
-          .color,
-        handler: (row) => {
-          setTag(row);
-          //onOpenRestoreTagModal(row.id);
-        },
-        visibility: {
-          hiddenOnMultipleSelection: true,
-          disableOnMultipleSelection: true,
-        },
-        hidden: (row) => row.status !== CommonStatus.DELETED,
-        disabled: (row) => row.status !== CommonStatus.DELETED,
-      },
-    ],
+    getRowActions: (row: Tag) =>
+      tagActions.getVisibleActions(row, actionContext),
     rowKey: "id",
-    error: error?.toString(),
-    loading: loading,
+    error: error?.message,
+    loading,
     pagination: meta,
     actionCellClassName: "text-center",
     searchableTable: {
       searchable: true,
-      searchValue: searchValue,
-      setSearchValue: setSearchValue,
-      searchRef: searchRef,
+      searchValue,
+      setSearchValue,
+      searchRef,
     },
     checkboxTable: true,
   };
-  return InitialTagsViewTable;
 }

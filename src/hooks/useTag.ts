@@ -60,17 +60,10 @@ export const useTag = () => {
       setIsDeleting(true);
       try {
         await mutator("/tags/", "DELETE", { tagIds });
-        mutateTags((currentData) => {
-          if (!currentData) return currentData;
-          const newData = currentData.data.filter(
-            (tag) => !tagIds.ids.includes(tag.id)
-          );
-          return {
-            ...currentData,
-            data: newData,
-            total: currentData.meta.total - tagIds.ids.length,
-          };
-        }, true);
+
+        mutate((key: string) => key.startsWith("/tags"), undefined, {
+          revalidate: true,
+        });
       } catch (err) {
         console.error("خطا در حذف تگ‌ها:", err);
         throw err as ApiError;
@@ -78,7 +71,7 @@ export const useTag = () => {
         setIsDeleting(false);
       }
     },
-    [mutateTags]
+    [mutate] // اضافه کردن mutate به وابستگی‌ها
   );
 
   const isTagUnique = useCallback(async (title: string): Promise<boolean> => {
