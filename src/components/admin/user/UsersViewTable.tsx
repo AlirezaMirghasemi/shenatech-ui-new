@@ -9,100 +9,92 @@ import CreateUserModal from "./CreateUserModal";
 import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
 import UsersViewTableInitials from "./Initials/UsersViewTableInitials";
-export default function UsersViewTable({
-  user,
-  setUser,
-  showUserDetails,
-}: {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  showUserDetails: (user: User) => void;
-}) {
+import useTable from "@/hooks/useTable";
+import { useTableState } from "@/hooks/useTableState";
+import { ModalData, ModalType } from "@/constants/data/ModalType";
+export default function UsersViewTable() {
   const {
     actions: { fetchUsers },
+    users,
+    error,
+    loading,
+    meta,
   } = useUser();
 
-  const [usersPage, setUsersPage] = useState("1");
-  const [userProfileModal, setUserProfileModal] = useState(false);
-  const [createUserModal, setCreateUserModal] = useState(false);
-  const [editUserModal, setEditUserModal] = useState(false);
-  const [deleteUserModal, setDeleteUserModal] = useState(false);
-  const [searchValue, setSearchValue] = useState<string>("");
+  const handleTable = useTable<User>();
+  const { modals, modalData, openModal, closeModal } = useTableState();
+  const [currentPage, setCurrentPage] = useState("1");
+  const [searchValue, setSearchValue] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
-  const [usersSearchedPage, setUsersSearchedPage] = useState("1");
 
   useEffect(() => {
-    const fetchUsersData = async () => {
-      if (searchValue != "") {
-        await fetchUsers({search:searchValue, page:usersSearchedPage,perPage: "5"});
-        searchRef.current?.focus();
-        setUsersPage("1");
-      } else {
-        await fetchUsers({search:"", page:usersPage,perPage: "5"});
-        setUsersSearchedPage("1");
-      }
-    };
-    fetchUsersData();
-  }, [usersPage, usersSearchedPage, searchValue]);
+    fetchUsers({ search: searchValue, page: currentPage, perPage: "10" });
+  }, [currentPage, searchValue]);
+  useEffect(() => {
+    handleTable.handleSelect.clearSelection();
+  }, [currentPage, searchValue]);
 
-  const onCloseUserProfileModal = () => {
-    setUserProfileModal(false);
-    setUser(null);
+  const actionContext = {
+    setSelectedIds: handleTable.handleSelect.setSelectedIds,
+    setSelectedRows: handleTable.handleSelect.setSelectedRows,
+    selectedIds: handleTable.handleSelect.selectedIds,
+    selectedRows: handleTable.handleSelect.selectedRows,
+    openModal: (modal: ModalType, data: ModalData<User>) => {
+      openModal(modal, data);
+    },
   };
-
-  const onCloseCreateUserModal = () => {
-    setCreateUserModal(false);
-    setUser(null);
-  };
-
-  const onCloseEditUserModal = () => {
-    setEditUserModal(false);
-    setUser(null);
-  };
-
-  const onCloseDeleteUserModal = () => {
-    setDeleteUserModal(false);
-    setUser(null);
-  };
+  const tableConfig = UsersViewTableInitials({
+    searchValue,
+    setSearchValue,
+    searchRef,
+    users,
+    meta,
+    loading,
+    error,
+    actionContext,
+  });
 
   return (
     <>
       <DynamicTable
-        dynamicTable={UsersViewTableInitials({
-          user,
-          showUserDetails,
-          setUser,
-          setUserProfileModal,
-          setEditUserModal,
-          setDeleteUserModal,
-          setCreateUserModal,
-          searchValue,
-          setSearchValue,
-          searchRef,
-        })}
-        setPage={setUsersPage}
+        dynamicTable={tableConfig}
+        setPage={setCurrentPage}
+        handleTable={handleTable}
+        actionContext={actionContext}
       />
+
       <CreateUserModal
-        createUserModal={createUserModal}
-        onCloseCreateUserModal={onCloseCreateUserModal}
+        createUserModal={modals.create}
+        onCloseCreateUserModal={() => closeModal("create")}
       />
-      {user && (
+
+      {handleTable.handleSelect.selectedRows[0] && (
         <>
           <UserProfileModal
-            user={user}
-            onClose={onCloseUserProfileModal}
-            userProfileModal={userProfileModal}
+            user={handleTable.handleSelect.selectedRows[0]}
+            onClose={() => {
+              closeModal("detail");
+              actionContext.setSelectedIds(new Set<number>());
+            }}
+            userProfileModal={modals.detail}
           />
           <EditUserModal
-            editUserModal={editUserModal}
-            onCloseEditUserModal={onCloseEditUserModal}
-            user={user}
+            editUserModal={modals.edit}
+            onCloseEditUserModal={() => {
+              closeModal("edit");
+              actionContext.setSelectedIds(new Set<number>());
+            }}
+            user={handleTable.handleSelect.selectedRows[0]}
           />
           <DeleteUserModal
-            deleteUserModal={deleteUserModal}
-            onCloseDeleteUserModal={onCloseDeleteUserModal}
-            user={user}
+            deleteUserModal={modals.delete}
+            onCloseDeleteUserModal={() => {
+              closeModal("delete");
+              actionContext.setSelectedIds(new Set<number>());
+            }}
+            user={handleTable.handleSelect.selectedRows[0]}
           />
+
         </>
       )}
     </>

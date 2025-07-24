@@ -13,6 +13,7 @@ export const useTableState =<T extends object> () => {
     restores: false,
     assign: false,
     info: false,
+
   });
 
   const [modalData, setModalData] = useState<ModalData<T>>();

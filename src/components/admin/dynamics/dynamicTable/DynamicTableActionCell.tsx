@@ -14,9 +14,7 @@ export const DynamicTableActionCell = <T extends object>({
       {actions.map((action) => {
         const isDisabled = action.visibility?.disabled?.(item, context);
         const isHidden = action.visibility?.hidden?.(item, context);
-
         if (isHidden) return null;
-
         if (action.actionRender) {
           return (
             <Tooltip
@@ -39,7 +37,7 @@ export const DynamicTableActionCell = <T extends object>({
               onClick={() => action.handler(item, context)}
               disabled={isDisabled}
               color={action.color}
-              className="transition-colors"
+              className="transition-colors m-1"
             >
               {action.icon || action.label}
             </Button>

@@ -15,4 +15,6 @@ export enum ActionType {
   SEARCH = "search",
   DELETE = "delete",
   DELETES = "deletes",
+
+  CHANGE_STATUS = "changStatus",
 }

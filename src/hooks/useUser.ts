@@ -1,85 +1,158 @@
 import { UserStatus } from "@/constants/data/UserStatus";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  checkFieldIsUniqueAsync,
-  createUserAsync,
-  deleteUserAsync,
-  editUserAsync,
-  editUserStatusAsync,
-  fetchPermissionUsersAsync,
-  fetchRoleUsersAsync,
-  fetchUnAssignedRoleUsersAsync,
-  getUsersAsync,
-} from "@/store/thunks/userThunk";
-import { CreateUser, DeleteUser, EditUser } from "@/types/User";
-import { useCallback } from "react";
+import { fetcher, mutator, swrConfig } from "@/lib/swrConfig";
+import { ApiError, PaginatedResponse } from "@/types/Api";
+import { CreateUser, DeleteUser, EditUser, User } from "@/types/User";
+import { useCallback, useState } from "react";
+import useSWR, { mutate, SWRResponse } from "swr";
 
 export const useUser = () => {
-  const dispatch = useAppDispatch();
+  const [params, setParams] = useState({
+    page: "1",
+    perPage: "5",
+    search: "",
+  });
+  const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isCheckingUniqueness, setIsCheckingUniqueness] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const getTagsKey = useCallback(() => {
+    const query = new URLSearchParams();
+    if (params.page) query.set("page", params.page);
+    if (params.perPage) query.set("per_page", params.perPage);
+    if (params.search) query.set("search", params.search);
+    return `/users?${query.toString()}`;
+  }, [params]);
   const {
     data: users,
-    meta: meta,
-    loading,
-    error,
-    uniqueLoading,
-    unassignedRoleUsers,
-  } = useAppSelector((state) => state.users);
-  const createUser = useCallback(
-    async (user: CreateUser, profileImage?: File) => {
-      try {
-        return dispatch(createUserAsync({ user, profileImage })).unwrap();
-      } catch (error) {
-        console.error("Error creating user:", error);
-        throw error;
-      }
-    },
-    [dispatch]
-  );
-  const deleteUser = useCallback(
-    async ({ deleteUserData }: { deleteUserData: DeleteUser }) => {
-      try {
-        return dispatch(deleteUserAsync({ deleteUserData })).unwrap();
-      } catch (error) {
-        console.error("Error deleting user:", error);
-        throw error;
-      }
-    },
-    [dispatch]
-  );
-  const fetchUsers = useCallback(
-    ({
-      search,
-      page,
-      perPage,
-    }: {
-      search?: string;
-      page?: string;
-      perPage?: string;
-    }) => {
-      try {
-        return dispatch(
-          getUsersAsync({ page: page, perPage: perPage, search: search })
-        ).unwrap();
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        return [];
-      }
-    },
-    [dispatch]
+    error: usersError,
+    isLoading: loading,
+    mutate: mutateUsers,
+  }: SWRResponse<PaginatedResponse<User>, ApiError> = useSWR(
+    getTagsKey(),
+    fetcher,
+    {
+      ...swrConfig,
+      keepPreviousData: true,
+    }
   );
 
-  const fetchRoleUsers = useCallback(
-    (roleId: number, perPage?: string, page?: string) => {
-      dispatch(fetchRoleUsersAsync({ roleId, perPage, page }));
+  const createUser = useCallback(
+    async (user: CreateUser, profileImage?: File) => {
+      setIsCreating(true);
+      try {
+        const formData = new FormData();
+        Object.entries(user).forEach(([key, value]) => {
+          if (
+            key !== "profile_image" &&
+            value !== null &&
+            value !== undefined
+          ) {
+            formData.append(key, value as string);
+          }
+        });
+        if (profileImage) {
+          formData.append("profile_image", profileImage);
+        }
+        const newUser = await mutator("/users", "POST", formData);
+        mutate((key: string) => key.startsWith("/users"), undefined, {
+          revalidate: true,
+        });
+
+        return newUser;
+      } catch (error) {
+        console.error("خطا در ایجاد کاربر:", error);
+        throw error as ApiError;
+      } finally {
+        setIsCreating(false);
+      }
     },
-    [dispatch]
+    [mutate]
+  );
+
+  const deleteUser = useCallback(
+    async (deleteUserData: DeleteUser) => {
+      setIsDeleting(true);
+      try {
+        await mutator("/users/delete", "POST", {
+          options: {
+            removeProfilePicture: deleteUserData.removeProfilePicture,
+            removeRoles: deleteUserData.removeRoles,
+          },
+        });
+        mutate((key: string) => key.startsWith("/users"), undefined, {
+          revalidate: true,
+        });
+      } catch (err) {
+        console.error("خطا در حذف کاربر:", err);
+        throw err as ApiError;
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    [mutate] // اضافه کردن mutate به وابستگی‌ها
+  );
+  const fetchUsers = useCallback(
+    async (newParams: { search?: string; page?: string; perPage?: string }) => {
+      setIsFetching(true); // شروع دریافت داده‌ها
+      try {
+        const shouldResetPage =
+          newParams.search !== undefined && newParams.search !== params.search;
+
+        setParams((prev) => ({
+          ...prev,
+          ...newParams,
+          page: shouldResetPage ? "1" : newParams.page || prev.page,
+        }));
+        await mutateUsers();
+      } catch (error) {
+        console.error("خطا در دریافت کاربران:", error);
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    [mutateUsers, setParams, params.search]
+  );
+  const fetchRoleUsers = useCallback(
+    async (roleId: number, newParams: { page?: string; perPage?: string }) => {
+      setIsFetching(true);
+      try {
+        const result = await fetcher(`/roles/${roleId}/users`, {
+          page: newParams.page || "1",
+          per_page: newParams.perPage || "5",
+        });
+        return result;
+      } catch (error) {
+        console.error("خطا در دریافت کاربران با نقش:", error);
+        throw error as ApiError;
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    []
   );
   const fetchPermissionUsers = useCallback(
-    (permissionId: number, perPage?: string, page?: string) => {
-      dispatch(fetchPermissionUsersAsync({ permissionId, perPage, page }));
+    async (
+      permissionId: number,
+      newParams: { page?: string; perPage?: string }
+    ) => {
+      setIsFetching(true);
+      try {
+        const result = await fetcher(`/permissions/${permissionId}/users`, {
+          page: newParams.page || "1",
+          per_page: newParams.perPage || "5",
+        });
+        return result;
+      } catch (error) {
+        console.error("خطا در دریافت کاربران با دسترسی:", error);
+        throw error as ApiError;
+      } finally {
+        setIsFetching(false);
+      }
     },
-    [dispatch]
+    []
   );
+
   const checkFieldIsUnique = useCallback(
     async ({
       fieldValue,
@@ -88,61 +161,100 @@ export const useUser = () => {
       fieldValue: string;
       fieldName: string;
     }): Promise<boolean> => {
+      setIsCheckingUniqueness(true);
       try {
-        const result = await dispatch(
-          checkFieldIsUniqueAsync({
-            fieldValue: fieldValue,
-            fieldName: fieldName,
-          })
-        ).unwrap();
-        return result as boolean;
+        const result = await fetcher("/users/field-is-unique", {
+          fieldName: fieldName,
+          fieldValue: fieldValue,
+        });
+        return result.isUnique;
       } catch (error) {
-        console.error("Error checking field uniqueness:", error);
-        return false;
+        console.error("خطا در بررسی تکراری بودن فیلد:", error);
+        throw error as ApiError;
+      } finally {
+        setIsCheckingUniqueness(false);
       }
     },
-    [dispatch]
+    []
   );
-
   const editUserStatus = useCallback(
     async (userId: number, status: UserStatus) => {
+      setIsEditing(true);
       try {
-        return dispatch(editUserStatusAsync({ userId, status })).unwrap();
+        const result = await mutator(`/users/${userId}/status`, "PUT", {
+          status,
+        });
+        mutate((key: string) => key.startsWith("/users"), undefined, {
+          revalidate: true,
+        });
+        return result;
       } catch (error) {
-        console.error("Error editing user status:", error);
-        throw error;
+        console.error("خطا در ویرایش وضعیت کاربر:", error);
+        throw error as ApiError;
+      } finally {
+        setIsEditing(false);
       }
     },
-    [dispatch]
+    [mutate]
   );
+
   const editUser = useCallback(
     async (userId: number, user: EditUser, profileImage?: File) => {
+      const formData = new FormData();
+      Object.entries(user).forEach(([key, value]) => {
+        if (key !== "profile_image" && value !== null && value !== undefined) {
+          formData.append(key, value);
+        }
+      });
+      if (profileImage) {
+        formData.append("profile_image", profileImage);
+      }
+      setIsEditing(true);
       try {
-        return dispatch(editUserAsync({ userId, user, profileImage })).unwrap();
+        const result = await mutator(`/users/${userId}`, "POST", {
+          formData,
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        mutate((key: string) => key.startsWith("/users"), undefined, {
+          revalidate: true,
+        });
+        return result;
       } catch (error) {
-        console.error("Error editing user:", error);
-        throw error;
+        console.error("خطا در ویرایش کاربر:", error);
+        throw error as ApiError;
+      } finally {
+        setIsEditing(false);
       }
     },
-    [dispatch]
+    [mutate]
   );
-  const fetchUnAssignedRoleUsers = useCallback(
+ const fetchUnAssignedRoleUsers = useCallback(
     async (roleId: number) => {
-      try {
-        await dispatch(fetchUnAssignedRoleUsersAsync({ roleId })).unwrap();
-      } catch (error) {
-        console.error("Error fetching unassigned role users:", error);
-      }
+        setIsFetching(true);
+        try {
+            const result=await fetcher(`/users/${roleId}/roles/unassigned`);
+            return result;
+        } catch (error) {
+            console.error("خطا در دریافت نقش های بدون کاربر:", error);
+            throw error as ApiError;
+        }finally {
+            setIsFetching(false);
+        }
     },
-    [dispatch]
+    []
   );
+
+
+
   return {
-    users,
-    meta,
-    error,
-    loading,
-    uniqueLoading,
-    unassignedRoleUsers,
+     users: users?.data || [],
+        meta: users || ({} as PaginatedResponse<User>),
+    error:
+      usersError && typeof usersError === "object"
+        ? { message: usersError.message }
+        : null,
+    loading: loading || isFetching,
+
     actions: {
       createUser,
       editUser,
@@ -154,5 +266,12 @@ export const useUser = () => {
       checkFieldIsUnique,
       fetchUnAssignedRoleUsers,
     },
+    statuses:{
+        isCreating,
+        isEditing,
+        isFetching,
+        isCheckingUniqueness,
+        isDeleting
+    }
   };
 };

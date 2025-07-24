@@ -4,7 +4,6 @@ import { editUserStatusSchema } from "@/validations/admin/user/editUserStatusSch
 import { InputType } from "@/constants/data/InputType";
 import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { UserStatus, UserStatusTitles } from "@/constants/data/UserStatus";
-import { DataStatus } from "@/constants/data/DataStatus";
 import { EditUserStatus, User } from "@/types/User";
 import { FormikHelpers } from "formik";
 import { toast } from "sonner";
@@ -12,9 +11,9 @@ import { useUser } from "@/hooks/useUser";
 
 export default function ChangeUserStatusForm({ user }: { user: User }) {
   const {
-    actions: { editUserStatus, fetchUsers },
+    actions: { editUserStatus,  },
     loading,
-    meta,
+
   } = useUser();
   const onSubmit = async (
     values: EditUserStatus,
@@ -22,11 +21,7 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
   ) => {
     try {
       await editUserStatus(user.id, values.status);
-      await fetchUsers({
-        search: "",
-        page: meta?.current_page,
-        perPage: meta?.per_page,
-      });
+
       toast.success("وضعیت کاربر با موفقیت ویرایش شد.");
     } catch (error) {
       console.error("Error creating user:", error);
@@ -38,7 +33,7 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
 
   return (
     <>
-      <div className="max-w-lg  scroll-auto p-5  rounded-lg shadow dark:border  sm:max-w-md ">
+      <div className="max-w-lg absolute z-999  scroll-auto p-5  rounded-lg shadow dark:border  sm:max-w-md ">
         <DynamicForm
           initialValues={editUserStatusInitial({ status: user.status })}
           validationSchema={editUserStatusSchema()}
@@ -46,7 +41,7 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
           onSubmit={onSubmit}
           validateOnChange={true}
           validateOnBlur={true}
-          disabledButton={loading == DataStatus.PENDING}
+          disabledButton={loading}
           submitButtonSize="sm"
           buttonClassName="w-50"
         >
@@ -79,8 +74,8 @@ export default function ChangeUserStatusForm({ user }: { user: User }) {
                 ),
               },
             ]}
-            disabled={loading == DataStatus.PENDING}
-            loading={loading == DataStatus.PENDING}
+            disabled={loading }
+            loading={loading }
             className="w-50"
           />
         </DynamicForm>

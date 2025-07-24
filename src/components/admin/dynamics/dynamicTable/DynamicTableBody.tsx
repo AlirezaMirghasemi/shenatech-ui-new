@@ -65,13 +65,17 @@ export default function DynamicTableBody<
               );
             })}
 
-            {actions.length > 0 && (
+            {actions.length > 0 ? (
               <TableCell className={actionCellClassName || "py-3 px-4"}>
                 <DynamicTableActionCell
                   item={row}
                   actions={actions}
                   context={actionContext}
                 />
+              </TableCell>
+            ) : (
+              <TableCell className={actionCellClassName || "py-3 px-4"}>
+                ---
               </TableCell>
             )}
 

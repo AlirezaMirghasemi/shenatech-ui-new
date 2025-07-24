@@ -13,7 +13,7 @@ export const tagActions = new ActionRegistry<Tag>()
     label: "ایجاد هشتگ",
     color: Color.success,
     visibility: {
-      hidden: (item,{selectedIds}) => (item !== null)||selectedIds.size!=0, // فقط در هدر نمایش داده شود
+      hidden: (item, { selectedIds }) => item !== null || selectedIds.size != 0,
     },
     handler: (_, { openModal }) => openModal(Modal.create, {}),
   })
@@ -100,7 +100,10 @@ export const tagActions = new ActionRegistry<Tag>()
     icon: <FaRecycle />,
     color: Color.warning,
     visibility: {
-      hidden: (tag) => tag === null || tag.status !== CommonStatus.DELETED,
+      hidden: (tag, { selectedIds }) =>
+        tag === null ||
+        tag.status !== CommonStatus.DELETED ||
+        selectedIds.size != 0,
     },
     handler: (tag, { setSelectedIds, setSelectedRows, openModal }) => {
       if (tag) {
