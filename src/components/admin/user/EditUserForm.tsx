@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { FormikHelpers } from "formik";
 import { editUserInitial } from "@/validations/admin/user/editUserInitial";
 import { editUserSchema } from "@/validations/admin/user/editUserSchema";
-import { DataStatus } from "@/constants/data/DataStatus";
 
 export default function EditUserForm({
   onCloseEditUserModal,
@@ -20,10 +19,8 @@ export default function EditUserForm({
   user: User;
 }) {
   const {
-    actions: { editUser, fetchUsers, checkFieldIsUnique },
-    loading,
-    uniqueLoading,
-    meta,
+    actions: { editUser, checkFieldIsUnique },
+    statuses: { isEditing, isCheckingUniqueness },
   } = useUser();
   const onSubmit = async (
     values: EditUser,
@@ -31,11 +28,6 @@ export default function EditUserForm({
   ) => {
     try {
       await editUser(user.id, values, values.profile_image as File | undefined);
-      await fetchUsers({
-        search: "",
-        page: meta?.current_page,
-        perPage: meta?.per_page,
-      });
       onCloseEditUserModal();
       toast.success("کاربر با موفقیت ویرایش شد.");
     } catch (error) {
@@ -62,10 +54,7 @@ export default function EditUserForm({
             submitButtonColor="warning"
             validateOnChange={false}
             validateOnBlur={true}
-            disabledButton={
-              loading == DataStatus.PENDING ||
-              uniqueLoading == DataStatus.PENDING
-            }
+            disabledButton={isEditing || isCheckingUniqueness}
           >
             <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="col-span-2">
@@ -75,12 +64,9 @@ export default function EditUserForm({
                   placeholder="نام کاربری"
                   label="نام کاربری"
                   type={InputType.TEXT}
-                  disabled={
-                    loading == DataStatus.PENDING ||
-                    uniqueLoading == DataStatus.PENDING
-                  }
+                  disabled={isEditing || isCheckingUniqueness}
                   className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  loading={isEditing || isCheckingUniqueness}
                   autoComplete="username"
                 />
               </div>
@@ -92,8 +78,8 @@ export default function EditUserForm({
                   label="نام کوچک"
                   type={InputType.TEXT}
                   className="block w-full"
-                  disabled={loading == DataStatus.PENDING}
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isEditing || isCheckingUniqueness}
+                  loading={isEditing || isCheckingUniqueness}
                   autoComplete="given-name"
                 />
               </div>
@@ -105,8 +91,8 @@ export default function EditUserForm({
                   label="نام خانوادگی"
                   className="block w-full"
                   type={InputType.TEXT}
-                  disabled={loading == DataStatus.PENDING}
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isEditing || isCheckingUniqueness}
+                  loading={isEditing || isCheckingUniqueness}
                   autoComplete="family-name"
                 />
               </div>
@@ -118,7 +104,7 @@ export default function EditUserForm({
                   label="نام کامل"
                   type={InputType.TEXT}
                   readOnly
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  loading={isEditing || isCheckingUniqueness}
                   className="w-full"
                 />
               </div>
@@ -130,10 +116,8 @@ export default function EditUserForm({
                   placeholder="ایمیل"
                   label="ایمیل"
                   type={InputType.EMAIL}
-                  disabled={
-                    loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
-                  }
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isEditing || isCheckingUniqueness}
+                  loading={isEditing || isCheckingUniqueness}
                   className="block w-full"
                   autoComplete="email"
                 />
@@ -145,11 +129,9 @@ export default function EditUserForm({
                   placeholder="شماره موبایل"
                   label="شماره موبایل"
                   type={InputType.TEXT}
-                  disabled={
-                    loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
-                  }
+                  disabled={isEditing || isCheckingUniqueness}
                   className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  loading={isEditing || isCheckingUniqueness}
                   autoComplete="tel"
                 />
               </div>
@@ -175,10 +157,8 @@ export default function EditUserForm({
                       label: GenderTitles.getGenderTitle(Gender.NotSpecified),
                     },
                   ]}
-                  disabled={
-                    loading == DataStatus.PENDING // || uniqueLoading == DataStatus.PENDING
-                  }
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isEditing || isCheckingUniqueness}
+                  loading={isEditing || isCheckingUniqueness}
                 />
               </div>
               <div className="col-span-2">
@@ -188,12 +168,9 @@ export default function EditUserForm({
                   placeholder="بیوگرافی"
                   label="بیوگرافی"
                   type={InputType.TEXTAREA}
-                  disabled={
-                    loading == DataStatus.PENDING ||
-                    uniqueLoading == DataStatus.PENDING
-                  }
+                  disabled={isEditing || isCheckingUniqueness}
                   className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  loading={isEditing || isCheckingUniqueness}
                 />
               </div>
 
@@ -204,14 +181,8 @@ export default function EditUserForm({
                 label="عکس پروفایل"
                 type={InputType.IMAGE}
                 className="mb-5"
-                loading={
-                  loading == DataStatus.PENDING ||
-                  uniqueLoading == DataStatus.PENDING
-                }
-                disabled={
-                  loading == DataStatus.PENDING ||
-                  uniqueLoading == DataStatus.PENDING
-                }
+                loading={isEditing || isCheckingUniqueness}
+                disabled={isEditing || isCheckingUniqueness}
               />
 
               <div className="col-span-2 sm:col-span-1">
@@ -223,28 +194,33 @@ export default function EditUserForm({
                   className="block w-full"
                   type={InputType.SELECT}
                   data={[
-              {
-                value: UserStatus.PENDING,
-                label: UserStatusTitles.getUserStatusTitle(UserStatus.PENDING),
-              },
-              {
-                value: UserStatus.ACTIVE,
-                label: UserStatusTitles.getUserStatusTitle(UserStatus.ACTIVE),
-              },
-              {
-                value: UserStatus.DEACTIVATED,
-                label: UserStatusTitles.getUserStatusTitle(UserStatus.DEACTIVATED),
-              },
-              {
-                value: UserStatus.SUSPENDED,
-                label: UserStatusTitles.getUserStatusTitle(UserStatus.SUSPENDED),
-              },
-            ]}
-                  disabled={
-                    loading == DataStatus.PENDING ||
-                    uniqueLoading == DataStatus.PENDING
-                  }
-                  loading={uniqueLoading == DataStatus.PENDING}
+                    {
+                      value: UserStatus.PENDING,
+                      label: UserStatusTitles.getUserStatusTitle(
+                        UserStatus.PENDING
+                      ),
+                    },
+                    {
+                      value: UserStatus.ACTIVE,
+                      label: UserStatusTitles.getUserStatusTitle(
+                        UserStatus.ACTIVE
+                      ),
+                    },
+                    {
+                      value: UserStatus.DEACTIVATED,
+                      label: UserStatusTitles.getUserStatusTitle(
+                        UserStatus.DEACTIVATED
+                      ),
+                    },
+                    {
+                      value: UserStatus.SUSPENDED,
+                      label: UserStatusTitles.getUserStatusTitle(
+                        UserStatus.SUSPENDED
+                      ),
+                    },
+                  ]}
+                  disabled={isEditing || isCheckingUniqueness}
+                  loading={isEditing || isCheckingUniqueness}
                 />
               </div>
             </div>

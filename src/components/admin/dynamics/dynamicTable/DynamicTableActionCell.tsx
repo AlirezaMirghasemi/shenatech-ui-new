@@ -15,21 +15,17 @@ export const DynamicTableActionCell = <T extends object>({
         const isDisabled = action.visibility?.disabled?.(item, context);
         const isHidden = action.visibility?.hidden?.(item, context);
         if (isHidden) return null;
-        if (action.actionRender) {
+       if (action.actionRender) {
           return (
-            <Tooltip
-              key={action.id}
-              content={action.label}
-              animation="duration-500"
-            >
+            <React.Fragment key={`${action.id}`}>
               {action.actionRender(item)}
-            </Tooltip>
+            </React.Fragment>
           );
         }
 
         return (
           <Tooltip
-            key={action.id}
+            key={`${action.id}`}
             content={action.label}
             animation="duration-500"
           >

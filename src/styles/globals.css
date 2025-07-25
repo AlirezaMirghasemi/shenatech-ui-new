@@ -396,3 +396,13 @@ layer components {
     padding-right: clamp(1rem, 5vw, 2rem);
   }
 }
+/* globals.css */
+#portal-root {
+  position: relative;
+  z-index: 9999;
+}
+
+.popover-content {
+  z-index: 9999 !important;
+  position: absolute !important;
+}

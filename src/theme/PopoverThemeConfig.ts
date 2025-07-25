@@ -1,11 +1,11 @@
 import { createTheme } from "flowbite-react";
 
+// PopoverThemeConfig.ts
 export const PopoverThemeConfig = createTheme({
-  base: "absolute  z-50 h-auto inline-block w-max max-w-[100vw] rounded-lg border border-border-default bg-bg-surface shadow-lg outline-none  transition-all duration-[--transition-duration] ease-[--transition-timing]",
-  inner: "relative p-2",
-  content: "z-1000 overflow-hidden rounded-lg overflow-y-auto",
+  base: "absolute z-[9999] inline-block w-max rounded-lg border border-border-default bg-bg-surface shadow-lg",
+  content: "z-[9999] overflow-hidden rounded-lg",
   arrow: {
-    base: "absolute z-0 h-3 w-3 rotate-45 border border-border-default bg-bg-surface shadow-[0_0_0_1px_rgba(0,0,0,0.05)]",
-    placement: "-6px",
+    base: "absolute z-0 h-3 w-3 rotate-45 bg-bg-surface",
+    placement: "-4px",
   },
 });

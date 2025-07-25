@@ -34,7 +34,7 @@ export const fetcher = async (url: string, params?: Record<string, string>) => {
 export const mutator = async (
   url: string,
   method: "POST" | "DELETE" | "PUT",
-  data?: object
+  data?: object | FormData
 ) => {
   // Step 1: Get CSRF cookie
   const csrfResponse = await fetch(`${SANCTUM_URL}/sanctum/csrf-cookie`, {
@@ -56,10 +56,18 @@ export const mutator = async (
     "X-Requested-With": "XMLHttpRequest",
     "X-XSRF-TOKEN": xsrfToken,
   };
+  let body: BodyInit | undefined;
 
   // Add Content-Type only for requests with body
   if (data) {
-    headers["Content-Type"] = "application/json";
+    if (data instanceof FormData) {
+      // For FormData, let the browser set the content type
+      body = data;
+    } else {
+      // For JSON data, set content type and stringify
+      headers["Content-Type"] = "application/json";
+      body = JSON.stringify(data);
+    }
   }
 
   // Step 4: Send main request
@@ -67,7 +75,7 @@ export const mutator = async (
     method,
     headers,
     credentials: "include",
-    body: data ? JSON.stringify(data) : undefined,
+    body
   });
 
   // Step 5: Handle response

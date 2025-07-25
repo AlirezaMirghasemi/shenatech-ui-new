@@ -33,7 +33,7 @@ export const userAction = new ActionRegistry<User>()
     color: Color.info,
     visibility: {
       hidden: (user, { selectedIds }) =>
-        user === null || selectedIds.size !== 0,
+        user === null || selectedIds.size !== 0 ||user.status === UserStatus.DELETED ,
     },
 
     handler: (user, { setSelectedIds, setSelectedRows, openModal }) => {
@@ -55,7 +55,6 @@ export const userAction = new ActionRegistry<User>()
     visibility: {
       hidden: (user, { selectedIds }) =>
         user === null ||
-        user.status === UserStatus.DELETED ||
         selectedIds.size !== 0,
     },
     handler: (user, { setSelectedIds, setSelectedRows, openModal }) => {
@@ -67,26 +66,29 @@ export const userAction = new ActionRegistry<User>()
     },
   })
   .register({
-    id: ActionType.CHANGE_STATUS,
-    label: "تغییر وضعیت کاربر",
-    color: Color.primary,
-    icon: <FaUserCheck />,
-    visibility: {
-      hidden: (user, { selectedIds }) =>
-        user === null ||
-        user.status === UserStatus.DELETED ||
-        selectedIds.size !== 0,
-    },
-    actionRender: (row: User) => {
-      return (
-        <ChangeUserStatusPopover user={row} buttonProps={{
-            color:Color.info,
-            icon:<FaUserCheck />
-        }} key={row.id} />
-      );
-    },
-    handler: () => {},
-  })
+  id: ActionType.CHANGE_STATUS,
+  label: "تغییر وضعیت کاربر",
+  color: Color.primary,
+  visibility: {
+    hidden: (user, { selectedIds }) =>
+      user === null ||
+      user.status === UserStatus.DELETED ||
+      selectedIds.size !== 0,
+  },
+  // تغییر اصلی: حذف icon و استفاده از actionRender
+  actionRender: (row: User) => (
+    <ChangeUserStatusPopover
+      user={row}
+      buttonProps={{
+        name: "changeStatus",
+        color: Color.info,
+        icon: <FaUserCheck className="text-white" />
+      }}
+      key={`change-status-${row.id}`}
+    />
+  ),
+  handler: () => {}, // خالی می‌گذاریم
+})
 
   .register({
     id: ActionType.EDIT,
@@ -117,7 +119,7 @@ export const userAction = new ActionRegistry<User>()
     color: Color.danger,
    visibility: {
       hidden: (user, { selectedIds }) =>
-        user === null || selectedIds.size !== 0,
+        user === null || selectedIds.size !== 0 || user.status === UserStatus.DELETED ,
     },
     handler: (user, { setSelectedIds, setSelectedRows, openModal }) => {
       if (user) {

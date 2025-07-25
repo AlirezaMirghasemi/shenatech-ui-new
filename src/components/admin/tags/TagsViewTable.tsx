@@ -8,6 +8,7 @@ import useTable from "@/hooks/useTable";
 import TagsViewTableInitials from "./Initials/TagsViewTableInitials";
 import DynamicTable from "../dynamics/dynamicTable/DynamicTable";
 import { ModalData, ModalType } from "@/constants/data/ModalType";
+import RestoreTagsModal from "./RestoreTagsModal";
 
 export default function TagsViewTable() {
   const {
@@ -76,6 +77,20 @@ export default function TagsViewTable() {
         onCloseDeleteTagsModal={() => {
           closeModal("delete");
           actionContext.setSelectedIds(new Set<number>());
+          actionContext.setSelectedRows([]);
+        }}
+        selectedTags={handleTable.handleSelect.selectedRows}
+      />
+      <RestoreTagsModal
+        restoreTagsModal={modals.restore}
+        selectedIds={
+          (modalData as { selectedIds?: Set<number> })?.selectedIds ||
+          new Set<number>()
+        }
+        onCloseRestoreTagsModal={() => {
+          closeModal("restore");
+          actionContext.setSelectedIds(new Set<number>());
+          actionContext.setSelectedRows([]);
         }}
         selectedTags={handleTable.handleSelect.selectedRows}
       />

@@ -74,7 +74,7 @@ export const useUser = () => {
     async (deleteUserData: DeleteUser) => {
       setIsDeleting(true);
       try {
-        await mutator("/users/delete", "POST", {
+        await mutator(`/users/delete/${deleteUserData.userId}`, "POST", {
           options: {
             removeProfilePicture: deleteUserData.removeProfilePicture,
             removeRoles: deleteUserData.removeRoles,
@@ -198,6 +198,9 @@ export const useUser = () => {
     [mutate]
   );
 
+
+
+
   const editUser = useCallback(
     async (userId: number, user: EditUser, profileImage?: File) => {
       const formData = new FormData();
@@ -211,10 +214,7 @@ export const useUser = () => {
       }
       setIsEditing(true);
       try {
-        const result = await mutator(`/users/${userId}`, "POST", {
-          formData,
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const result = await mutator(`/users/${userId}`, "POST", formData);
         mutate((key: string) => key.startsWith("/users"), undefined, {
           revalidate: true,
         });
@@ -228,27 +228,39 @@ export const useUser = () => {
     },
     [mutate]
   );
- const fetchUnAssignedRoleUsers = useCallback(
-    async (roleId: number) => {
-        setIsFetching(true);
-        try {
-            const result=await fetcher(`/users/${roleId}/roles/unassigned`);
-            return result;
-        } catch (error) {
-            console.error("خطا در دریافت نقش های بدون کاربر:", error);
-            throw error as ApiError;
-        }finally {
-            setIsFetching(false);
-        }
+  const restoreUsers = useCallback(
+    async (userIds:  number[]) => {
+      setIsEditing(true);
+      try {
+        await mutator("/users/restores", "POST", { userIds });
+        mutate((key: string) => key.startsWith("/users"), undefined, {
+          revalidate: true,
+        });
+      } catch (err) {
+        console.error("خطا در بازیابی کاربران:", err);
+        throw err as ApiError;
+      } finally {
+        setIsEditing(false);
+      }
     },
-    []
+    [mutate] // اضافه کردن mutate به وابستگی‌ها
   );
-
-
+  const fetchUnAssignedRoleUsers = useCallback(async (roleId: number) => {
+    setIsFetching(true);
+    try {
+      const result = await fetcher(`/users/${roleId}/roles/unassigned`);
+      return result;
+    } catch (error) {
+      console.error("خطا در دریافت نقش های بدون کاربر:", error);
+      throw error as ApiError;
+    } finally {
+      setIsFetching(false);
+    }
+  }, []);
 
   return {
-     users: users?.data || [],
-        meta: users || ({} as PaginatedResponse<User>),
+    users: users?.data || [],
+    meta: users || ({} as PaginatedResponse<User>),
     error:
       usersError && typeof usersError === "object"
         ? { message: usersError.message }
@@ -265,13 +277,14 @@ export const useUser = () => {
       fetchUsers,
       checkFieldIsUnique,
       fetchUnAssignedRoleUsers,
+      restoreUsers
     },
-    statuses:{
-        isCreating,
-        isEditing,
-        isFetching,
-        isCheckingUniqueness,
-        isDeleting
-    }
+    statuses: {
+      isCreating,
+      isEditing,
+      isFetching,
+      isCheckingUniqueness,
+      isDeleting,
+    },
   };
 };

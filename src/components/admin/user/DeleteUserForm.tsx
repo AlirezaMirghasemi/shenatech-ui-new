@@ -1,4 +1,3 @@
-import { DataStatus } from "@/constants/data/DataStatus";
 import { useUser } from "@/hooks/useUser";
 import { DeleteUser } from "@/types/User";
 import { FormikHelpers } from "formik";
@@ -18,22 +17,15 @@ export default function DeleteUserForm({
 }) {
   {
     const {
-      actions: { deleteUser, fetchUsers },
-      loading,
-      uniqueLoading,
-      meta,
+      actions: { deleteUser },
+      statuses: { isDeleting },
     } = useUser();
     const onSubmit = async (
       values: DeleteUser,
       { setSubmitting }: FormikHelpers<DeleteUser>
     ) => {
       try {
-        await deleteUser({ deleteUserData: values });
-        await fetchUsers({
-          search: "",
-          page: meta?.current_page,
-          perPage: meta?.per_page,
-        });
+        await deleteUser(values);
         onCloseDeleteUserModal();
         toast.success("کاربر با موفقیت حدف شد.");
       } catch (error) {
@@ -54,17 +46,13 @@ export default function DeleteUserForm({
           buttonClassName=" w-max  "
           validateOnChange={true}
           validateOnBlur={true}
-          disabledButton={
-            loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
-          }
+          disabledButton={isDeleting}
           cancelButton={true}
           cancelButtonOnClick={onCloseDeleteUserModal}
           cancelButtonColor="warning"
           cancelButtonTitle="خیر منصرف شدم"
           cancelButtonClassName=" w-max"
-          disabledCancelButton={
-            loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
-          }
+          disabledCancelButton={isDeleting}
         >
           <div className="mb-5 grid grid-cols-1 gap-4  sm:grid-cols-2 relative rounded-lg">
             <div className="flex col-span-2 items-center justify-center sm:col-span-1">

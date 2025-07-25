@@ -30,6 +30,7 @@ export default function AdminPageLayout({
             <div className="max-w-7xl mx-auto">{children}</div>
           </main>
         </div>
+
       </div>
     </>
   );

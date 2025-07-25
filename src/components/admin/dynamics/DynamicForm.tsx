@@ -46,7 +46,7 @@ export default function DynamicForm<T extends object>({
                   color={submitButtonColor}
                   outline
                   size={submitButtonSize}
-                  className={`items-center text-center rounded-lg cursor-pointer${
+                  className={`items-center m-1 text-center rounded-lg cursor-pointer${
                     buttonClassName ?? ""
                   }`}
                 >
@@ -62,7 +62,7 @@ export default function DynamicForm<T extends object>({
                     color={cancelButtonColor}
                     size={cancelButtonSize}
                     outline
-                    className={`items-center text-center rounded-lg cursor-pointer${
+                    className={`items-center m-1 text-center rounded-lg cursor-pointer${
                       cancelButtonClassName ?? ""
                     }`}
                     disabled={isSubmitting || disabledCancelButton}

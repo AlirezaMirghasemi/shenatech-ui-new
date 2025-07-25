@@ -12,6 +12,7 @@ export const useTag = () => {
   });
   // وضعیت‌های بارگذاری برای عملیات مختلف
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCheckingUniqueness, setIsCheckingUniqueness] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -74,6 +75,24 @@ export const useTag = () => {
     [mutate] // اضافه کردن mutate به وابستگی‌ها
   );
 
+const restoreTags = useCallback(
+    async (tagIds:  number[]) => {
+      setIsEditing(true);
+      try {
+        await mutator("/tags/restores", "POST", { tagIds });
+        mutate((key: string) => key.startsWith("/tags"), undefined, {
+          revalidate: true,
+        });
+      } catch (err) {
+        console.error("خطا در بازیابی تگ‌ها:", err);
+        throw err as ApiError;
+      } finally {
+        setIsEditing(false);
+      }
+    },
+    [mutate] // اضافه کردن mutate به وابستگی‌ها
+  );
+
   const isTagUnique = useCallback(async (title: string): Promise<boolean> => {
     setIsCheckingUniqueness(true);
     try {
@@ -122,12 +141,14 @@ export const useTag = () => {
       createTags,
       deleteTags,
       isTagUnique,
+      restoreTags
     },
     statuses: {
       isCreating,
       isDeleting,
       isCheckingUniqueness,
       isFetching,
+      isEditing
     },
     mutate: mutateTags, // افزودن mutate به خروجی
   };

@@ -12,6 +12,7 @@ import UsersViewTableInitials from "./Initials/UsersViewTableInitials";
 import useTable from "@/hooks/useTable";
 import { useTableState } from "@/hooks/useTableState";
 import { ModalData, ModalType } from "@/constants/data/ModalType";
+import RestoreUsersModal from "./RestoreUsersModal";
 export default function UsersViewTable() {
   const {
     actions: { fetchUsers },
@@ -94,7 +95,19 @@ export default function UsersViewTable() {
             }}
             user={handleTable.handleSelect.selectedRows[0]}
           />
-
+          <RestoreUsersModal
+            restoreUsersModal={modals.restore}
+            selectedIds={
+              (modalData as { selectedIds?: Set<number> })?.selectedIds ||
+              new Set<number>()
+            }
+            onCloseRestoreUsersModal={() => {
+              closeModal("restore");
+              actionContext.setSelectedIds(new Set<number>());
+              actionContext.setSelectedRows([]);
+            }}
+            selectedUsers={handleTable.handleSelect.selectedRows}
+          />
         </>
       )}
     </>

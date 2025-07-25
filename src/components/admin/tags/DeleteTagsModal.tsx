@@ -49,7 +49,7 @@ console.log(selectedTags);
         <div className="text-center">
           <FaSkullCrossbones className="mx-auto mb-4 h-14 w-14 text-status-danger-text" />
           <h3 className="mb-5 text-lg font-normal">
-            آیا از حذف {selectedIds.size > 1 ? "هشتگ های انتخاب شده" : "هشتگ"}{" "}
+            آیا از حذف {selectedIds.size != 1 ? "هشتگ های انتخاب شده" : "هشتگ"}{" "}
             اطمینان دارید؟
           </h3>
           <div className="flex justify-center gap-4">

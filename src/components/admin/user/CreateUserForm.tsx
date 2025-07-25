@@ -4,7 +4,6 @@ import DynamicForm from "../dynamics/DynamicForm";
 import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { FormikHelpers } from "formik";
-import { DataStatus } from "@/constants/data/DataStatus";
 import { toast } from "sonner";
 import { useUser } from "@/hooks/useUser";
 import { CreateUser } from "@/types/User";
@@ -21,10 +20,8 @@ export default function CreateUserForm({
   onCloseCreateUserModal: () => void;
 }) {
   const {
-    actions: { createUser, fetchUsers, checkFieldIsUnique },
-    loading,
-    uniqueLoading,
-    meta,
+    actions: { createUser, checkFieldIsUnique },
+    statuses: { isCheckingUniqueness, isCreating },
   } = useUser();
   const onSubmit = async (
     values: CreateUser,
@@ -34,11 +31,6 @@ export default function CreateUserForm({
       const profileImage =
         values.profile_image instanceof File ? values.profile_image : undefined;
       await createUser(values, profileImage);
-      await fetchUsers({
-        search: "",
-        page: meta?.current_page,
-        perPage: meta?.per_page,
-      });
       onCloseCreateUserModal();
       toast.success("کاربر با موفقیت ایجاد شد.");
     } catch (error) {
@@ -64,10 +56,7 @@ export default function CreateUserForm({
             buttonClassName="flex flex-row m-auto w-full cursor-pointer "
             validateOnChange={false}
             validateOnBlur={true}
-            disabledButton={
-              loading == DataStatus.PENDING ||
-              uniqueLoading == DataStatus.PENDING
-            }
+            disabledButton={isCheckingUniqueness || isCreating}
           >
             <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="col-span-2">
@@ -77,12 +66,9 @@ export default function CreateUserForm({
                   placeholder="نام کاربری"
                   label="نام کاربری"
                   type={InputType.TEXT}
-                  disabled={
-                    loading == DataStatus.PENDING ||
-                    uniqueLoading == DataStatus.PENDING
-                  }
+                  disabled={isCheckingUniqueness || isCreating}
                   className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  loading={isCheckingUniqueness || isCreating}
                   autoComplete="username"
                 />
               </div>
@@ -94,8 +80,8 @@ export default function CreateUserForm({
                   label="نام کوچک"
                   type={InputType.TEXT}
                   className="block w-full"
-                  disabled={loading == DataStatus.PENDING}
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                   autoComplete="given-name"
                 />
               </div>
@@ -107,8 +93,8 @@ export default function CreateUserForm({
                   label="نام خانوادگی"
                   className="block w-full"
                   type={InputType.TEXT}
-                  disabled={loading == DataStatus.PENDING}
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                   autoComplete="family-name"
                 />
               </div>
@@ -120,7 +106,8 @@ export default function CreateUserForm({
                   label="نام کامل"
                   type={InputType.TEXT}
                   readOnly
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                   className=" w-full"
                 />
               </div>
@@ -132,10 +119,8 @@ export default function CreateUserForm({
                   placeholder="ایمیل"
                   label="ایمیل"
                   type={InputType.EMAIL}
-                  disabled={
-                    loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
-                  }
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                   className="block w-full"
                   autoComplete="email"
                 />
@@ -147,12 +132,10 @@ export default function CreateUserForm({
                   placeholder="شماره موبایل"
                   label="شماره موبایل"
                   type={InputType.TEXT}
-                  disabled={
-                    loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
-                  }
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                   className="block w-full"
                   autoComplete="tel"
-                  loading={uniqueLoading == DataStatus.PENDING}
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -177,10 +160,8 @@ export default function CreateUserForm({
                       label: GenderTitles.getGenderTitle(Gender.NotSpecified),
                     },
                   ]}
-                  disabled={
-                    loading == DataStatus.PENDING // || uniqueLoading == DataStatus.PENDING
-                  }
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
@@ -190,11 +171,9 @@ export default function CreateUserForm({
                   placeholder="رمز عبور"
                   label="رمز عبور"
                   type={InputType.PASSWORD}
-                  disabled={
-                    loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
-                  }
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                   className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
                   autoComplete="new-password"
                 />
               </div>
@@ -205,11 +184,9 @@ export default function CreateUserForm({
                   placeholder="تکرار رمز عبور"
                   label="تکرار رمز عبور"
                   type={InputType.PASSWORD}
-                  disabled={
-                    loading == DataStatus.PENDING //|| uniqueLoading == DataStatus.PENDING
-                  }
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                   className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
                 />
               </div>
               <div className="col-span-2">
@@ -219,12 +196,9 @@ export default function CreateUserForm({
                   placeholder="بیوگرافی"
                   label="بیوگرافی"
                   type={InputType.TEXTAREA}
-                  disabled={
-                    loading == DataStatus.PENDING ||
-                    uniqueLoading == DataStatus.PENDING
-                  }
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                   className="block w-full"
-                  loading={uniqueLoading == DataStatus.PENDING}
                 />
               </div>
 
@@ -235,14 +209,8 @@ export default function CreateUserForm({
                 label="عکس پروفایل"
                 type={InputType.IMAGE}
                 className={"mb-5"}
-                loading={
-                  loading == DataStatus.PENDING ||
-                  uniqueLoading == DataStatus.PENDING
-                }
-                disabled={
-                  loading == DataStatus.PENDING ||
-                  uniqueLoading == DataStatus.PENDING
-                }
+                disabled={isCheckingUniqueness || isCreating}
+                loading={isCheckingUniqueness || isCreating}
               />
 
               <div className="col-span-2 sm:col-span-1">
@@ -279,11 +247,8 @@ export default function CreateUserForm({
                       ),
                     },
                   ]}
-                  disabled={
-                    loading == DataStatus.PENDING ||
-                    uniqueLoading == DataStatus.PENDING
-                  }
-                  loading={uniqueLoading == DataStatus.PENDING}
+                  disabled={isCheckingUniqueness || isCreating}
+                  loading={isCheckingUniqueness || isCreating}
                 />
               </div>
             </div>
