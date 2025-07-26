@@ -1,5 +1,5 @@
 // src/utils/ActionRegistry.ts
-import { ActionType } from "@/constants/data/ActionsButton";
+import  { ActionType } from "@/constants/data/ActionsButton";
 import { Color } from "@/constants/data/Color";
 import { ModalData, ModalType } from "@/constants/data/ModalType";
 import { JSX, ReactNode } from "react";
@@ -15,10 +15,12 @@ export interface ActionContext<T extends object> {
   setSelectedRows: (row: T[]) => void;
   selectedRows: T[];
   openModal: (modal: ModalType, data: ModalData<T>) => void;
+  data: T;
+  setData: (data: T) => void;
 }
 
 export interface ActionConfig<T extends object> {
-  id: ActionType;
+  id:  ActionType;
   label: string;
   icon?: JSX.Element;
   color: Color;
@@ -31,14 +33,14 @@ export interface ActionConfig<T extends object> {
 }
 
 export class ActionRegistry<T extends object> {
-  private actions: Map<ActionType, ActionConfig<T>> = new Map();
+  private actions: Map< ActionType, ActionConfig<T>> = new Map();
 
   register(action: ActionConfig<T>): this {
     this.actions.set(action.id, action);
     return this;
   }
 
-  getAction(id: ActionType): ActionConfig<T> | undefined {
+  getAction(id : ActionType ): ActionConfig<T> | undefined {
     return this.actions.get(id);
   }
 

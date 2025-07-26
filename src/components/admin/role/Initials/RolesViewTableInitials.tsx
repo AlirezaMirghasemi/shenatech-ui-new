@@ -1,53 +1,53 @@
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
-import { Tag } from "@/types/Tag";
 import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
 import { CommonStatusTitles } from "@/constants/data/CommonStatus";
 import { ActionConfig, ActionContext } from "@/utils/ActionRegistry";
 import { ActionType } from "@/constants/data/ActionsButton";
 import { PaginatedResponse } from "@/types/Api";
 import { SetStateAction, useMemo } from "react";
-import { TagsViewTableActions } from "./TagsViewTableActions";
+import { Role } from "@/types/Role";
+import { RoleViewTableActions } from "./RoleViewTableActions";
 
 interface Props {
   searchValue: string;
   setSearchValue: (value: SetStateAction<string>) => void;
   searchRef: React.RefObject<HTMLInputElement | null>;
-  tags: Tag[];
-  meta: PaginatedResponse<Tag>;
+  roles: Role[];
+  meta: PaginatedResponse<Role>;
   loading: boolean;
   error: { message: string } | null;
-  actionContext: ActionContext<Tag>;
+  actionContext: ActionContext<Role>;
 }
 
-export default function TagsViewTableInitials({
+export default function RolesViewTableInitials({
   searchValue,
   setSearchValue,
   searchRef,
-  tags,
+  roles,
   meta,
   loading,
   error,
   actionContext,
-}: Props): IDynamicTable<Tag> {
+}: Props): IDynamicTable<Role> {
   const headerActions = useMemo(() => {
     return [
-      TagsViewTableActions.getAction(ActionType.CommonActionType.CREATE as unknown as ActionType),
-      TagsViewTableActions.getAction(ActionType.CommonActionType.DELETES as unknown as ActionType),
-      TagsViewTableActions.getAction(ActionType.CommonActionType.RESTORES as unknown as ActionType),
-    ].filter(Boolean) as ActionConfig<Tag>[];
+      RoleViewTableActions.getAction(ActionType.CommonActionType.CREATE),
+      RoleViewTableActions.getAction(ActionType.CommonActionType.DELETES),
+      RoleViewTableActions.getAction(ActionType.CommonActionType.RESTORES),
+    ].filter(Boolean) as ActionConfig<Role>[];
   }, []);
 
   return {
     header: {
-      title: "هشتگ ها",
-      description: "مدیریت هشتگ ها",
+      title: "نقش ها",
+      description: "مدیریت تقش ها",
       actions: headerActions,
     },
-    data: tags,
+    data: roles,
     columns: [
       {
-        header: "نام هشتگ",
-        accessor: "title",
+        header: "نام نقش",
+        accessor: "name",
         className: "text-center",
       },
       {
@@ -85,8 +85,8 @@ export default function TagsViewTableInitials({
           row.deleted_at ? ConvertDateToShamsi({ date: row.deleted_at }) : "-",
       },
     ],
-    getRowActions: (row: Tag) =>
-      TagsViewTableActions.getVisibleActions(row, actionContext),
+    getRowActions: (row: Role) =>
+      RoleViewTableActions.getVisibleActions(row, actionContext),
     rowKey: "id",
     error: error?.message,
     loading,

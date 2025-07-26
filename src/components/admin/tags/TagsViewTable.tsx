@@ -38,26 +38,37 @@ export default function TagsViewTable() {
     setSelectedRows: handleTable.handleSelect.setSelectedRows,
     selectedIds: handleTable.handleSelect.selectedIds,
     selectedRows: handleTable.handleSelect.selectedRows,
+    data: handleTable.handleSelect.data,
+    setData: handleTable.handleSelect.setData,
     openModal: (modal: ModalType, data: ModalData<Tag>) => {
       openModal(modal, data);
     },
   };
 
-  const tableConfig = TagsViewTableInitials({
-    searchValue,
-    setSearchValue,
-    searchRef,
-    tags,
-    meta,
-    loading,
-    error,
-    actionContext,
-  });
+  //   const tableConfig = TagsViewTableInitials({
+  //     searchValue,
+  //     setSearchValue,
+  //     searchRef,
+  //     tags,
+  //     meta,
+  //     loading,
+  //     error,
+  //     actionContext,
+  //   });
 
   return (
     <>
       <DynamicTable
-        dynamicTable={tableConfig}
+        dynamicTable={TagsViewTableInitials({
+          searchValue,
+          setSearchValue,
+          searchRef,
+          tags,
+          meta,
+          loading,
+          error,
+          actionContext,
+        })}
         setPage={setCurrentPage}
         handleTable={handleTable}
         actionContext={actionContext}

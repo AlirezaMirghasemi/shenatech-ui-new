@@ -19,7 +19,7 @@ export default function ChangeUserStatusPopover({
       placement="bottom"
       arrow={false}
       content={
-        <div className="z-[9999] min-w-[150px] p-2 bg-white rounded-lg shadow-lg dark:bg-gray-800">
+        <div className="z-[9999] min-w-[150px] p-2  bg-white rounded-lg shadow-lg dark:bg-gray-800">
           <ChangeUserStatusForm user={user} onClose={() => setIsOpen(false)} />
         </div>
       }
@@ -34,6 +34,7 @@ export default function ChangeUserStatusPopover({
             ? buttonProps.disabled(user)
             : buttonProps.disabled
         }
+
         onClick={(e) => {
           e.stopPropagation();
           setIsOpen(!isOpen);

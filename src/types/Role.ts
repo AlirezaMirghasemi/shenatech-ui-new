@@ -29,8 +29,8 @@ export interface AssignRoleToUsers {
   userIds: number[];
 }
 export interface CreateRole {
-  roleName: string;
+  name: string;
 }
 export interface EditRole {
-  roleName: string;
+  name: string;
 }

@@ -1,157 +1,301 @@
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useCallback } from "react";
-import {
-  assignRolePermissionsAsync,
-  assignRoleToUsersAsync,
-  checkRoleNameIsUniqueAsync,
-  createRoleAsync,
-  deleteRoleAsync,
-  deleteRolePermissionsAsync,
-  deleteUsersFromRoleAsync,
-  editRoleAsync,
-  fetchPermissionRolesAsync,
-  fetchRolesAsync,
-} from "@/store/thunks/roleThunk";
+import { fetcher, mutator, swrConfig } from "@/lib/swrConfig";
+import { ApiError, PaginatedResponse } from "@/types/Api";
+import { CreateRole, Role } from "@/types/Role";
+import { useCallback, useState } from "react";
+import useSWR, { mutate, SWRResponse } from "swr";
 
 export const useRole = () => {
-  const dispatch = useAppDispatch();
+  const [params, setParams] = useState({
+    page: "1",
+    perPage: "5",
+    search: "",
+  });
+
+  const [permissionRolesParams, setPermissionRolesParams] = useState({
+    page: "1",
+    perPage: "5",
+    search: "",
+    permissionId: null,
+  });
+
+  const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isCheckingUniqueness, setIsCheckingUniqueness] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const getRolesKey = useCallback(() => {
+    const query = new URLSearchParams();
+    if (params.page) query.set("page", params.page);
+    if (params.perPage) query.set("per_page", params.perPage);
+    if (params.search) query.set("search", params.search);
+    return `/roles?${query.toString()}`;
+  }, [params]);
+
+  const getPermissionRolesKey = useCallback(() => {
+    const query = new URLSearchParams();
+    if (permissionRolesParams.page) query.set("page", params.page);
+    if (permissionRolesParams.perPage) query.set("per_page", params.perPage);
+    if (permissionRolesParams.search) query.set("search", params.search);
+    return `/permissions/${permissionRolesParams.permissionId}/roles?${query.toString()}`;
+  }, [permissionRolesParams]);
+
   const {
     data: roles,
-    meta: meta,
-    loading,
-    error,
-    uniqueLoading,
-    assigned
-  } = useAppSelector((state) => state.roles);
+    error: rolesError,
+    isLoading: loading,
+    mutate: mutateRoles,
+  }: SWRResponse<PaginatedResponse<Role>, ApiError> = useSWR(
+    getRolesKey(),
+    fetcher,
+    {
+      ...swrConfig,
+      keepPreviousData: true,
+    }
+  );
+
+  const {
+    data: permissionRoles,
+    error: permissionRolesError,
+    mutate: mutatePermissionRoles,
+  }: SWRResponse<PaginatedResponse<Role>, ApiError> = useSWR(
+    getPermissionRolesKey(),
+    {
+      ...swrConfig,
+      keepPreviousData: true,
+    }
+  );
+
   const createRole = useCallback(
-    (roleName: string) => {
+    async (name: CreateRole) => {
+      setIsCreating(true);
       try {
-        return dispatch(createRoleAsync(roleName)).unwrap();
-      } catch (error) {
-        console.error("Error creating role:", error);
-        return null;
+        const newRole = await mutator("/roles", "POST", name);
+        mutate((key: string) => key.startsWith("/roles"), undefined, {
+          revalidate: true,
+        });
+        return newRole;
+      } catch (err) {
+        console.error("خطا در ایجاد مجوز:", err);
+        throw err as ApiError;
+      } finally {
+        setIsCreating(false);
       }
     },
-    [dispatch]
+    [mutate]
   );
+
   const editRole = useCallback(
-    (roleId: number, roleName: string) => {
+    async (roleId: number, name: string) => {
+      setIsEditing(true);
       try {
-        return dispatch(editRoleAsync({ roleId, roleName })).unwrap();
-      } catch (error) {
-        console.error("Error editing role:", error);
-        return null;
+        const editedRole = await mutator(`/roles/${roleId}`, "PUT", {
+          name: name,
+        });
+        mutate((key: string) => key.startsWith("/roles"), undefined, {
+          revalidate: true,
+        });
+        return editedRole;
+      } catch (err) {
+        console.error("خطا در ویرایش مجوز:", err);
+        throw err as ApiError;
+      } finally {
+        setIsEditing(false);
       }
     },
-    [dispatch]
+    [mutate]
   );
+
   const deleteRole = useCallback(
-    (roleId: number) => {
+    async (roleId: number) => {
+      setIsDeleting(true);
       try {
-        return dispatch(deleteRoleAsync(roleId)).unwrap();
-      } catch (error) {
-        console.error("Error deleting role:", error);
+        await mutator(`/roles/${roleId}`, "DELETE");
+        mutate((key: string) => key.startsWith("/roles"), undefined, {
+          revalidate: true,
+        });
+        return true;
+      } catch (err) {
+        console.error("خطا در حذف مجوز:", err);
+        throw err as ApiError;
+      } finally {
+        setIsDeleting(false);
       }
     },
-    [dispatch]
+    [mutate]
   );
 
   const fetchRoles = useCallback(
-    (page?: string, perPage?: string) => {
+    async (newParams: { search?: string; page?: string; perPage?: string }) => {
+      setIsFetching(true);
       try {
-        return dispatch(fetchRolesAsync({ page, perPage })).unwrap();
+        const shouldResetPage =
+          newParams.search !== undefined && newParams.search !== params.search;
+
+        setParams((prev) => ({
+          ...prev,
+          ...newParams,
+          page: shouldResetPage ? "1" : newParams.page || prev.page,
+        }));
+        await mutateRoles();
       } catch (error) {
         console.error("Error fetching roles:", error);
-        return [];
+        throw error;
+      } finally {
+        setIsFetching(false);
       }
     },
-    [dispatch]
+    [mutateRoles, setParams, params.search]
   );
+
   const assignRolePermissions = useCallback(
-    (roleId: number, permissionIds: number[]) => {
+    async (roleId: number, permissionIds: number[]) => {
+      setIsEditing(true);
       try {
-        return dispatch(
-          assignRolePermissionsAsync({ roleId, permissionIds })
-        ).unwrap();
+        const result = await mutator(`/roles/${roleId}/permissions`, "POST", {
+          permissions: permissionIds,
+        });
+        return result;
       } catch (error) {
-        console.error("Error assigning role permissions:", error);
-        return [];
+        console.error("Error assigning permissions to role:", error);
+        throw error;
+      } finally {
+        setIsEditing(false);
       }
     },
-    [dispatch]
+    [mutate]
   );
+
   const fetchPermissionRoles = useCallback(
-      async (permissionId: number, perPage?: string, page?: string) => {
-        try {
-          return await dispatch(
-            fetchPermissionRolesAsync({ permissionId, perPage, page })
-          ).unwrap();
-        } catch (error) {
-          console.error("Error fetching permission roles:", error);
-          throw error;
-        }
-      },
-      [dispatch]
-    );
-  const deleteRolePermissions = useCallback(
-    (roleId: number, permissionIds: Set<number>) => {
+    async (newParams: {
+      permissionId: number;
+      search?: string;
+      page?: string;
+      perPage?: string;
+    }) => {
+      setIsFetching(true);
       try {
-        return dispatch(
-          deleteRolePermissionsAsync({ roleId, permissionIds })
-        ).unwrap();
+        const shouldResetPage =
+          (newParams.search !== undefined &&
+            newParams.search !== params.search) ||
+          newParams.permissionId !== permissionRolesParams.permissionId;
+        setParams((prev) => ({
+          ...prev,
+          ...newParams,
+          page: shouldResetPage ? "1" : newParams.page || prev.page,
+        }));
+        await mutatePermissionRoles();
       } catch (error) {
-        console.error(
-          "Error deleting role permissions for roleId:",
-          roleId,
-          error
-        );
+        console.error("Error fetching permission roles:", error);
+        throw error;
+      } finally {
+        setIsFetching(false);
       }
     },
-    [dispatch]
+    [
+      mutatePermissionRoles,
+      setPermissionRolesParams,
+      permissionRolesParams.search,
+      permissionRolesParams.permissionId,
+      mutateRoles,
+    ]
   );
+
+  const deleteRolePermissions = useCallback(
+    async (roleId: number, permissionIds: number[]) => {
+      setIsDeleting(true);
+      try {
+        const result = await mutator(
+          `/roles/${roleId}/revoke-permissions`,
+          "DELETE",
+          {
+            data: { permissionIds: permissionIds },
+          }
+        );
+        return result;
+      } catch (error) {
+        console.error("Error deleting permissions from role:", error);
+        throw error;
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    [mutate]
+  );
+
   const roleNameIsUnique = useCallback(
     async (roleName: string): Promise<boolean> => {
+      setIsCheckingUniqueness(true);
       try {
-        const result = await dispatch(
-          checkRoleNameIsUniqueAsync(roleName)
-        ).unwrap();
-        return result as boolean;
-      } catch (error) {
-        console.error("Error checking role name uniqueness:", error);
+        const response = await fetcher(
+          `/roles/role-name-is-unique/${roleName}`
+        );
+        return response.isUnique;
+      } catch (err) {
+        console.error("خطا در بررسی یکتا بودن نام مجوز:", err);
         return false;
+      } finally {
+        setIsCheckingUniqueness(false);
       }
     },
-    [dispatch]
+    []
   );
-const assignRoleToUsers = useCallback(
-  (roleId: number, userIds: number[]) => {
-    try {
-      return dispatch(assignRoleToUsersAsync({ roleId, userIds })).unwrap();
-    } catch (error) {
-      console.error("Error assigning role to users:", error);
-      return null;
-    }
-  },
-  [dispatch]
-);
+
+  const assignRoleToUsers = useCallback(
+    async (roleId: number, userIds: number[]) => {
+      setIsEditing(true);
+      try {
+        const result = await mutator(`/roles/${roleId}/assign-users`, "PUT", {
+          userIds: userIds,
+        });
+        return result;
+      } catch (error) {
+        console.error("Error assigning users to role:", error);
+        throw error;
+      } finally {
+        setIsEditing(false);
+      }
+    },
+    [mutate]
+  );
+
   const deleteUsersFromRole = useCallback(
-  (roleId: number, userIds: Set<number>) => {
-    try {
-      return dispatch(deleteUsersFromRoleAsync({ roleId, userIds })).unwrap();
-    } catch (error) {
-      console.error("Error deleting users from role:", error);
-      return null;
-    }
-  },
-  [dispatch]
-);
+    async (roleId: number, userIds: number[]) => {
+      setIsDeleting(true);
+      try {
+        const result = await mutator(
+          `/roles/${roleId}/revoke-users`,
+          "DELETE",
+          {
+            data: { userIds: userIds },
+          }
+        );
+        return result;
+      } catch (error) {
+        console.error("Error deleting users from role:", error);
+        throw error;
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    [mutate]
+  );
+
   return {
-    roles,
-    meta,
-    error,
-    loading,
-    uniqueLoading,
-    assigned,
+    roles: roles?.data || [],
+    meta: roles || ({} as PaginatedResponse<Role>),
+    error:
+      rolesError && typeof rolesError === "object"
+        ? { message: rolesError.message }
+        : null,
+    loading: loading || isFetching,
+    permissionRoles: {
+      roles: permissionRoles?.data || [],
+      meta: permissionRoles || ({} as PaginatedResponse<Role>),
+      error:
+        permissionRolesError && typeof permissionRolesError === "object"
+          ? { message: permissionRolesError.message }
+          : null,
+    },
     actions: {
       fetchRoles,
       assignRolePermissions,
@@ -162,7 +306,15 @@ const assignRoleToUsers = useCallback(
       deleteRole,
       fetchPermissionRoles,
       assignRoleToUsers,
-      deleteUsersFromRole
+      deleteUsersFromRole,
     },
+    statuses: {
+      isCreating,
+      isDeleting,
+      isCheckingUniqueness,
+      isFetching,
+      isEditing,
+    },
+    mutate: { mutateRoles, mutatePermissionRoles },
   };
 };

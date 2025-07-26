@@ -7,18 +7,19 @@ export default function useTable<
 >() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [selectedRows, setSelectedRows] = useState<T[]>([]);
+  const [data, setData] = useState<T>({} as T);
   const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(
     SortDirection.ASC
   );
 
   const toggleRow = useCallback((id: number, row: T) => {
+    setData({} as T);
     setSelectedIds((prev) => {
       const next = new Set(prev);
       const result = next.has(id) ? next.delete(id) : next.add(id);
       return result ? next : prev;
     });
-
     setSelectedRows((prev) => {
       const exists = prev.some((r) => r.id === id);
       return exists ? prev.filter((r) => r.id !== id) : [...prev, row];
@@ -26,6 +27,7 @@ export default function useTable<
   }, []);
 
   const toggleAll = useCallback((rows: T[], checked: boolean) => {
+    clearRowData();
     if (checked) {
       setSelectedIds(new Set(rows.map((row) => row.id)));
       setSelectedRows([...rows]);
@@ -33,13 +35,25 @@ export default function useTable<
       setSelectedIds(new Set());
       setSelectedRows([]);
     }
+    setData({} as T);
   }, []);
 
   const clearSelection = useCallback(() => {
     setSelectedIds(new Set());
     setSelectedRows([]);
+    setData({} as T);
   }, []);
-
+//   const setRowData = useCallback((data: T) => {
+//     console.log(selectedIds.size)
+//     setData(data ?? ({} as T));
+//     setSelectedIds(data ? new Set([data.id]) : new Set());
+//     setSelectedRows(data ? [data] : []);
+//   }, []);
+  const clearRowData = useCallback(() => {
+    setData({} as T);
+    setSelectedIds(new Set());
+    setSelectedRows([]);
+  }, []);
   const handleSort = useCallback(
     (column: keyof T) => {
       const newDirection =
@@ -76,6 +90,9 @@ export default function useTable<
       selectedIds,
       selectedRows,
       setSelectedRows,
+      data,
+      setData,
+      clearRowData,
     },
     handleDeletedStatus: {
       isRowDeleted,

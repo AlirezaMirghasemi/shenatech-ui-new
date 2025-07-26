@@ -13,6 +13,8 @@ import useTable from "@/hooks/useTable";
 import { useTableState } from "@/hooks/useTableState";
 import { ModalData, ModalType } from "@/constants/data/ModalType";
 import RestoreUsersModal from "./RestoreUsersModal";
+import { TabItem, Tabs } from "flowbite-react";
+import { FaFileContract } from "react-icons/fa6";
 export default function UsersViewTable() {
   const {
     actions: { fetchUsers },
@@ -33,6 +35,7 @@ export default function UsersViewTable() {
   }, [currentPage, searchValue]);
   useEffect(() => {
     handleTable.handleSelect.clearSelection();
+    handleTable.handleSelect.clearRowData();
   }, [currentPage, searchValue]);
 
   const actionContext = {
@@ -40,25 +43,36 @@ export default function UsersViewTable() {
     setSelectedRows: handleTable.handleSelect.setSelectedRows,
     selectedIds: handleTable.handleSelect.selectedIds,
     selectedRows: handleTable.handleSelect.selectedRows,
+    data: handleTable.handleSelect.data,
+    setData: handleTable.handleSelect.setData,
     openModal: (modal: ModalType, data: ModalData<User>) => {
       openModal(modal, data);
     },
   };
-  const tableConfig = UsersViewTableInitials({
-    searchValue,
-    setSearchValue,
-    searchRef,
-    users,
-    meta,
-    loading,
-    error,
-    actionContext,
-  });
+//   const userViewTableInitials = UsersViewTableInitials({
+//     searchValue,
+//     setSearchValue,
+//     searchRef,
+//     users,
+//     meta,
+//     loading,
+//     error,
+//     actionContext,
+//   });
 
   return (
     <>
       <DynamicTable
-        dynamicTable={tableConfig}
+        dynamicTable={UsersViewTableInitials({
+          searchValue,
+          setSearchValue,
+          searchRef,
+          users,
+          meta,
+          loading,
+          error,
+          actionContext,
+        })}
         setPage={setCurrentPage}
         handleTable={handleTable}
         actionContext={actionContext}
@@ -69,7 +83,7 @@ export default function UsersViewTable() {
         onCloseCreateUserModal={() => closeModal("create")}
       />
 
-      {handleTable.handleSelect.selectedRows[0] && (
+      {handleTable.handleSelect.selectedRows.length !=0 && (
         <>
           <UserProfileModal
             user={handleTable.handleSelect.selectedRows[0]}
@@ -108,6 +122,15 @@ export default function UsersViewTable() {
             }}
             selectedUsers={handleTable.handleSelect.selectedRows}
           />
+        </>
+      )}
+      {Object.keys(handleTable.handleSelect.data).length != 0 && (
+        <>
+          <Tabs variant="fullWidth">
+            <TabItem title="فعالیت ها" icon={FaFileContract}>
+              <h4>لیست فعالیت ها</h4>
+            </TabItem>
+          </Tabs>
         </>
       )}
     </>

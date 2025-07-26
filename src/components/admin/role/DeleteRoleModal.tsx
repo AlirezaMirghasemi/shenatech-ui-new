@@ -1,4 +1,3 @@
-import { DataStatus } from "@/constants/data/DataStatus";
 import { useRole } from "@/hooks/useRole";
 import { ApiError } from "@/types/Api";
 import { Role } from "@/types/Role";
@@ -6,26 +5,24 @@ import { AxiosError } from "axios";
 import { Button, Modal, ModalBody, ModalHeader, Spinner } from "flowbite-react";
 import { FaSkullCrossbones } from "react-icons/fa6";
 import { toast } from "sonner";
-
+//TODO:: Add Multi deletion
 export default function DeleteRoleModal({
   deleteRoleModal,
   role,
   onCloseDeleteRoleModal,
 }: {
   deleteRoleModal: boolean;
-  role: Role ;
+  role: Role;
   onCloseDeleteRoleModal: () => void;
 }) {
   const {
-    actions: { deleteRole, fetchRoles },
-    meta,
-    loading,
+    actions: { deleteRole },
+    statuses: { isDeleting },
   } = useRole();
-  const deleteRoleAction = async (roleId:number) => {
+  const deleteRoleAction = async (roleId: number) => {
     if (roleId) {
       try {
         await deleteRole(roleId);
-        await fetchRoles(meta?.current_page, meta?.per_page);
         toast.success("نقش با موفقیت حذف شد!");
       } catch (err: unknown) {
         const axiosError = err as AxiosError<ApiError>;
@@ -54,9 +51,9 @@ export default function DeleteRoleModal({
               <Button
                 color="danger"
                 onClick={() => deleteRoleAction(role.id)}
-                disabled={loading === DataStatus.PENDING}
+                disabled={isDeleting}
               >
-                {loading === DataStatus.PENDING ? (
+                {isDeleting ? (
                   <>
                     <Spinner
                       aria-label="loading delete role permissions"

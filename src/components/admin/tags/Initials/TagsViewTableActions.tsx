@@ -7,9 +7,9 @@ import { Tag } from "@/types/Tag";
 import { ActionRegistry } from "@/utils/ActionRegistry";
 import { FaEye, FaPen, FaRecycle, FaTrashCan } from "react-icons/fa6";
 
-export const tagActions = new ActionRegistry<Tag>()
+export const TagsViewTableActions = new ActionRegistry<Tag>()
   .register({
-    id: ActionType.CREATE,
+    id: ActionType.CommonActionType.CREATE,
     label: "ایجاد هشتگ",
     color: Color.success,
     visibility: {
@@ -18,7 +18,7 @@ export const tagActions = new ActionRegistry<Tag>()
     handler: (_, { openModal }) => openModal(Modal.create, {}),
   })
   .register({
-    id: ActionType.DETAIL,
+    id: ActionType.CommonActionType.DETAIL,
     label: "مشاهده جزئیات",
     icon: <FaEye />,
     color: Color.info,
@@ -37,7 +37,7 @@ export const tagActions = new ActionRegistry<Tag>()
     },
   })
   .register({
-    id: ActionType.EDIT,
+    id: ActionType.CommonActionType.EDIT,
     label: "ویرایش",
     icon: <FaPen />,
     color: Color.warning,
@@ -59,7 +59,7 @@ export const tagActions = new ActionRegistry<Tag>()
     },
   })
   .register({
-    id: ActionType.DELETE,
+    id: ActionType.CommonActionType.DELETE,
     label: "حذف",
     icon: <FaTrashCan />,
     color: Color.danger,
@@ -81,7 +81,7 @@ export const tagActions = new ActionRegistry<Tag>()
     },
   })
   .register({
-    id: ActionType.DELETES,
+    id: ActionType.CommonActionType.DELETES,
     label: "حذف هشتگ ها",
     color: Color.danger,
     visibility: {
@@ -95,7 +95,7 @@ export const tagActions = new ActionRegistry<Tag>()
     },
   })
   .register({
-    id: ActionType.RESTORE,
+    id: ActionType.CommonActionType.RESTORE,
     label: "بازیابی",
     icon: <FaRecycle />,
     color: Color.warning,
@@ -117,7 +117,7 @@ export const tagActions = new ActionRegistry<Tag>()
     },
   })
   .register({
-    id: ActionType.RESTORES,
+    id: ActionType.CommonActionType.RESTORES,
     label: "بازیابی هشتگ ها",
     color: Color.warning,
     visibility: {

@@ -5,7 +5,7 @@ export const createRoleSchema = (
   checkRoleNameIsUnique: (roleName: string) => Promise<boolean>
 ) =>
   Yup.object().shape({
-    roleName: Yup.string()
+    name: Yup.string()
       .required(validationMessages.required("نام نقش"))
       .min(2, validationMessages.minLength(2))
       .max(50, validationMessages.maxLength(50))

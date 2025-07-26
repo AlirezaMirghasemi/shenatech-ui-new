@@ -15,9 +15,9 @@ import {
 } from "react-icons/fa6";
 import ChangeUserStatusPopover from "../ChangeUserStatusPopover";
 
-export const userAction = new ActionRegistry<User>()
+export const UserViewTableActions = new ActionRegistry<User>()
   .register({
-    id: ActionType.CREATE,
+    id: ActionType.CommonActionType.CREATE,
     label: "ایجاد کاربر",
     color: Color.success,
     visibility: {
@@ -27,35 +27,32 @@ export const userAction = new ActionRegistry<User>()
   })
 
   .register({
-    id: ActionType.DETAIL,
+    id: ActionType.CommonActionType.DETAIL,
     label: "مشاهده جزئیات",
     icon: <FaEye />,
     color: Color.info,
     visibility: {
       hidden: (user, { selectedIds }) =>
-        user === null || selectedIds.size !== 0 ||user.status === UserStatus.DELETED ,
+        user === null ||
+        selectedIds.size > 1 ||
+        user.status === UserStatus.DELETED,
     },
 
-    handler: (user, { setSelectedIds, setSelectedRows, openModal }) => {
+    handler: (user, { setData, setSelectedIds, setSelectedRows }) => {
       if (user) {
+        setData(user);
         setSelectedIds(new Set([user.id]));
         setSelectedRows([user]);
-        openModal(Modal.info, {
-          selectedIds: new Set([user.id]),
-          selectedRows: [user],
-        });
       }
     },
   })
   .register({
-    id: ActionType.INFO,
+    id: ActionType.CommonActionType.INFO,
     label: "مشاهده پروفایل",
     icon: <FaClipboardUser />,
     color: Color.success,
     visibility: {
-      hidden: (user, { selectedIds }) =>
-        user === null ||
-        selectedIds.size !== 0,
+      hidden: (user, { selectedIds }) => user === null || selectedIds.size > 1,
     },
     handler: (user, { setSelectedIds, setSelectedRows, openModal }) => {
       if (user) {
@@ -66,32 +63,31 @@ export const userAction = new ActionRegistry<User>()
     },
   })
   .register({
-  id: ActionType.CHANGE_STATUS,
-  label: "تغییر وضعیت کاربر",
-  color: Color.primary,
-  visibility: {
-    hidden: (user, { selectedIds }) =>
-      user === null ||
-      user.status === UserStatus.DELETED ||
-      selectedIds.size !== 0,
-  },
-  // تغییر اصلی: حذف icon و استفاده از actionRender
-  actionRender: (row: User) => (
-    <ChangeUserStatusPopover
-      user={row}
-      buttonProps={{
-        name: "changeStatus",
-        color: Color.info,
-        icon: <FaUserCheck className="text-white" />
-      }}
-      key={`change-status-${row.id}`}
-    />
-  ),
-  handler: () => {}, // خالی می‌گذاریم
-})
+    id: ActionType.UserActionType.CHANGE_STATUS,
+    label: "تغییر وضعیت کاربر",
+    color: Color.primary,
+    visibility: {
+      hidden: (user, { selectedIds }) =>
+        user === null ||
+        user.status === UserStatus.DELETED ||
+        selectedIds.size !== 0,
+    },
+    actionRender: (row: User) => (
+      <ChangeUserStatusPopover
+        user={row}
+        buttonProps={{
+          name: "changeStatus",
+          color: Color.info,
+          icon: <FaUserCheck />,
+        }}
+        key={`change-status-${row.id}`}
+      />
+    ),
+    handler: () => {},
+  })
 
   .register({
-    id: ActionType.EDIT,
+    id: ActionType.CommonActionType.EDIT,
     label: "ویرایش",
     icon: <FaPen />,
     color: Color.warning,
@@ -113,13 +109,15 @@ export const userAction = new ActionRegistry<User>()
     },
   })
   .register({
-    id: ActionType.DELETE,
+    id: ActionType.CommonActionType.DELETE,
     label: "حذف",
     icon: <FaTrashCan />,
     color: Color.danger,
-   visibility: {
+    visibility: {
       hidden: (user, { selectedIds }) =>
-        user === null || selectedIds.size !== 0 || user.status === UserStatus.DELETED ,
+        user === null ||
+        selectedIds.size !== 0 ||
+        user.status === UserStatus.DELETED,
     },
     handler: (user, { setSelectedIds, setSelectedRows, openModal }) => {
       if (user) {
@@ -134,7 +132,7 @@ export const userAction = new ActionRegistry<User>()
   })
 
   .register({
-    id: ActionType.RESTORE,
+    id: ActionType.CommonActionType.RESTORE,
     label: "بازیابی",
     icon: <FaRecycle />,
     color: Color.warning,
@@ -156,7 +154,7 @@ export const userAction = new ActionRegistry<User>()
     },
   })
   .register({
-    id: ActionType.RESTORES,
+    id: ActionType.CommonActionType.RESTORES,
     label: "بازیابی کاربران",
     color: Color.warning,
     visibility: {

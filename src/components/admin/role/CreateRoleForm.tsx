@@ -8,7 +8,6 @@ import { InputType } from "@/constants/data/InputType";
 import { FormikHelpers } from "formik";
 import { CreateRole } from "@/types/Role";
 import { useRole } from "@/hooks/useRole";
-import { DataStatus } from "@/constants/data/DataStatus";
 import { toast } from "sonner";
 
 export default function CreateRoleForm({
@@ -18,18 +17,15 @@ export default function CreateRoleForm({
 }) {
   //const router = useRouter();
   const {
-    actions: { createRole, fetchRoles, roleNameIsUnique },
-    loading,
-    uniqueLoading,
-    meta,
+    actions: { createRole, roleNameIsUnique },
+    statuses: { isCreating, isCheckingUniqueness },
   } = useRole();
   const onSubmit = async (
     values: CreateRole,
     { setSubmitting }: FormikHelpers<CreateRole>
   ) => {
     try {
-      await createRole(values.roleName);
-      await fetchRoles(meta?.current_page, meta?.per_page);
+      await createRole({name:values.name});
       onCloseCreateRoleModal();
       toast.success("نقش با موفقیت ایجاد شد.");
     } catch (error) {
@@ -48,20 +44,16 @@ export default function CreateRoleForm({
       onSubmit={onSubmit}
       validateOnChange={false}
       validateOnBlur={true}
-      disabledButton={
-        loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
-      }
+      disabledButton={isCheckingUniqueness || isCreating}
     >
       <DynamicInputField
-        id="roleName"
-        name="roleName"
+        id="name"
+        name="name"
         placeholder="نام نقش"
         label="نام نقش"
         type={InputType.TEXT}
-        disabled={
-          loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
-        }
-        loading={uniqueLoading == DataStatus.PENDING}
+        disabled={isCheckingUniqueness || isCreating}
+        loading={isCheckingUniqueness || isCreating}
       />
     </DynamicForm>
   );

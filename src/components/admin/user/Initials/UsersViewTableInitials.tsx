@@ -7,7 +7,7 @@ import {  SetStateAction, useMemo } from "react";
 import { PaginatedResponse } from "@/types/Api";
 import { ActionConfig, ActionContext } from "@/utils/ActionRegistry";
 import { ActionType } from "@/constants/data/ActionsButton";
-import { userAction } from "./UserViewTableActions";
+import { UserViewTableActions } from "./UserViewTableActions";
 import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
 interface Props {
   searchValue: string;
@@ -31,9 +31,9 @@ export default function UsersViewTableInitials({
 }: Props): IDynamicTable<User> {
   const headerActions = useMemo(() => {
     return [
-      userAction.getAction(ActionType.CREATE),
-      userAction.getAction(ActionType.DELETES),
-      userAction.getAction(ActionType.RESTORES),
+      UserViewTableActions.getAction(ActionType.CREATE),
+      UserViewTableActions.getAction(ActionType.DELETES),
+      UserViewTableActions.getAction(ActionType.RESTORES),
     ].filter(Boolean) as ActionConfig<User>[];
   }, []);
 
@@ -107,7 +107,7 @@ export default function UsersViewTableInitials({
 
     ],
     getRowActions: (row: User) =>
-      userAction.getVisibleActions(row, actionContext),
+      UserViewTableActions.getVisibleActions(row, actionContext),
     rowKey: "id",
     error: error?.message,
     loading,

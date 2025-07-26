@@ -93,7 +93,8 @@ const restoreTags = useCallback(
     [mutate] // اضافه کردن mutate به وابستگی‌ها
   );
 
-  const isTagUnique = useCallback(async (title: string): Promise<boolean> => {
+  const isTagUnique = useCallback(
+    async (title: string): Promise<boolean> => {
     setIsCheckingUniqueness(true);
     try {
       const response = await fetcher(`/tags/tag-name-is-unique/${title}`);

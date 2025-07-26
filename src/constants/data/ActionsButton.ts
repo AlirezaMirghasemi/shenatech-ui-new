@@ -1,20 +1,47 @@
+// export enum ActionType {
+//   CREATE = "create",
+//   EDIT = "edit",
+//   EDITS = "edits",
+//   RESTORE = "restore",
+//   RESTORES = "restores",
+//   DETAIL = "detail",
+//   DETAILS = "details",
+//   INFO = "info",
+//   DELETE = "delete",
+//   DELETES = "deletes",
 
-export enum ActionType {
-  CREATE = "create",
-  EDIT = "edit",
-  EDITS = "edits",
-  RESTORE = "restore",
-  RESTORES = "restores",
-  DETAIL = "detail",
+//   ASSIGN = "assign",
+//   ASSIGNS = "assigns",
+//   UNASSIGN = "unassign",
 
-  DETAILS = "details",
-  ASSIGN = "assign",
-  ASSIGNS = "assigns",
-  UNASSIGN = "unassign",
-  INFO = "info",
-  SEARCH = "search",
-  DELETE = "delete",
-  DELETES = "deletes",
+//   SEARCH = "search",
 
-  CHANGE_STATUS = "changStatus",
-}
+//   CHANGE_STATUS = "changStatus",
+// }
+
+export const ActionType = {
+  CommonActionType: {
+    CREATE: "create",
+    EDIT: "edit",
+    EDITS: "edits",
+    RESTORE: "restore",
+    RESTORES: "restores",
+    DETAIL: "detail",
+    DETAILS: "details",
+    INFO: "info",
+    DELETE: "delete",
+    DELETES: "deletes",
+  },
+  UserActionType: {
+    CHANGE_STATUS: "changeStatus",
+  },
+  RoleActionType: {
+    ASSIGN_PERMISSION: "assignPermission",
+    ASSIGN_USER:"assignUser"
+  },
+};
+type DeepValueOf<T> = T extends object
+  ? { [K in keyof T]: DeepValueOf<T[K]> }[keyof T]
+  : T;
+
+export type ActionType = DeepValueOf<typeof ActionType>;
