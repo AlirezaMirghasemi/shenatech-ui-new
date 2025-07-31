@@ -7,8 +7,8 @@ import { useTableState } from "@/hooks/useTableState";
 import useTable from "@/hooks/useTable";
 import TagsViewTableInitials from "./Initials/TagsViewTableInitials";
 import DynamicTable from "../dynamics/dynamicTable/DynamicTable";
-import { ModalData, ModalType } from "@/constants/data/ModalType";
 import RestoreTagsModal from "./RestoreTagsModal";
+import { ModalData, ModalType, ModalTypeValue } from "@/constants/data/Modal";
 
 export default function TagsViewTable() {
   const {
@@ -40,7 +40,7 @@ export default function TagsViewTable() {
     selectedRows: handleTable.handleSelect.selectedRows,
     data: handleTable.handleSelect.data,
     setData: handleTable.handleSelect.setData,
-    openModal: (modal: ModalType, data: ModalData<Tag>) => {
+    openModal: (modal: ModalTypeValue, data: ModalData<Tag>) => {
       openModal(modal, data);
     },
   };
@@ -75,31 +75,59 @@ export default function TagsViewTable() {
       />
 
       <CreateTagModal
-        createTagModal={modals.create}
-        onCloseCreateTagModal={() => closeModal("create")}
+        createTagModal={modals.commonModal.create}
+        onCloseCreateTagModal={() =>
+          closeModal(ModalType.commonModalType.create)
+        }
       />
 
       <DeleteTagsModal
-        deleteTagsModal={modals.delete}
+        deleteTagsModal={modals.commonModal.delete}
         selectedIds={
           (modalData as { selectedIds?: Set<number> })?.selectedIds ||
           new Set<number>()
         }
         onCloseDeleteTagsModal={() => {
-          closeModal("delete");
+          closeModal(ModalType.commonModalType.delete);
+          actionContext.setSelectedIds(new Set<number>());
+          actionContext.setSelectedRows([]);
+        }}
+        selectedTags={handleTable.handleSelect.selectedRows}
+      />
+      <DeleteTagsModal
+        deleteTagsModal={modals.commonModal.deletes}
+        selectedIds={
+          (modalData as { selectedIds?: Set<number> })?.selectedIds ||
+          new Set<number>()
+        }
+        onCloseDeleteTagsModal={() => {
+          closeModal(ModalType.commonModalType.deletes);
           actionContext.setSelectedIds(new Set<number>());
           actionContext.setSelectedRows([]);
         }}
         selectedTags={handleTable.handleSelect.selectedRows}
       />
       <RestoreTagsModal
-        restoreTagsModal={modals.restore}
+        restoreTagsModal={modals.commonModal.restores}
         selectedIds={
           (modalData as { selectedIds?: Set<number> })?.selectedIds ||
           new Set<number>()
         }
         onCloseRestoreTagsModal={() => {
-          closeModal("restore");
+          closeModal(ModalType.commonModalType.restores);
+          actionContext.setSelectedIds(new Set<number>());
+          actionContext.setSelectedRows([]);
+        }}
+        selectedTags={handleTable.handleSelect.selectedRows}
+      />
+      <RestoreTagsModal
+        restoreTagsModal={modals.commonModal.restore}
+        selectedIds={
+          (modalData as { selectedIds?: Set<number> })?.selectedIds ||
+          new Set<number>()
+        }
+        onCloseRestoreTagsModal={() => {
+          closeModal(ModalType.commonModalType.restore);
           actionContext.setSelectedIds(new Set<number>());
           actionContext.setSelectedRows([]);
         }}

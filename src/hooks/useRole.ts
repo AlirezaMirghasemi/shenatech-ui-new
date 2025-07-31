@@ -11,18 +11,12 @@ export const useRole = () => {
     search: "",
   });
 
-  const [permissionRolesParams, setPermissionRolesParams] = useState({
-    page: "1",
-    perPage: "5",
-    search: "",
-    permissionId: null,
-  });
-
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCheckingUniqueness, setIsCheckingUniqueness] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+
   const getRolesKey = useCallback(() => {
     const query = new URLSearchParams();
     if (params.page) query.set("page", params.page);
@@ -30,14 +24,6 @@ export const useRole = () => {
     if (params.search) query.set("search", params.search);
     return `/roles?${query.toString()}`;
   }, [params]);
-
-  const getPermissionRolesKey = useCallback(() => {
-    const query = new URLSearchParams();
-    if (permissionRolesParams.page) query.set("page", params.page);
-    if (permissionRolesParams.perPage) query.set("per_page", params.perPage);
-    if (permissionRolesParams.search) query.set("search", params.search);
-    return `/permissions/${permissionRolesParams.permissionId}/roles?${query.toString()}`;
-  }, [permissionRolesParams]);
 
   const {
     data: roles,
@@ -47,18 +33,6 @@ export const useRole = () => {
   }: SWRResponse<PaginatedResponse<Role>, ApiError> = useSWR(
     getRolesKey(),
     fetcher,
-    {
-      ...swrConfig,
-      keepPreviousData: true,
-    }
-  );
-
-  const {
-    data: permissionRoles,
-    error: permissionRolesError,
-    mutate: mutatePermissionRoles,
-  }: SWRResponse<PaginatedResponse<Role>, ApiError> = useSWR(
-    getPermissionRolesKey(),
     {
       ...swrConfig,
       keepPreviousData: true,
@@ -165,41 +139,6 @@ export const useRole = () => {
     [mutate]
   );
 
-  const fetchPermissionRoles = useCallback(
-    async (newParams: {
-      permissionId: number;
-      search?: string;
-      page?: string;
-      perPage?: string;
-    }) => {
-      setIsFetching(true);
-      try {
-        const shouldResetPage =
-          (newParams.search !== undefined &&
-            newParams.search !== params.search) ||
-          newParams.permissionId !== permissionRolesParams.permissionId;
-        setParams((prev) => ({
-          ...prev,
-          ...newParams,
-          page: shouldResetPage ? "1" : newParams.page || prev.page,
-        }));
-        await mutatePermissionRoles();
-      } catch (error) {
-        console.error("Error fetching permission roles:", error);
-        throw error;
-      } finally {
-        setIsFetching(false);
-      }
-    },
-    [
-      mutatePermissionRoles,
-      setPermissionRolesParams,
-      permissionRolesParams.search,
-      permissionRolesParams.permissionId,
-      mutateRoles,
-    ]
-  );
-
   const deleteRolePermissions = useCallback(
     async (roleId: number, permissionIds: number[]) => {
       setIsDeleting(true);
@@ -288,14 +227,7 @@ export const useRole = () => {
         ? { message: rolesError.message }
         : null,
     loading: loading || isFetching,
-    permissionRoles: {
-      roles: permissionRoles?.data || [],
-      meta: permissionRoles || ({} as PaginatedResponse<Role>),
-      error:
-        permissionRolesError && typeof permissionRolesError === "object"
-          ? { message: permissionRolesError.message }
-          : null,
-    },
+
     actions: {
       fetchRoles,
       assignRolePermissions,
@@ -304,7 +236,6 @@ export const useRole = () => {
       createRole,
       editRole,
       deleteRole,
-      fetchPermissionRoles,
       assignRoleToUsers,
       deleteUsersFromRole,
     },
@@ -315,6 +246,6 @@ export const useRole = () => {
       isFetching,
       isEditing,
     },
-    mutate: { mutateRoles, mutatePermissionRoles },
+    mutate: { mutateRoles },
   };
 };

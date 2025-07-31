@@ -1,38 +1,37 @@
-import { ModalData, ModalType } from "@/constants/data/ModalType";
+// src/hooks/useTableState.ts
 import { useState, useCallback } from "react";
+import { ModalData, ModalState, ModalTypeValue } from "@/constants/data/Modal";
 
-export const useTableState =<T extends object> () => {
-  const [modals, setModals] = useState({
-    create: false,
-    edit: false,
-    edits: false,
-    delete: false,
-    deletes: false,
-    detail: false,
-    restore: false,
-    restores: false,
-    assign: false,
-    info: false,
-
-  });
-
+export const useTableState = <T extends object>() => {
+  // استفاده مستقیم از ModalState ایمپورت شده
+  const [modals, setModals] = useState(ModalState);
   const [modalData, setModalData] = useState<ModalData<T>>();
 
-  const openModal = useCallback((modal: ModalType, data:ModalData<T>) => {
-    if (data) {
-      setModals((prev) => ({
-        ...prev,
-        [modal]: true,
-      }));
-      setModalData(data);
-    }
+  const openModal = useCallback((modal: ModalTypeValue, data: ModalData<T>) => {
+    const [group, modalName] = modal.split('_') as [keyof typeof ModalState, string];
+
+    setModals(prev => ({
+      ...prev,
+      [group]: {
+        ...prev[group],
+        [modalName]: true,
+      }
+    }));
+
+    setModalData(data);
   }, []);
 
-  const closeModal = useCallback((modal: ModalType) => {
-    setModals((prev) => ({
+  const closeModal = useCallback((modal: ModalTypeValue) => {
+    const [group, modalName] = modal.split('_') as [keyof typeof ModalState, keyof string];
+
+    setModals(prev => ({
       ...prev,
-      [modal]: false,
+      [group]: {
+        ...prev[group],
+        [modalName]: false,
+      }
     }));
+
     setModalData(undefined);
   }, []);
 

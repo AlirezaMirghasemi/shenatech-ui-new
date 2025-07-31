@@ -1,8 +1,5 @@
-// src/app/users/components/TagsViewTableActions.ts
-import { ActionType } from "@/constants/data/ActionsButton";
 import { Color } from "@/constants/data/Color";
 import { UserStatus } from "@/constants/data/UserStatus";
-import { Modal } from "@/constants/data/ModalType";
 import { User } from "@/types/User";
 import { ActionRegistry } from "@/utils/ActionRegistry";
 import {
@@ -14,20 +11,23 @@ import {
   FaUserCheck,
 } from "react-icons/fa6";
 import ChangeUserStatusPopover from "../ChangeUserStatusPopover";
+import { ModalType } from "@/constants/data/Modal";
+import { ActionType } from "@/constants/data/ActionsButton";
 
 export const UserViewTableActions = new ActionRegistry<User>()
   .register({
-    id: ActionType.CommonActionType.CREATE,
+    id: ActionType.commonModalAction.create,
     label: "ایجاد کاربر",
     color: Color.success,
     visibility: {
       hidden: (item, { selectedIds }) => item !== null || selectedIds.size != 0,
     },
-    handler: (_, { openModal }) => openModal(Modal.create, {}),
+    handler: (_, { openModal }) =>
+      openModal(ModalType.commonModalType.create, {}),
   })
 
   .register({
-    id: ActionType.CommonActionType.DETAIL,
+    id: ActionType.commonModalAction.detail,
     label: "مشاهده جزئیات",
     icon: <FaEye />,
     color: Color.info,
@@ -35,7 +35,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
       hidden: (user, { selectedIds }) =>
         user === null ||
         selectedIds.size > 1 ||
-        user.status === UserStatus.DELETED,
+        (user as User).status === UserStatus.DELETED,
     },
 
     handler: (user, { setData, setSelectedIds, setSelectedRows }) => {
@@ -47,7 +47,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.INFO,
+    id: ActionType.commonModalAction.info,
     label: "مشاهده پروفایل",
     icon: <FaClipboardUser />,
     color: Color.success,
@@ -58,12 +58,14 @@ export const UserViewTableActions = new ActionRegistry<User>()
       if (user) {
         setSelectedIds(new Set([user.id]));
         setSelectedRows([user]);
-        openModal(Modal.detail, { selectedIds: new Set([user.id]) });
+        openModal(ModalType.commonModalType.detail, {
+          selectedIds: new Set([user.id]),
+        });
       }
     },
   })
   .register({
-    id: ActionType.UserActionType.CHANGE_STATUS,
+    id: ActionType.userModalAction.changeStatus,
     label: "تغییر وضعیت کاربر",
     color: Color.primary,
     visibility: {
@@ -87,7 +89,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
   })
 
   .register({
-    id: ActionType.CommonActionType.EDIT,
+    id: ActionType.commonModalAction.edit,
     label: "ویرایش",
     icon: <FaPen />,
     color: Color.warning,
@@ -101,7 +103,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
       if (user) {
         setSelectedIds(new Set([user.id]));
         setSelectedRows([user]);
-        openModal(Modal.edit, {
+        openModal(ModalType.commonModalType.edit, {
           selectedIds: new Set([user.id]),
           selectedRows: [user],
         });
@@ -109,7 +111,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.DELETE,
+    id: ActionType.commonModalAction.delete,
     label: "حذف",
     icon: <FaTrashCan />,
     color: Color.danger,
@@ -123,7 +125,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
       if (user) {
         setSelectedIds(new Set([user.id]));
         setSelectedRows([user]);
-        openModal(Modal.delete, {
+        openModal(ModalType.commonModalType.delete, {
           selectedIds: new Set([user.id]),
           selectedRows: [user],
         });
@@ -132,7 +134,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
   })
 
   .register({
-    id: ActionType.CommonActionType.RESTORE,
+    id: ActionType.commonModalAction.restore,
     label: "بازیابی",
     icon: <FaRecycle />,
     color: Color.warning,
@@ -146,7 +148,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
       if (user) {
         setSelectedIds(new Set([user.id]));
         setSelectedRows([user]);
-        openModal(Modal.restore, {
+        openModal(ModalType.commonModalType.restore, {
           selectedIds: new Set([user.id]),
           selectedRows: [user],
         });
@@ -154,7 +156,7 @@ export const UserViewTableActions = new ActionRegistry<User>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.RESTORES,
+    id: ActionType.commonModalAction.restores,
     label: "بازیابی کاربران",
     color: Color.warning,
     visibility: {
@@ -164,6 +166,9 @@ export const UserViewTableActions = new ActionRegistry<User>()
         selectedRows.some((user) => user.status !== UserStatus.DELETED),
     },
     handler: (_, { openModal, selectedIds, selectedRows }) => {
-      openModal(Modal.restore, { selectedIds, selectedRows });
+      openModal(ModalType.commonModalType.restores, {
+        selectedIds,
+        selectedRows,
+      });
     },
   });

@@ -31,9 +31,9 @@ export default function UsersViewTableInitials({
 }: Props): IDynamicTable<User> {
   const headerActions = useMemo(() => {
     return [
-      UserViewTableActions.getAction(ActionType.CREATE),
-      UserViewTableActions.getAction(ActionType.DELETES),
-      UserViewTableActions.getAction(ActionType.RESTORES),
+      UserViewTableActions.getAction(ActionType.commonModalAction.create),
+      UserViewTableActions.getAction(ActionType.commonModalAction.deletes),
+      UserViewTableActions.getAction(ActionType.commonModalAction.restores),
     ].filter(Boolean) as ActionConfig<User>[];
   }, []);
 

@@ -5,7 +5,6 @@ import DynamicInputField from "../dynamics/dynamicFormInputs/DynamicInputField";
 import { InputType } from "@/constants/data/InputType";
 import { EditRole, Role } from "@/types/Role";
 import { useRole } from "@/hooks/useRole";
-import { DataStatus } from "@/constants/data/DataStatus";
 import { toast } from "sonner";
 import { editRoleInitial } from "@/validations/admin/role/editRoleInitial";
 import { editRoleSchema } from "@/validations/admin/role/editRoleSchema";
@@ -21,15 +20,12 @@ export default function EditRoleForm({
 }) {
   //const router = useRouter();
   const {
-    actions: { editRole, fetchRoles },
-    loading,
-    uniqueLoading,
-    meta,
+    actions: { editRole },
+    statuses: { isEditing, isCheckingUniqueness },
   } = useRole();
   const onSubmit = async (values: EditRole) => {
     try {
-      await editRole(role.id, values.roleName);
-      await fetchRoles(meta?.current_page, meta?.per_page);
+      await editRole(role.id, values.name);
       onCloseEditRoleModal();
       toast.success("نقش با موفقیت ویرایش شد.");
     } catch (err: unknown) {
@@ -50,20 +46,16 @@ export default function EditRoleForm({
       onSubmit={onSubmit}
       validateOnChange={false}
       validateOnBlur={true}
-      disabledButton={
-        loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
-      }
+      disabledButton={isEditing || isCheckingUniqueness}
     >
       <DynamicInputField
-        id={"roleName"}
-        name={"roleName"}
+        id="name"
+        name="name"
         placeholder="نام نقش"
         label="نام نقش"
         type={InputType.TEXT}
-        disabled={
-          loading == DataStatus.PENDING || uniqueLoading == DataStatus.PENDING
-        }
-        loading={uniqueLoading == DataStatus.PENDING}
+        disabled={isEditing || isCheckingUniqueness}
+        loading={isEditing || isCheckingUniqueness}
       />
     </DynamicForm>
   );

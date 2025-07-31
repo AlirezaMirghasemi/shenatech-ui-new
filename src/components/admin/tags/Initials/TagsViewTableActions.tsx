@@ -2,23 +2,24 @@
 import { ActionType } from "@/constants/data/ActionsButton";
 import { Color } from "@/constants/data/Color";
 import { CommonStatus } from "@/constants/data/CommonStatus";
-import { Modal } from "@/constants/data/ModalType";
+import { ModalType } from "@/constants/data/Modal";
 import { Tag } from "@/types/Tag";
 import { ActionRegistry } from "@/utils/ActionRegistry";
 import { FaEye, FaPen, FaRecycle, FaTrashCan } from "react-icons/fa6";
 
 export const TagsViewTableActions = new ActionRegistry<Tag>()
   .register({
-    id: ActionType.CommonActionType.CREATE,
+    id: ActionType.commonModalAction.create,
     label: "ایجاد هشتگ",
     color: Color.success,
     visibility: {
       hidden: (item, { selectedIds }) => item !== null || selectedIds.size != 0,
     },
-    handler: (_, { openModal }) => openModal(Modal.create, {}),
+    handler: (_, { openModal }) =>
+      openModal(ModalType.commonModalType.create, {}),
   })
   .register({
-    id: ActionType.CommonActionType.DETAIL,
+    id: ActionType.commonModalAction.detail,
     label: "مشاهده جزئیات",
     icon: <FaEye />,
     color: Color.info,
@@ -32,12 +33,14 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
       if (tag) {
         setSelectedIds(new Set([tag.id]));
         setSelectedRows([tag]);
-        openModal(Modal.detail, { selectedIds: new Set([tag.id]) });
+        openModal(ModalType.commonModalType.detail, {
+          selectedIds: new Set([tag.id]),
+        });
       }
     },
   })
   .register({
-    id: ActionType.CommonActionType.EDIT,
+    id: ActionType.commonModalAction.edit,
     label: "ویرایش",
     icon: <FaPen />,
     color: Color.warning,
@@ -51,7 +54,7 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
       if (tag) {
         setSelectedIds(new Set([tag.id]));
         setSelectedRows([tag]);
-        openModal(Modal.edit, {
+        openModal(ModalType.commonModalType.edit, {
           selectedIds: new Set([tag.id]),
           selectedRows: [tag],
         });
@@ -59,7 +62,7 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.DELETE,
+    id: ActionType.commonModalAction.delete,
     label: "حذف",
     icon: <FaTrashCan />,
     color: Color.danger,
@@ -73,7 +76,7 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
       if (tag) {
         setSelectedIds(new Set([tag.id]));
         setSelectedRows([tag]);
-        openModal(Modal.delete, {
+        openModal(ModalType.commonModalType.delete, {
           selectedIds: new Set([tag.id]),
           selectedRows: [tag],
         });
@@ -81,7 +84,7 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.DELETES,
+    id: ActionType.commonModalAction.deletes,
     label: "حذف هشتگ ها",
     color: Color.danger,
     visibility: {
@@ -91,11 +94,14 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
         selectedRows.some((tag) => tag.status === CommonStatus.DELETED),
     },
     handler: (_, { openModal, selectedIds, selectedRows }) => {
-      openModal(Modal.delete, { selectedIds, selectedRows });
+      openModal(ModalType.commonModalType.deletes, {
+        selectedIds,
+        selectedRows,
+      });
     },
   })
   .register({
-    id: ActionType.CommonActionType.RESTORE,
+    id: ActionType.commonModalAction.restore,
     label: "بازیابی",
     icon: <FaRecycle />,
     color: Color.warning,
@@ -109,7 +115,7 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
       if (tag) {
         setSelectedIds(new Set([tag.id]));
         setSelectedRows([tag]);
-        openModal(Modal.restore, {
+        openModal(ModalType.commonModalType.restore, {
           selectedIds: new Set([tag.id]),
           selectedRows: [tag],
         });
@@ -117,7 +123,7 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.RESTORES,
+    id: ActionType.commonModalAction.restores,
     label: "بازیابی هشتگ ها",
     color: Color.warning,
     visibility: {
@@ -127,6 +133,9 @@ export const TagsViewTableActions = new ActionRegistry<Tag>()
         selectedRows.some((tag) => tag.status !== CommonStatus.DELETED),
     },
     handler: (_, { openModal, selectedIds, selectedRows }) => {
-      openModal(Modal.restore, { selectedIds, selectedRows });
+      openModal(ModalType.commonModalType.restores, {
+        selectedIds,
+        selectedRows,
+      });
     },
   });

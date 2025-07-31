@@ -12,6 +12,7 @@ const getCookie = (name: string): string | undefined => {
 };
 
 export const fetcher = async (url: string, params?: Record<string, string>) => {
+    console.log("Fetching URL:", url);
   const query = new URLSearchParams(params).toString();
   const fullUrl = query ? `${BASE_URL}${url}?${query}` : `${BASE_URL}${url}`;
   const response = await fetch(fullUrl, {

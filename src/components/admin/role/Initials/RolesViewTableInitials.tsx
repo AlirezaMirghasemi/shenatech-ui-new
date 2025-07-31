@@ -31,9 +31,8 @@ export default function RolesViewTableInitials({
 }: Props): IDynamicTable<Role> {
   const headerActions = useMemo(() => {
     return [
-      RoleViewTableActions.getAction(ActionType.CommonActionType.CREATE),
-      RoleViewTableActions.getAction(ActionType.CommonActionType.DELETES),
-      RoleViewTableActions.getAction(ActionType.CommonActionType.RESTORES),
+      RoleViewTableActions.getAction(ActionType.commonModalAction.create),
+      RoleViewTableActions.getAction(ActionType.commonModalAction.restores),
     ].filter(Boolean) as ActionConfig<Role>[];
   }, []);
 

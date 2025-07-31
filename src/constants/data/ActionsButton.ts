@@ -1,47 +1,18 @@
-// export enum ActionType {
-//   CREATE = "create",
-//   EDIT = "edit",
-//   EDITS = "edits",
-//   RESTORE = "restore",
-//   RESTORES = "restores",
-//   DETAIL = "detail",
-//   DETAILS = "details",
-//   INFO = "info",
-//   DELETE = "delete",
-//   DELETES = "deletes",
+// src/constants/data/ActionsButton.ts
+import { ModalType } from "@/constants/data/Modal";
 
-//   ASSIGN = "assign",
-//   ASSIGNS = "assigns",
-//   UNASSIGN = "unassign",
-
-//   SEARCH = "search",
-
-//   CHANGE_STATUS = "changStatus",
-// }
-
-export const ActionType = {
-  CommonActionType: {
-    CREATE: "create",
-    EDIT: "edit",
-    EDITS: "edits",
-    RESTORE: "restore",
-    RESTORES: "restores",
-    DETAIL: "detail",
-    DETAILS: "details",
-    INFO: "info",
-    DELETE: "delete",
-    DELETES: "deletes",
-  },
-  UserActionType: {
-    CHANGE_STATUS: "changeStatus",
-  },
-  RoleActionType: {
-    ASSIGN_PERMISSION: "assignPermission",
-    ASSIGN_USER:"assignUser"
-  },
+// 1. تولید ActionType از ModalType
+export const ActionType = Object.fromEntries(
+  Object.entries(ModalType).map(([groupKey, actions]) => {
+    const actionGroup = groupKey.replace('Type', 'Action') as keyof typeof ActionType;
+    return [actionGroup, actions];
+  })
+) as {
+  [K in keyof typeof ModalType as K extends `${infer P}Type` ? `${P}Action` : never]:
+    (typeof ModalType)[K]
 };
-type DeepValueOf<T> = T extends object
-  ? { [K in keyof T]: DeepValueOf<T[K]> }[keyof T]
-  : T;
 
-export type ActionType = DeepValueOf<typeof ActionType>;
+// 2. تایپ عمومی ActionTypeValue
+export type ActionTypeValue = {
+  [K in keyof typeof ActionType]: (typeof ActionType)[K][keyof (typeof ActionType)[K]]
+}[keyof typeof ActionType];

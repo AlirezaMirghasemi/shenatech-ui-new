@@ -21,7 +21,7 @@ export default function DynamicTable<T extends { id: number; status: string }>({
   dynamicTable: IDynamicTable<T>;
   setPage?: (page: string) => void;
   handleTable: ReturnType<typeof useTable<T>>;
-  actionContext: ActionContext<T>;
+  actionContext?: ActionContext<T>;
 }) {
   // Clear selection only when checkbox config changes
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function DynamicTable<T extends { id: number; status: string }>({
               <DynamicTableHeader
                 dynamicTableHeader={dynamicTable.header}
                 handleTable={handleTable}
-                actionContext={actionContext}
+                actionContext={actionContext ?? ({} as ActionContext<T>)}
               />
             )}
 
@@ -79,7 +79,7 @@ export default function DynamicTable<T extends { id: number; status: string }>({
                     getRowActions={dynamicTable.getRowActions}
                     actionCellClassName={dynamicTable.actionCellClassName}
                     handleTable={handleTable}
-                    actionContext={actionContext}
+                    actionContext={actionContext ?? ({} as ActionContext<T>)}
                   />
                 </Table>
               </div>

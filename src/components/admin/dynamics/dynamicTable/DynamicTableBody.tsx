@@ -35,6 +35,8 @@ export default function DynamicTableBody<
     <TableBody className="divide-y">
       {dynamicTableData.map((row) => {
         const actions = getRowActions?.(row) || [];
+        const hasRowActions = !!getRowActions;
+
         const isSelected = handleTable.handleSelect.selectedIds.has(
           row[dynamicTableRowKey] as number
         );
@@ -65,7 +67,7 @@ export default function DynamicTableBody<
               );
             })}
 
-            {actions.length > 0 ? (
+            {actions.length != 0 ? (
               <TableCell className={actionCellClassName || "py-3 px-4"}>
                 <DynamicTableActionCell
                   item={row}
@@ -74,9 +76,11 @@ export default function DynamicTableBody<
                 />
               </TableCell>
             ) : (
-              <TableCell className={actionCellClassName || "py-3 px-4"}>
-                ---
-              </TableCell>
+              hasRowActions && (
+                <TableCell className={actionCellClassName || "py-3 px-4"}>
+                  ---
+                </TableCell>
+              )
             )}
 
             {dynamicTableCheckbox && (

@@ -11,10 +11,11 @@ import DeleteUserModal from "./DeleteUserModal";
 import UsersViewTableInitials from "./Initials/UsersViewTableInitials";
 import useTable from "@/hooks/useTable";
 import { useTableState } from "@/hooks/useTableState";
-import { ModalData, ModalType } from "@/constants/data/ModalType";
 import RestoreUsersModal from "./RestoreUsersModal";
 import { TabItem, Tabs } from "flowbite-react";
 import { FaFileContract } from "react-icons/fa6";
+import { ModalData, ModalType, ModalTypeValue } from "@/constants/data/Modal";
+import UserRolesTable from "./UserRolesTable";
 export default function UsersViewTable() {
   const {
     actions: { fetchUsers },
@@ -36,6 +37,7 @@ export default function UsersViewTable() {
   useEffect(() => {
     handleTable.handleSelect.clearSelection();
     handleTable.handleSelect.clearRowData();
+    handleTable.handleSelect.setParentData({} as User);
   }, [currentPage, searchValue]);
 
   const actionContext = {
@@ -45,20 +47,23 @@ export default function UsersViewTable() {
     selectedRows: handleTable.handleSelect.selectedRows,
     data: handleTable.handleSelect.data,
     setData: handleTable.handleSelect.setData,
-    openModal: (modal: ModalType, data: ModalData<User>) => {
+    parentData: handleTable.handleSelect.parentData,
+    setParentData: ( { id, status }:{ id: number; status: string }) =>
+      handleTable.handleSelect.setParentData(),
+    openModal: (modal: ModalTypeValue, data: ModalData<User>) => {
       openModal(modal, data);
     },
   };
-//   const userViewTableInitials = UsersViewTableInitials({
-//     searchValue,
-//     setSearchValue,
-//     searchRef,
-//     users,
-//     meta,
-//     loading,
-//     error,
-//     actionContext,
-//   });
+  //   const userViewTableInitials = UsersViewTableInitials({
+  //     searchValue,
+  //     setSearchValue,
+  //     searchRef,
+  //     users,
+  //     meta,
+  //     loading,
+  //     error,
+  //     actionContext,
+  //   });
 
   return (
     <>
@@ -79,44 +84,59 @@ export default function UsersViewTable() {
       />
 
       <CreateUserModal
-        createUserModal={modals.create}
-        onCloseCreateUserModal={() => closeModal("create")}
+        createUserModal={modals.commonModal.create}
+        onCloseCreateUserModal={() =>
+          closeModal(ModalType.commonModalType.create)
+        }
       />
 
-      {handleTable.handleSelect.selectedRows.length !=0 && (
+      {handleTable.handleSelect.selectedRows.length != 0 && (
         <>
           <UserProfileModal
             user={handleTable.handleSelect.selectedRows[0]}
             onClose={() => {
-              closeModal("detail");
+              closeModal(ModalType.commonModalType.detail);
               actionContext.setSelectedIds(new Set<number>());
             }}
-            userProfileModal={modals.detail}
+            userProfileModal={modals.commonModal.detail}
           />
           <EditUserModal
-            editUserModal={modals.edit}
+            editUserModal={modals.commonModal.edit}
             onCloseEditUserModal={() => {
-              closeModal("edit");
+              closeModal(ModalType.commonModalType.edit);
               actionContext.setSelectedIds(new Set<number>());
             }}
             user={handleTable.handleSelect.selectedRows[0]}
           />
           <DeleteUserModal
-            deleteUserModal={modals.delete}
+            deleteUserModal={modals.commonModal.delete}
             onCloseDeleteUserModal={() => {
-              closeModal("delete");
+              closeModal(ModalType.commonModalType.delete);
               actionContext.setSelectedIds(new Set<number>());
             }}
             user={handleTable.handleSelect.selectedRows[0]}
           />
           <RestoreUsersModal
-            restoreUsersModal={modals.restore}
+            restoreUsersModal={modals.commonModal.restores}
             selectedIds={
               (modalData as { selectedIds?: Set<number> })?.selectedIds ||
               new Set<number>()
             }
             onCloseRestoreUsersModal={() => {
-              closeModal("restore");
+              closeModal(ModalType.commonModalType.restores);
+              actionContext.setSelectedIds(new Set<number>());
+              actionContext.setSelectedRows([]);
+            }}
+            selectedUsers={handleTable.handleSelect.selectedRows}
+          />
+          <RestoreUsersModal
+            restoreUsersModal={modals.commonModal.restore}
+            selectedIds={
+              (modalData as { selectedIds?: Set<number> })?.selectedIds ||
+              new Set<number>()
+            }
+            onCloseRestoreUsersModal={() => {
+              closeModal(ModalType.commonModalType.restore);
               actionContext.setSelectedIds(new Set<number>());
               actionContext.setSelectedRows([]);
             }}
@@ -126,9 +146,9 @@ export default function UsersViewTable() {
       )}
       {Object.keys(handleTable.handleSelect.data).length != 0 && (
         <>
-          <Tabs variant="fullWidth">
-            <TabItem title="فعالیت ها" icon={FaFileContract}>
-              <h4>لیست فعالیت ها</h4>
+          <Tabs variant="fullWidth" className="p-0">
+            <TabItem title="نقش های کاربر" icon={FaFileContract}>
+              <UserRolesTable user={handleTable.handleSelect.data} />
             </TabItem>
           </Tabs>
         </>

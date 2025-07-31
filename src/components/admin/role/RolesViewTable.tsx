@@ -10,9 +10,9 @@ import EditRoleModal from "./EditRoleModal";
 import DeleteRoleModal from "./DeleteRoleModal";
 import AssignRoleToUsersModal from "./AssignRoleToUsersModal";
 import useTable from "@/hooks/useTable";
-import { ModalData, ModalType } from "@/constants/data/ModalType";
 import RolesViewTableInitials from "./Initials/RolesViewTableInitials";
 import { useTableState } from "@/hooks/useTableState";
+import { ModalData, ModalType, ModalTypeValue } from "@/constants/data/Modal";
 export default function RolesViewTable() {
   const {
     actions: { fetchRoles },
@@ -43,7 +43,7 @@ export default function RolesViewTable() {
     selectedRows: handleTable.handleSelect.selectedRows,
     data: handleTable.handleSelect.data,
     setData: handleTable.handleSelect.setData,
-    openModal: (modal: ModalType, data: ModalData<Role>) => {
+    openModal: (modal: ModalTypeValue, data: ModalData<Role>) => {
       openModal(modal, data);
     },
   };
@@ -68,43 +68,51 @@ export default function RolesViewTable() {
 
       {/* {role && (
         <>
-          <AssignPermissionModal
-            assignPermissionModal={assignPermissionModal}
-            onCloseAssignPermissionModal={onCloseAssignPermissionModal}
-            role={role}
-            ShowRoleDetails={ShowRoleDetails}
-          />
-          <EditRoleModal
-            editRoleModal={editRoleModal}
-            onCloseEditRoleModal={onCloseEditRoleModal}
-            role={role}
-          />
-          <DeleteRoleModal
-            deleteRoleModal={deleteRoleModal}
-            role={role}
-            onCloseDeleteRoleModal={onCloseDeleteRoleModal}
-          />
-          <AssignRoleToUsersModal
-            assignRoleToUsersModal={assignRoleToUsersModal}
-            onCloseAssignRoleToUsersModal={onCloseAssignRoleToUsersModal}
-            role={role}
-            ShowRoleDetails={ShowRoleDetails}
-          />
+
+
+
+
         </>
       )}*/}
       <CreateRoleModal
-        createRoleModal={modals.create}
-        onCloseCreateRoleModal={() => closeModal("create")}
+        createRoleModal={modals.commonModal.create}
+        onCloseCreateRoleModal={() => closeModal(ModalType.commonModalType.create)}
       />
       {handleTable.handleSelect.selectedRows.length != 0 && (
-        <DeleteRoleModal
-          deleteRoleModal={modals.delete}
-          onCloseDeleteRoleModal={() => {
-            closeModal("delete");
-            handleTable.handleSelect.clearSelection();
-          }}
-          role={handleTable.handleSelect.selectedRows[0]}
-        />
+        <>
+          <DeleteRoleModal
+            deleteRoleModal={modals.commonModal.delete}
+            onCloseDeleteRoleModal={() => {
+              closeModal(ModalType.commonModalType.delete);
+              handleTable.handleSelect.clearSelection();
+            }}
+            role={handleTable.handleSelect.selectedRows[0]}
+          />
+          <EditRoleModal
+            editRoleModal={modals.commonModal.edit}
+            role={handleTable.handleSelect.selectedRows[0]}
+            onCloseEditRoleModal={() => {
+              closeModal(ModalType.commonModalType.edit);
+              handleTable.handleSelect.clearSelection();
+            }}
+          />
+          <AssignRoleToUsersModal
+            assignRoleToUsersModal={modals.roleModal.assignUser}
+            onCloseAssignRoleToUsersModal={()=>{
+              closeModal(ModalType.roleModalType.assignUser);
+              handleTable.handleSelect.clearSelection();
+            }}
+            role={handleTable.handleSelect.selectedRows[0]}
+          />
+          <AssignPermissionModal
+            assignPermissionModal={modals.roleModal.assignPermission}
+            onCloseAssignPermissionModal={()=>{
+                closeModal(ModalType.roleModalType.assignPermission);
+              handleTable.handleSelect.clearSelection();
+            }}
+            role={handleTable.handleSelect.selectedRows[0]}
+          />
+        </>
       )}
     </>
   );

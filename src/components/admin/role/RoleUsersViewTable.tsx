@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { FaTrash, FaTrashCan } from "react-icons/fa6";
 import DeleteUsersFromRoleModal from "./DeleteUsersFromRoleModal";
 import { Role } from "@/types/Role";
+import { Color } from "@/constants/data/Color";
 
 export default function RoleUsersViewTable({
   //roleId,
@@ -33,7 +34,7 @@ export default function RoleUsersViewTable({
   useEffect(() => {
     const fetchRoleUsersData = async () => {
       if (role?.id) {
-      return  await fetchRoleUsers(role.id, "10", roleUsersPage);
+      return  await fetchRoleUsers(role.id, {page:roleUsersPage,perPage:"10"});
       }
     };
     fetchRoleUsersData();
@@ -62,7 +63,7 @@ export default function RoleUsersViewTable({
           },
           disabled: selectedIds.size === 0,
           hidden:selectedIds.size === 0,
-          color: "danger",
+          color: Color.danger,
         },
       ],
     },

@@ -61,3 +61,6 @@ export interface DeleteUser {
   removeProfilePicture: boolean;
   removeRoles: boolean;
 }
+export interface AssignRolesToUser{
+    roleIds:number[];
+}

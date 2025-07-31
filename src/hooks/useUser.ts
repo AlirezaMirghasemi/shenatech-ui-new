@@ -198,9 +198,6 @@ export const useUser = () => {
     [mutate]
   );
 
-
-
-
   const editUser = useCallback(
     async (userId: number, user: EditUser, profileImage?: File) => {
       const formData = new FormData();
@@ -229,7 +226,7 @@ export const useUser = () => {
     [mutate]
   );
   const restoreUsers = useCallback(
-    async (userIds:  number[]) => {
+    async (userIds: number[]) => {
       setIsEditing(true);
       try {
         await mutator("/users/restores", "POST", { userIds });
@@ -249,7 +246,7 @@ export const useUser = () => {
     setIsFetching(true);
     try {
       const result = await fetcher(`/users/${roleId}/roles/unassigned`);
-      return result;
+      return result.data;
     } catch (error) {
       console.error("خطا در دریافت نقش های بدون کاربر:", error);
       throw error as ApiError;
@@ -277,7 +274,7 @@ export const useUser = () => {
       fetchUsers,
       checkFieldIsUnique,
       fetchUnAssignedRoleUsers,
-      restoreUsers
+      restoreUsers,
     },
     statuses: {
       isCreating,

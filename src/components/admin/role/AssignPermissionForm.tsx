@@ -18,24 +18,25 @@ import { toast } from "sonner";
 export default function AssignPermissionForm({
   role,
   onCloseAssignPermissionModal,
-  ShowRoleDetails,
 }: {
   role: Role;
   onCloseAssignPermissionModal: (role: Role) => void;
-  ShowRoleDetails: (role: Role) => void;
 }) {
   const [unAssignedPermissions, setUnAssignedPermissions] = useState<
     Permission[]
   >([]);
+  //TODO : FIX UsePermission
   const {
     actions: { fetchRoleNotPermissions, fetchRolePermissions },
     loading,
     unassigned,
   } = usePermission();
   const {
-    meta,
-    actions: { assignRolePermissions, fetchRoles },
-    loading: assignLoading,
+
+    actions: { assignRolePermissions },
+   statuses:{
+    isEditing
+   }
   } = useRole();
 
   useEffect(() => {
@@ -57,9 +58,7 @@ export default function AssignPermissionForm({
     try {
       await assignRolePermissions(role.id, values.permissionIds);
       await toast.success("مجوزها با موفقیت تخصیص داده شدند.");
-      await fetchRoles(meta?.current_page, meta?.per_page);
       await onCloseAssignPermissionModal(role);
-      ShowRoleDetails(role);
       return await fetchRolePermissions(role.id);
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
@@ -77,7 +76,7 @@ export default function AssignPermissionForm({
         onSubmit={onSubmit}
         buttonTitle="تخصیص مجوز"
         disabledButton={
-          loading === DataStatus.PENDING || assignLoading === DataStatus.PENDING
+         isEditing
         }
       >
         <Badge color="info" size="md" className="cursor-default mb-3">
@@ -95,8 +94,7 @@ export default function AssignPermissionForm({
           placeholder="مجوز ها"
           label="مجوز ها"
           disabled={
-            loading === DataStatus.PENDING ||
-            assignLoading === DataStatus.PENDING
+            isEditing
           }
           className="rounded-lg block w-full p-0.2 mb-2"
           multiple={true}

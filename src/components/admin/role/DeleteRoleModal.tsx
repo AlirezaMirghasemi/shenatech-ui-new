@@ -5,7 +5,6 @@ import { AxiosError } from "axios";
 import { Button, Modal, ModalBody, ModalHeader, Spinner } from "flowbite-react";
 import { FaSkullCrossbones } from "react-icons/fa6";
 import { toast } from "sonner";
-//TODO:: Add Multi deletion
 export default function DeleteRoleModal({
   deleteRoleModal,
   role,

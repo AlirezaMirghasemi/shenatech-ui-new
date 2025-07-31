@@ -1,74 +1,84 @@
+"use client";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
-import { Tag } from "@/types/Tag";
-import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
-import { CommonStatusTitles } from "@/constants/data/CommonStatus";
+import {
+  SetStateAction,
+  useMemo,
+} from "react";
+
+import { PaginatedResponse } from "@/types/Api";
 import { ActionConfig, ActionContext } from "@/utils/ActionRegistry";
 import { ActionType } from "@/constants/data/ActionsButton";
-import { PaginatedResponse } from "@/types/Api";
-import { SetStateAction, useMemo } from "react";
-import { TagsViewTableActions } from "./TagsViewTableActions";
-
+import { ConvertDateToShamsi } from "@/helpers/ConvertDate";
+import { Role } from "@/types/Role";
+import {
+  CommonStatus,
+  CommonStatusTitles,
+} from "@/constants/data/CommonStatus";
+import { UserRolesTableActions } from "./UserRolesTableActions";
+import { User } from "@/types/User";
 interface Props {
   searchValue: string;
   setSearchValue: (value: SetStateAction<string>) => void;
   searchRef: React.RefObject<HTMLInputElement | null>;
-  tags: Tag[];
-  meta: PaginatedResponse<Tag>;
+  userRoles: Role[];
+  meta: PaginatedResponse<Role>;
   loading: boolean;
   error: { message: string } | null;
-  actionContext: ActionContext<Tag>;
-}
+  actionContext: ActionContext<Role,User>;
 
-export default function TagsViewTableInitials({
+
+}
+export default function UserRolesTableInitials({
   searchValue,
   setSearchValue,
   searchRef,
-  tags,
+  userRoles,
   meta,
   loading,
   error,
-  actionContext,
-}: Props): IDynamicTable<Tag> {
-  const headerActions = useMemo(() => {
-    return [
-      TagsViewTableActions.getAction(ActionType.commonModalAction.create),
-      TagsViewTableActions.getAction(ActionType.commonModalAction.deletes ),
-      TagsViewTableActions.getAction(ActionType.commonModalAction.restores),
-    ].filter(Boolean) as ActionConfig<Tag>[];
-  }, []);
+}: Props): IDynamicTable<Role> {
+    const headerActions = useMemo(() => {
+      return [
+        UserRolesTableActions.getAction(
+          ActionType.userRoleModalAction.assignRoles
+        ),
+      ].filter(Boolean) as ActionConfig<Role,object>[];
+    }, []);
 
   return {
     header: {
-      title: "هشتگ ها",
-      description: "مدیریت هشتگ ها",
+      title: "نقش های کاربر",
       actions: headerActions,
     },
-    data: tags,
+    data: userRoles,
     columns: [
       {
-        header: "نام هشتگ",
-        accessor: "title",
+        header: "نام نقش",
+        accessor: "name",
         className: "text-center",
       },
       {
         header: "وضعیت",
         accessor: "status",
         className: "text-center",
-        cellRenderer: (row) =>
-          CommonStatusTitles.getCommonStatusTitle(row.status),
+        cellRenderer(row) {
+          const status = CommonStatusTitles.getCommonStatusTitle(row.status);
+          switch (row.status) {
+            case CommonStatus.ACTIVE:
+              return <span className="text-success">{status}</span>;
+            case CommonStatus.DELETED:
+              return <span className="text-danger">{status}</span>;
+            default:
+              return null;
+          }
+        },
       },
+
       {
         header: "تاریخ ایجاد",
         accessor: "created_at",
         className: "text-center",
         cellRenderer: (row) => ConvertDateToShamsi({ date: row.created_at }),
-      },
-      {
-        header: "حذف شده توسط",
-        accessor: "deleted_by",
-        className: "text-center",
-        roles: ["Admin"],
-        cellRenderer: (row) => row.deleted_by?.username ?? "-",
       },
       {
         header: "تاریخ ویرایش",
@@ -78,6 +88,13 @@ export default function TagsViewTableInitials({
           row.updated_at ? ConvertDateToShamsi({ date: row.updated_at }) : "-",
       },
       {
+        header: "حذف شده توسط",
+        accessor: "deleted_by",
+        className: "text-center",
+        roles: ["Admin"],
+        cellRenderer: (row) => row.deleted_by?.username ?? "-",
+      },
+      {
         header: "تاریخ حذف",
         accessor: "deleted_at",
         className: "text-center",
@@ -85,8 +102,7 @@ export default function TagsViewTableInitials({
           row.deleted_at ? ConvertDateToShamsi({ date: row.deleted_at }) : "-",
       },
     ],
-    getRowActions: (row: Tag) =>
-      TagsViewTableActions.getVisibleActions(row, actionContext),
+
     rowKey: "id",
     error: error?.message,
     loading,

@@ -1,7 +1,7 @@
 import { ActionType } from "@/constants/data/ActionsButton";
 import { Color } from "@/constants/data/Color";
 import { CommonStatus } from "@/constants/data/CommonStatus";
-import { Modal } from "@/constants/data/ModalType";
+import {  ModalType } from "@/constants/data/Modal";
 import { Role } from "@/types/Role";
 import { ActionRegistry } from "@/utils/ActionRegistry";
 import {
@@ -15,16 +15,17 @@ import {
 
 export const RoleViewTableActions = new ActionRegistry<Role>()
   .register({
-    id: ActionType.CommonActionType.CREATE,
+    id: ActionType.commonModalAction.create,
     label: "ایجاد نقش",
     color: Color.success,
     visibility: {
       hidden: (item, { selectedIds }) => item !== null || selectedIds.size != 0,
     },
-    handler: (_, { openModal }) => openModal(Modal.create, {}),
+    handler: (_, { openModal }) =>
+      openModal(ModalType.commonModalType.create, {}),
   })
   .register({
-    id: ActionType.CommonActionType.DETAIL,
+    id: ActionType.commonModalAction.detail,
     label: "مشاهده جزئیات",
     icon: <FaEye />,
     color: Color.info,
@@ -38,12 +39,14 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
       if (role) {
         setSelectedIds(new Set([role.id]));
         setSelectedRows([role]);
-        openModal(Modal.detail, { selectedIds: new Set([role.id]) });
+        openModal(ModalType.commonModalType.detail, {
+          selectedIds: new Set([role.id]),
+        });
       }
     },
   })
   .register({
-    id: ActionType.CommonActionType.DETAIL,
+    id: ActionType.commonModalAction.detail,
     label: "مشاهده جزئیات",
     icon: <FaEye />,
     color: Color.info,
@@ -63,7 +66,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.EDIT,
+    id: ActionType.commonModalAction.edit,
     label: "ویرایش",
     icon: <FaPen />,
     color: Color.warning,
@@ -77,7 +80,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
       if (role) {
         setSelectedIds(new Set([role.id]));
         setSelectedRows([role]);
-        openModal(Modal.edit, {
+        openModal(ModalType.commonModalType.edit, {
           selectedIds: new Set([role.id]),
           selectedRows: [role],
         });
@@ -85,7 +88,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
     },
   })
   .register({
-    id: ActionType.RoleActionType.ASSIGN_PERMISSION,
+    id: ActionType.roleModalAction.assignPermission,
     label: "تخصیص مجوز",
     icon: <FaUserPen />,
     color: Color.primary,
@@ -99,7 +102,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
       if (role) {
         setSelectedIds(new Set([role.id]));
         setSelectedRows([role]);
-        openModal(Modal.edit, {
+        openModal(ActionType.roleModalAction.assignPermission, {
           selectedIds: new Set([role.id]),
           selectedRows: [role],
         });
@@ -107,7 +110,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
     },
   })
   .register({
-    id: ActionType.RoleActionType.ASSIGN_USER,
+    id: ActionType.roleModalAction.assignUser,
     label: "تخصیص به کاربر",
     icon: <FaUserPlus />,
     color: Color.secondary,
@@ -121,7 +124,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
       if (role) {
         setSelectedIds(new Set([role.id]));
         setSelectedRows([role]);
-        openModal(Modal.edit, {
+        openModal(ActionType.roleModalAction.assignUser, {
           selectedIds: new Set([role.id]),
           selectedRows: [role],
         });
@@ -129,7 +132,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.DELETE,
+    id: ActionType.commonModalAction.delete,
     label: "حذف",
     icon: <FaTrashCan />,
     color: Color.danger,
@@ -143,29 +146,16 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
       if (role) {
         setSelectedIds(new Set([role.id]));
         setSelectedRows([role]);
-        openModal(Modal.delete, {
+        openModal(ModalType.commonModalType.delete, {
           selectedIds: new Set([role.id]),
           selectedRows: [role],
         });
       }
     },
   })
+
   .register({
-    id: ActionType.CommonActionType.DELETES,
-    label: "حذف نقش ها",
-    color: Color.danger,
-    visibility: {
-      hidden: (item, { selectedIds, selectedRows }) =>
-        item !== null ||
-        selectedIds.size === 0 ||
-        selectedRows.some((role) => role.status === CommonStatus.DELETED),
-    },
-    handler: (_, { openModal, selectedIds, selectedRows }) => {
-      openModal(Modal.delete, { selectedIds, selectedRows });
-    },
-  })
-  .register({
-    id: ActionType.CommonActionType.RESTORE,
+    id: ActionType.commonModalAction.restore,
     label: "بازیابی",
     icon: <FaRecycle />,
     color: Color.warning,
@@ -179,7 +169,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
       if (role) {
         setSelectedIds(new Set([role.id]));
         setSelectedRows([role]);
-        openModal(Modal.restore, {
+        openModal(ActionType.commonModalAction.restore, {
           selectedIds: new Set([role.id]),
           selectedRows: [role],
         });
@@ -187,7 +177,7 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
     },
   })
   .register({
-    id: ActionType.CommonActionType.RESTORES,
+    id: ActionType.commonModalAction.restores,
     label: "بازیابی نقش ها",
     color: Color.warning,
     visibility: {
@@ -197,18 +187,9 @@ export const RoleViewTableActions = new ActionRegistry<Role>()
         selectedRows.some((role) => role.status !== CommonStatus.DELETED),
     },
     handler: (_, { openModal, selectedIds, selectedRows }) => {
-      openModal(Modal.restore, { selectedIds, selectedRows });
+      openModal(ActionType.commonModalAction.restores, {
+        selectedIds,
+        selectedRows,
+      });
     },
   });
-
-//   const InitialRolesViewTable: IDynamicTable<Role> = {
-//
-//
-//
-//       rowKey: "id",
-//       error: error?.toString(),
-//       loading: loading === DataStatus.PENDING,
-//       pagination: meta,
-//       actionCellClassName: "text-center",
-//       className: (row) => (row.id === role?.id ? "!bg-bg-active " : ""),
-//     };

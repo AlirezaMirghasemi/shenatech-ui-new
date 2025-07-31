@@ -2,7 +2,6 @@ import { AssignRoleToUsers, Role } from "@/types/Role";
 import DynamicForm from "../dynamics/DynamicForm";
 import { assignRoleToUsersInitial } from "@/validations/admin/role/assignRoleToUsersInitial";
 import { assignRoleToUsersSchema } from "@/validations/admin/role/assignRoleToUsersSchema";
-import { DataStatus } from "@/constants/data/DataStatus";
 import { InputType } from "@/constants/data/InputType";
 import { Badge } from "flowbite-react";
 import { FormikHelpers } from "formik";
@@ -16,47 +15,35 @@ import { toast } from "sonner";
 export default function AssignRoleToUsersForm({
   onCloseAssignRoleToUsersModal,
   role,
-  ShowRoleDetails,
 }: {
   onCloseAssignRoleToUsersModal: (role: Role) => void;
   role: Role;
-  ShowRoleDetails: (role: Role) => void;
 }) {
   const {
-    actions: { fetchUnAssignedRoleUsers, fetchRoleUsers },
-    unassignedRoleUsers,
-    loading: fetchUserLoading,
+    actions: { fetchUnAssignedRoleUsers },
+    statuses: { isFetching },
   } = useUser();
+
   const {
-    actions: { fetchRoles, assignRoleToUsers },
-    loading,
-    meta,
+    actions: { assignRoleToUsers },
+    statuses: { isEditing },
   } = useRole();
-  const [filteredUsers, setFilteredUsers] =
-    useState<User[]>(unassignedRoleUsers);
+  const  [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   useEffect(() => {
     const fetchData = async () => {
-      await fetchUnAssignedRoleUsers(role.id);
+      setFilteredUsers(await fetchUnAssignedRoleUsers(role.id));
     };
     fetchData();
+
   }, [role.id]);
-
-  // از یک useEffect جداگانه برای واکنش به تغییرات users استفاده کنید
-  useEffect(() => {
-    setFilteredUsers(unassignedRoleUsers);
-  }, [unassignedRoleUsers]);
-
   const onSubmit = async (
     values: AssignRoleToUsers,
     { setSubmitting }: FormikHelpers<AssignRoleToUsers>
   ) => {
     try {
       await assignRoleToUsers(role.id, values.userIds);
-      await fetchRoles(meta?.current_page, meta?.per_page);
       toast.success("نقش با موفقیت به کاربران تخصیص داده شد.");
       await onCloseAssignRoleToUsersModal(role);
-      await ShowRoleDetails(role);
-      return await fetchRoleUsers(role.id);
     } catch (error) {
       console.error("Error Assign Role To Users:", error);
       toast.error("خطا در تخصیص نقش به کاربران.");
@@ -71,10 +58,7 @@ export default function AssignRoleToUsersForm({
         validationSchema={assignRoleToUsersSchema}
         onSubmit={onSubmit}
         buttonTitle=" تخصیص نقش به کاربران"
-        disabledButton={
-          loading === DataStatus.PENDING ||
-          fetchUserLoading === DataStatus.PENDING
-        }
+        disabledButton={isFetching || isEditing}
         validateOnBlur={true}
         validateOnChange={true}
       >
@@ -92,11 +76,8 @@ export default function AssignRoleToUsersForm({
           type={InputType.SELECT}
           placeholder="کاربران"
           label="کاربران"
-          disabled={
-            loading === DataStatus.PENDING ||
-            fetchUserLoading === DataStatus.PENDING
-          }
-          loading={fetchUserLoading === DataStatus.PENDING}
+          disabled={isFetching || isEditing}
+          loading={isFetching}
           className="rounded-lg block w-full p-0.2 mb-2"
           multiple={true}
           data={filteredUsers.map((user) => ({
