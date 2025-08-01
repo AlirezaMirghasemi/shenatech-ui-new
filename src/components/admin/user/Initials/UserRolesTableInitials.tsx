@@ -1,9 +1,6 @@
 "use client";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
-import {
-  SetStateAction,
-  useMemo,
-} from "react";
+import { SetStateAction, useMemo } from "react";
 
 import { PaginatedResponse } from "@/types/Api";
 import { ActionConfig, ActionContext } from "@/utils/ActionRegistry";
@@ -15,7 +12,6 @@ import {
   CommonStatusTitles,
 } from "@/constants/data/CommonStatus";
 import { UserRolesTableActions } from "./UserRolesTableActions";
-import { User } from "@/types/User";
 interface Props {
   searchValue: string;
   setSearchValue: (value: SetStateAction<string>) => void;
@@ -24,9 +20,7 @@ interface Props {
   meta: PaginatedResponse<Role>;
   loading: boolean;
   error: { message: string } | null;
-  actionContext: ActionContext<Role,User>;
-
-
+  actionContext: ActionContext<Role>;
 }
 export default function UserRolesTableInitials({
   searchValue,
@@ -36,14 +30,15 @@ export default function UserRolesTableInitials({
   meta,
   loading,
   error,
+  actionContext,
 }: Props): IDynamicTable<Role> {
-    const headerActions = useMemo(() => {
-      return [
-        UserRolesTableActions.getAction(
-          ActionType.userRoleModalAction.assignRoles
-        ),
-      ].filter(Boolean) as ActionConfig<Role,object>[];
-    }, []);
+  const headerActions = useMemo(() => {
+    return [
+      UserRolesTableActions.getAction(
+        ActionType.userRoleModalAction.assignRoles
+      ),
+    ].filter(Boolean) as ActionConfig<Role>[];
+  }, [actionContext]);
 
   return {
     header: {

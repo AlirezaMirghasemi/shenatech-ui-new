@@ -8,14 +8,14 @@ export default function AssignRolesToUserModal({
   user,
 }: {
   assignRolesToUserModal: boolean;
-  onCloseAssignRolesToUserModal: (user: User) => void;
+  onCloseAssignRolesToUserModal: () => void;
   user: User;
 }) {
   return (
     <>
       <Modal
         show={assignRolesToUserModal}
-        onClose={() => onCloseAssignRolesToUserModal(user)}
+        onClose={onCloseAssignRolesToUserModal}
         size="md"
         popup
       >

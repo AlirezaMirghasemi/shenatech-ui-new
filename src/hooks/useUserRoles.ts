@@ -37,6 +37,19 @@ export const useUserRoles = () => {
       keepPreviousData: true,
     }
   );
+  const fetchUnAssignedUserRoles = useCallback(async (userId: number) => {
+    setIsFetching(true);
+    try {
+      const response = await fetcher(`/users/${userId}/unassigned-roles`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching User roles:", error);
+      throw error;
+    } finally {
+      setIsFetching(false);
+    }
+  }, []);
+
   const fetchUserRoles = useCallback(
     async (newParams: {
       userId: number;
@@ -114,7 +127,7 @@ export const useUserRoles = () => {
       userRolesError && typeof userRolesError === "object"
         ? { message: userRolesError.message }
         : null,
-    actions: { fetchUserRoles, assignRolesToUser, deleteUserFromRoles },
+    actions: { fetchUserRoles, assignRolesToUser, deleteUserFromRoles,fetchUnAssignedUserRoles },
     statuses: {
       //isCreating,
       isDeleting,

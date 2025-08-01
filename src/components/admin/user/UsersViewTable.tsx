@@ -1,7 +1,7 @@
 "use client";
 import DynamicTable from "@/components/admin/dynamics/dynamicTable/DynamicTable";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { User } from "@/types/User";
 import { useUser } from "@/hooks/useUser";
 import UserProfileModal from "./UserProfileModal";
@@ -37,33 +37,29 @@ export default function UsersViewTable() {
   useEffect(() => {
     handleTable.handleSelect.clearSelection();
     handleTable.handleSelect.clearRowData();
-    handleTable.handleSelect.setParentData({} as User);
   }, [currentPage, searchValue]);
 
-  const actionContext = {
+  const actionContext = useMemo(() => ({
     setSelectedIds: handleTable.handleSelect.setSelectedIds,
     setSelectedRows: handleTable.handleSelect.setSelectedRows,
     selectedIds: handleTable.handleSelect.selectedIds,
     selectedRows: handleTable.handleSelect.selectedRows,
     data: handleTable.handleSelect.data,
     setData: handleTable.handleSelect.setData,
-    parentData: handleTable.handleSelect.parentData,
-    setParentData: ( { id, status }:{ id: number; status: string }) =>
-      handleTable.handleSelect.setParentData(),
     openModal: (modal: ModalTypeValue, data: ModalData<User>) => {
       openModal(modal, data);
     },
-  };
-  //   const userViewTableInitials = UsersViewTableInitials({
-  //     searchValue,
-  //     setSearchValue,
-  //     searchRef,
-  //     users,
-  //     meta,
-  //     loading,
-  //     error,
-  //     actionContext,
-  //   });
+  }), [
+    handleTable.handleSelect.setSelectedIds,
+    handleTable.handleSelect.setSelectedRows,
+    handleTable.handleSelect.selectedIds,
+    handleTable.handleSelect.selectedRows,
+    handleTable.handleSelect.data,
+    handleTable.handleSelect.setData,
+    openModal
+  ]);
+
+
 
   return (
     <>
@@ -144,9 +140,13 @@ export default function UsersViewTable() {
           />
         </>
       )}
-      {Object.keys(handleTable.handleSelect.data).length != 0 && (
+      {Object.keys(handleTable.handleSelect.data).length !== 0 && (
         <>
-          <Tabs variant="fullWidth" className="p-0">
+          <Tabs
+            variant="fullWidth"
+            className="p-0"
+            onActiveTabChange={() => handleTable.handleSelect.clearRowData()}
+          >
             <TabItem title="نقش های کاربر" icon={FaFileContract}>
               <UserRolesTable user={handleTable.handleSelect.data} />
             </TabItem>

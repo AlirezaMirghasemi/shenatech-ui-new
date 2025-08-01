@@ -8,6 +8,7 @@ export default function useTable<
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [selectedRows, setSelectedRows] = useState<T[]>([]);
   const [data, setData] = useState<T>({} as T);
+  const [parentId, setParentId] = useState<number | null>(null);
   const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(
     SortDirection.ASC
@@ -43,12 +44,11 @@ export default function useTable<
     setSelectedRows([]);
     setData({} as T);
   }, []);
-//   const setRowData = useCallback((data: T) => {
-//     console.log(selectedIds.size)
-//     setData(data ?? ({} as T));
-//     setSelectedIds(data ? new Set([data.id]) : new Set());
-//     setSelectedRows(data ? [data] : []);
-//   }, []);
+const setRowData = useCallback((rowData: T) => {
+  setData(rowData);
+  setSelectedIds(new Set([rowData.id]));
+  setSelectedRows([rowData]);
+}, []);
   const clearRowData = useCallback(() => {
     setData({} as T);
     setSelectedIds(new Set());
@@ -93,6 +93,9 @@ export default function useTable<
       data,
       setData,
       clearRowData,
+      setRowData,
+      parentId,
+      setParentId,
     },
     handleDeletedStatus: {
       isRowDeleted,

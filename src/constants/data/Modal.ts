@@ -67,11 +67,10 @@ export type ModalTypeValue = {
 
 // 6. تایپ داده‌های مدال
 // 8. تایپ داده‌های مدال
-export interface ModalData<T extends object,p extends object = object> {
+export interface ModalData<T extends object> {
   selectedIds?: Set<number>;
   selectedRows?: T[];
   data?: T;
   [key: string]: unknown;
   parentId?: number;
-  parentData?:p;
 }

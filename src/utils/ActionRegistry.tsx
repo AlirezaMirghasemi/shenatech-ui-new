@@ -1,7 +1,7 @@
 // src/utils/ActionRegistry.ts
-import  { ActionType } from "@/constants/data/ActionsButton";
+import { ActionTypeValue } from "@/constants/data/ActionsButton";
 import { Color } from "@/constants/data/Color";
-import { ModalData, ModalType } from "@/constants/data/ModalType";
+import { ModalData, ModalTypeValue } from "@/constants/data/Modal";
 import { JSX, ReactNode } from "react";
 
 export type ActionHandler<T extends object> = (
@@ -14,13 +14,15 @@ export interface ActionContext<T extends object> {
   selectedIds: Set<number>;
   setSelectedRows: (row: T[]) => void;
   selectedRows: T[];
-  openModal: (modal: ModalType, data: ModalData<T>) => void;
+  openModal: (modal: ModalTypeValue, data: ModalData<T>) => void;
   data: T;
   setData: (data: T) => void;
+  parentId?: number;
+  setParentId?: (id: number) => void;
 }
 
 export interface ActionConfig<T extends object> {
-  id:  ActionType;
+  id: ActionTypeValue;
   label: string;
   icon?: JSX.Element;
   color: Color;
@@ -33,14 +35,14 @@ export interface ActionConfig<T extends object> {
 }
 
 export class ActionRegistry<T extends object> {
-  private actions: Map< ActionType, ActionConfig<T>> = new Map();
+  private actions: Map<ActionTypeValue, ActionConfig<T>> = new Map();
 
   register(action: ActionConfig<T>): this {
     this.actions.set(action.id, action);
     return this;
   }
 
-  getAction(id : ActionType ): ActionConfig<T> | undefined {
+  getAction(id: ActionTypeValue): ActionConfig<T> | undefined {
     return this.actions.get(id);
   }
 

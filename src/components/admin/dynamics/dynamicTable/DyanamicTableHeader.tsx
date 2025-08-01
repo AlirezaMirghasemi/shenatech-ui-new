@@ -1,6 +1,6 @@
 import { Button } from "flowbite-react";
 import { IDynamicTableHeader } from "@/interfaces/IDynamicTable";
-import useTable from "@/hooks/useTable";
+//import useTable from "@/hooks/useTable";
 import { ActionContext } from "@/utils/ActionRegistry";
 import { useMemo } from "react";
 
@@ -8,34 +8,23 @@ export default function DynamicTableHeader<
   T extends { id: number; status: string },
 >({
   dynamicTableHeader,
-  handleTable,
+  //handleTable,
   actionContext,
 }: {
   dynamicTableHeader: IDynamicTableHeader<T>;
-  handleTable: ReturnType<typeof useTable<T>>;
+ // handleTable: ReturnType<typeof useTable<T>>;
   actionContext: ActionContext<T>;
 }) {
-  const selectedRows = handleTable.handleSelect.selectedRows;
+  //const selectedRows = handleTable.handleSelect.selectedRows;
 
   const visibleActions = useMemo(() => {
     return (
       dynamicTableHeader.actions?.filter((action) => {
-        const isHidden = action.visibility?.hidden?.(null , {
-          ...actionContext,
-          selectedIds: handleTable.handleSelect.selectedIds,
-          selectedRows,
-        });
-
+        const isHidden = action.visibility?.hidden?.(null, actionContext);
         return !isHidden;
       }) || []
     );
-  }, [
-    dynamicTableHeader.actions,
-    actionContext,
-    handleTable.handleSelect.selectedIds,
-    selectedRows,
-  ]);
-
+  }, [dynamicTableHeader.actions, actionContext]);
   return (
     <div className="px-4 py-3 md:px-6 md:py-4 flex flex-col gap-3 md:flex-row md:justify-between md:items-center border-b">
       <div>
@@ -50,23 +39,16 @@ export default function DynamicTableHeader<
       {visibleActions.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {visibleActions.map((action) => {
-            const isDisabled = action.visibility?.disabled?.(null , {
-              ...actionContext,
-              selectedIds: handleTable.handleSelect.selectedIds,
-              selectedRows,
-            });
+            const isDisabled = action.visibility?.disabled?.(
+              null,
+              actionContext
+            );
 
             return (
               <Button
                 key={action.id}
                 className="transition-colors"
-                onClick={() =>
-                  action.handler(null , {
-                    ...actionContext,
-                    selectedIds: handleTable.handleSelect.selectedIds,
-                    selectedRows,
-                  })
-                }
+                onClick={() => action.handler(null, actionContext)}
                 disabled={isDisabled}
                 color={action.color}
               >

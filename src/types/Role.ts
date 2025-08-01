@@ -34,3 +34,6 @@ export interface CreateRole {
 export interface EditRole {
   name: string;
 }
+export interface AssignUserRoles {
+  roleIds: number[];
+}

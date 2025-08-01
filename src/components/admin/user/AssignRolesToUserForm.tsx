@@ -1,4 +1,4 @@
-import {  Role } from "@/types/Role";
+import { Role } from "@/types/Role";
 import DynamicForm from "../dynamics/DynamicForm";
 import { InputType } from "@/constants/data/InputType";
 import { Badge } from "flowbite-react";
@@ -8,12 +8,14 @@ import { useEffect, useState } from "react";
 import { AssignRolesToUser, User } from "@/types/User";
 import { toast } from "sonner";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import { assignUserRolesInitial } from "@/validations/admin/role/assignUserRolesInitial";
+import { assignUserRolesSchema } from "@/validations/admin/role/assignUserRolesSchema";
 
 export default function AssignRolesToUserForm({
   onCloseAssignRolesToUserModal,
   user,
 }: {
-  onCloseAssignRolesToUserModal: (user: User) => void;
+  onCloseAssignRolesToUserModal: () => void;
   user: User;
 }) {
   const {
@@ -25,14 +27,14 @@ export default function AssignRolesToUserForm({
     actions: { assignRolesToUser },
     statuses: { isEditing },
   } = useUserRoles();
-  const  [filteredRoles, setFilteredRoles] = useState<Role[]>([]);
+  const [filteredRoles, setFilteredRoles] = useState<Role[]>([]);
   useEffect(() => {
     const fetchData = async () => {
-      setFilteredRoles(await fetchUnAssignedUserRoles(user.id));
+      const unAssignedUserRoles = await fetchUnAssignedUserRoles(user.id);
+      setFilteredRoles(unAssignedUserRoles || []);
     };
     fetchData();
-
-  }, [user.id]);
+  }, [user.id,fetchUnAssignedUserRoles]);
   const onSubmit = async (
     values: AssignRolesToUser,
     { setSubmitting }: FormikHelpers<AssignRolesToUser>
@@ -40,7 +42,7 @@ export default function AssignRolesToUserForm({
     try {
       await assignRolesToUser(values.roleIds, user.id);
       toast.success("نقش ها با موفقیت به کاربر تخصیص داده شدند.");
-      await onCloseAssignRolesToUserModal(user);
+      await onCloseAssignRolesToUserModal();
     } catch (error) {
       console.error("Error Assign Role To Users:", error);
       toast.error("خطا در تخصیص نقش ها به کاربر.");
@@ -51,8 +53,8 @@ export default function AssignRolesToUserForm({
   return (
     <>
       <DynamicForm
-        initialValues={assignRolesToUserInitial}
-        validationSchema={assignRolesToUserSchema}
+        initialValues={assignUserRolesInitial}
+        validationSchema={assignUserRolesSchema}
         onSubmit={onSubmit}
         buttonTitle=" تخصیص نقش به کاربر"
         disabledButton={isFetching || isEditing}

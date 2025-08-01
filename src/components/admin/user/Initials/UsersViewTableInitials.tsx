@@ -2,7 +2,7 @@
 import { UserStatus, UserStatusTitles } from "@/constants/data/UserStatus";
 import { IDynamicTable } from "@/interfaces/IDynamicTable";
 import { User } from "@/types/User";
-import {  SetStateAction, useMemo } from "react";
+import { SetStateAction, useMemo } from "react";
 
 import { PaginatedResponse } from "@/types/Api";
 import { ActionConfig, ActionContext } from "@/utils/ActionRegistry";
@@ -35,7 +35,7 @@ export default function UsersViewTableInitials({
       UserViewTableActions.getAction(ActionType.commonModalAction.deletes),
       UserViewTableActions.getAction(ActionType.commonModalAction.restores),
     ].filter(Boolean) as ActionConfig<User>[];
-  }, []);
+  }, [actionContext]);
 
   return {
     header: {
@@ -104,7 +104,6 @@ export default function UsersViewTableInitials({
         cellRenderer: (row) =>
           row.deleted_at ? ConvertDateToShamsi({ date: row.deleted_at }) : "-",
       },
-
     ],
     getRowActions: (row: User) =>
       UserViewTableActions.getVisibleActions(row, actionContext),
